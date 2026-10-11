@@ -179,6 +179,25 @@ const fmt = (d) => {
   return `${dict.days[dt.getDay()]}, ${+x} ${dict.months[+m - 1]} ${y}`;
 };
 
+const translateDayName = (dName) => {
+  if (!dName) return '';
+  if (S.lang !== 'eng') return dName;
+  const m = {
+    'Isnin': 'Monday', 'Selasa': 'Tuesday', 'Rabu': 'Wednesday', 'Khamis': 'Thursday', 'Jumaat': 'Friday', 'Sabtu': 'Saturday', 'Ahad': 'Sunday',
+    'Isn': 'Mon', 'Sel': 'Tue', 'Rab': 'Wed', 'Kha': 'Thu', 'Jum': 'Fri', 'Sab': 'Sat', 'Ahd': 'Sun'
+  };
+  return m[dName] || dName;
+};
+
+const translateFacilityName = (fName, fId) => {
+  if (S.lang !== 'eng') return fName || '';
+  if (fId && fId.includes('badminton')) return 'Badminton Court (Hall)';
+  if (fId && fId.includes('pingpong')) return 'Table Tennis';
+  if (fName && fName.toLowerCase().includes('badminton')) return 'Badminton Court (Hall)';
+  if (fName && fName.toLowerCase().includes('ping pong')) return 'Table Tennis';
+  return fName || '';
+};
+
 const FALLBACK = '/content img/logojspimg.png';
 const SRD_REMARK = 'Sila patuhi garis panduan Sahsiah Rupa Diri (SRD). Berpakaian sukan yang lengkap dan sopan ketika menggunakan kemudahan dewan.';
 
@@ -281,9 +300,11 @@ function header() {
         </button>
 
         <!-- Button Switch BM / ENG -->
-        <button class="utility-switch-pill" data-a="toggleLang" title="${isBm ? 'Switch to English' : 'Tukar ke Bahasa Melayu'}">
+        <button class="utility-switch-pill lang-toggle-pill" data-a="toggleLang" title="${isBm ? 'Switch to English' : 'Tukar ke Bahasa Melayu'}">
           ${ic('globe')}
-          <span>${isBm ? 'ENG' : 'BM'}</span>
+          <span class="lang-opt ${isBm ? 'lang-active' : ''}">BM</span>
+          <span class="lang-divider">/</span>
+          <span class="lang-opt ${!isBm ? 'lang-active' : ''}">ENG</span>
         </button>
 
         ${adm ? `
@@ -350,7 +371,7 @@ function home() {
               ${isClosedToday 
                 ? t('clock.closed') 
                 : isOperatingToday 
-                  ? `${t('clock.open')} (${todaySchedule.dayName}: ${todaySchedule.timeDisplay})` 
+                  ? `${t('clock.open')} (${translateDayName(todaySchedule.dayName)}: ${todaySchedule.timeDisplay})` 
                   : t('clock.rest')}
             </span>
           </div>
@@ -523,7 +544,7 @@ function wizard() {
               <span class="caption-muted sm">${t('wizard.selDateLabel')}</span>
               <h4 style="font-size:16px;margin-top:2px">${fmt(S.date)}</h4>
               <div class="caption-muted" style="font-size:12.5px">
-                ${sc ? `${t('wizard.opTime')}: <b>${sc.dayName} (${sc.timeDisplay})</b>` : t('wizard.outSession')}
+                ${sc ? `${t('wizard.opTime')}: <b>${translateDayName(sc.dayName)} (${sc.timeDisplay})</b>` : t('wizard.outSession')}
               </div>
             </div>
             <div>
@@ -538,7 +559,7 @@ function wizard() {
             : cl 
               ? t('wizard.dateClosed') 
               : sc 
-                ? `${sc.dayName}: ${sc.timeDisplay}. ${t('wizard.dateOpen')}` 
+                ? `${translateDayName(sc.dayName)}: ${sc.timeDisplay}. ${t('wizard.dateOpen')}` 
                 : t('wizard.dateNonOp')}
         </div>
 
@@ -614,7 +635,7 @@ function wizard() {
             </div>
             <div class="pass-row">
               <span class="caption-muted">${t('wizard.facilityUnit')}</span>
-              <b>${esc(r.facilityName)} (${esc(r.unitName)})</b>
+              <b>${translateFacilityName(r.facilityName, r.facilityId)} (${esc(r.unitName)})</b>
             </div>
             <div class="pass-row">
               <span class="caption-muted">${t('wizard.dateTime')}</span>
@@ -776,7 +797,7 @@ function renderStudentPassCards() {
 
             <div class="pass-facility-box">
               <div class="pass-facility-title">
-                ${b.facilityId.includes('badminton') ? '🏸 ' : '🏓 '} <b>${esc(b.facilityName)}</b>
+                ${b.facilityId.includes('badminton') ? '🏸 ' : '🏓 '} <b>${translateFacilityName(b.facilityName, b.facilityId)}</b>
               </div>
               <div class="pass-unit-title">${esc(b.unitName)}</div>
             </div>
@@ -874,7 +895,7 @@ function renderBigMonthlyCalendar() {
       if (ov.rem === 0) {
         badgeHtml = `<span class="cal-badge-pill badge-full">${t('stats.fullBadge')}</span>`;
       } else {
-        badgeHtml = `<span class="cal-badge-pill badge-open">${daySched.dayName.slice(0,3)} • ${daySched.timeDisplay.split(' - ')[0]}</span>`;
+        badgeHtml = `<span class="cal-badge-pill badge-open">${translateDayName(daySched.dayName).slice(0,3)} • ${daySched.timeDisplay.split(' - ')[0]}</span>`;
       }
     } else {
       badgeHtml = `<span class="cal-badge-muted">${S.lang === 'eng' ? 'Rest' : 'Rehat'}</span>`;
@@ -947,7 +968,7 @@ function calendar() {
         <div>
           <span class="caption-muted sm">${t('calendar.selDate')}</span>
           <h3 style="font-size:18px;margin-top:2px">${fmt(S.date)}</h3>
-          <div class="caption-muted">${t('wizard.opTime')}: ${sc ? `<b>${sc.dayName} (${sc.timeDisplay})</b>` : t('wizard.outSession')}</div>
+          <div class="caption-muted">${t('wizard.opTime')}: ${sc ? `<b>${translateDayName(sc.dayName)} (${sc.timeDisplay})</b>` : t('wizard.outSession')}</div>
         </div>
         <div>
           ${D.closedDates.includes(S.date) ? chip('chip-bad', t('calendar.hallClosed')) : sc ? chip('chip-ok', t('calendar.openForBooking')) : chip('chip-subtle', t('calendar.noSessionToday'))}
@@ -1022,7 +1043,7 @@ function admin() {
                 ${cl 
                   ? t('adminView.closedNotice') 
                   : sc 
-                    ? `${t('wizard.opTime')} (${sc.dayName}: ${sc.timeDisplay}). ${t('adminView.openNotice')}` 
+                    ? `${t('wizard.opTime')} (${translateDayName(sc.dayName)}: ${sc.timeDisplay}). ${t('adminView.openNotice')}` 
                     : t('adminView.offScheduleNotice')}
               </span>
             </div>
@@ -1110,12 +1131,13 @@ function applyTheme() {
 
 function render() {
   applyTheme();
+  document.documentElement.lang = S.lang === 'eng' ? 'en' : 'ms';
 
   if (!S.data) {
     $('#app').innerHTML = `
       <div class="minimal-loader">
         <div class="loader-pulse"></div>
-        <div class="caption-muted" style="margin-top:12px">Memuatkan Dewan Temenggong…</div>
+        <div class="caption-muted" style="margin-top:12px">${S.lang === 'eng' ? 'Loading Dewan Temenggong…' : 'Memuatkan Dewan Temenggong…'}</div>
       </div>`;
     return;
   }
@@ -1169,7 +1191,13 @@ const A = {
   view: (d) => { S.view[d.k] = d.v; render(); },
   modal: (d) => { S.modal = d.m; render(); },
   close: () => { S.modal = null; render(); },
-  logout: () => { S.token = ''; localStorage.removeItem('dt_token'); S.tab = 'home'; toast('Log keluar berjaya.'); load(); },
+  logout: () => { 
+    S.token = ''; 
+    localStorage.removeItem('dt_token'); 
+    S.tab = 'home'; 
+    toast(S.lang === 'eng' ? 'Logged out successfully.' : 'Log keluar berjaya.'); 
+    load(); 
+  },
   calDate: (d) => {
     if (S.tab === 'booking-wizard' && d.date < today()) {
       return toast(t('wizard.datePast'), 'error');
@@ -1196,13 +1224,16 @@ const A = {
   },
   async deleteBooking(d) {
     const ref = d.ref;
-    const name = d.name || 'pengguna';
-    if (!confirm(`Adakah anda pasti mahu memadamkan tempahan [${ref}] untuk ${name}? Slot ini akan dikosongkan semula.`)) {
+    const name = d.name || (S.lang === 'eng' ? 'user' : 'pengguna');
+    const confirmMsg = S.lang === 'eng' 
+      ? `Are you sure you want to delete booking [${ref}] for ${name}? This slot will become available again.` 
+      : `Adakah anda pasti mahu memadamkan tempahan [${ref}] untuk ${name}? Slot ini akan dikosongkan semula.`;
+    if (!confirm(confirmMsg)) {
       return;
     }
     try {
       await api('admin', { action: 'delete_booking', id: d.id, refNo: ref });
-      toast(`Tempahan [${ref}] berjaya dipadamkan.`);
+      toast(S.lang === 'eng' ? `Booking [${ref}] has been deleted.` : `Tempahan [${ref}] berjaya dipadamkan.`);
       await load();
     } catch (e) {
       toast(e.message, 'error');
@@ -1216,21 +1247,22 @@ const A = {
       S.receipt = r.booking;
       S.step = 4;
       S.notes = '';
-      toast('Tempahan anda telah disahkan dan diluluskan.');
+      toast(S.lang === 'eng' ? 'Your booking has been approved!' : 'Tempahan anda telah disahkan dan diluluskan.');
       await load();
     } catch (e) { toast(e.message, 'error'); }
   },
   async toggle() {
     try {
       const r = await api('admin', { action: 'toggle_date', date: S.date });
-      toast(`Operasi tarikh ${fmt(S.date)} kini ${r.closed ? 'ditutup' : 'dibuka'}.`);
+      const statusWord = S.lang === 'eng' ? (r.closed ? 'closed' : 'open') : (r.closed ? 'ditutup' : 'dibuka');
+      toast(S.lang === 'eng' ? `Operation on ${fmt(S.date)} is now ${statusWord}.` : `Operasi tarikh ${fmt(S.date)} kini ${statusWord}.`);
       await load();
     } catch (e) { toast(e.message, 'error'); }
   },
   async saveVisual() {
     try {
       await api('admin', { action: 'save_settings', bg: S.bgIn, logo: S.logoIn });
-      toast('Visual berjaya dikemaskini.');
+      toast(S.lang === 'eng' ? 'Visual settings updated.' : 'Visual berjaya dikemaskini.');
       await load();
     } catch (e) { toast(e.message, 'error'); }
   },
@@ -1238,7 +1270,7 @@ const A = {
     try {
       await api('admin', { action: 'save_settings', sheetsUrl: S.sheetsIn });
       S.modal = null;
-      toast('Pautan Google Sheets disimpan.');
+      toast(S.lang === 'eng' ? 'Google Sheets link saved.' : 'Pautan Google Sheets disimpan.');
       await load();
     } catch (e) { toast(e.message, 'error'); }
   },
@@ -1249,12 +1281,15 @@ const A = {
       b.facilityName, b.unitName, b.date, `${b.startTime}-${b.endTime}`,
       b.participantsCount, b.status, b.createdAt
     ].map(q).join(','));
-    const csv = 'No Rujukan,Nama Pelajar,No Telefon,No Matrik,Kod Program,Kemudahan,Unit,Tarikh,Masa,Peserta,Status,Tarikh Dibuat\n' + rows.join('\n');
+    const csvHeader = S.lang === 'eng' 
+      ? 'Ref No,Student Name,Phone No,Student ID,Program Code,Facility,Unit,Date,Time,Pax,Status,Created At\n' 
+      : 'No Rujukan,Nama Pelajar,No Telefon,No Matrik,Kod Program,Kemudahan,Unit,Tarikh,Masa,Peserta,Status,Tarikh Dibuat\n';
+    const csv = csvHeader + rows.join('\n');
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' }));
     a.download = `Tempahan_Dewan_Temenggong_${today()}.csv`;
     a.click();
-    toast('Fail CSV telah dimuat turun.');
+    toast(S.lang === 'eng' ? 'CSV file downloaded.' : 'Fail CSV telah dimuat turun.');
   }
 };
 
@@ -1315,7 +1350,7 @@ document.addEventListener('submit', async (e) => {
     localStorage.setItem('dt_token', r.token);
     S.modal = null;
     S.tab = 'admin';
-    toast('Akses pentadbir berjaya.');
+    toast(S.lang === 'eng' ? 'Admin access granted.' : 'Akses pentadbir berjaya.');
     await load();
   } catch (err) { toast(err.message, 'error'); }
 });
