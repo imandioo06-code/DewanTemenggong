@@ -16,11 +16,11 @@ export const getDb = () => {
   return _db;
 };
 
-export const db = new Proxy({}, {
-  get(target, prop) {
-    return getDb()[prop];
-  }
-});
+export const db = {
+  execute: (...args) => getDb().execute(...args),
+  batch: (...args) => getDb().batch(...args),
+  transaction: (...args) => getDb().transaction(...args)
+};
 
 export const FACILITIES = [
   { id: 'fac-badminton', name: 'Gelanggang Badminton', type: 'badminton', maxCapacity: 10,
