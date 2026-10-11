@@ -171,44 +171,71 @@ const bnav = () => `
     `).join('')}
   </nav>`;
 
+const getClockTime = () => new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+const getClockDate = () => {
+  const d = new Date();
+  return `${DAYS[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+};
+
 /* ---------- View: Halaman Utama ---------- */
 function home() {
   const D = S.data, o = overview(S.date), act = D.bookings.filter((b) => b.status === 'Diluluskan').length;
   const sc = sched(S.date);
+  const now = new Date();
+  const dayIdx = now.getDay();
+  const todaySchedule = D.schedule ? D.schedule[dayIdx] : null;
+  const isOperatingToday = !!todaySchedule;
+  const isClosedToday = D.closedDates.includes(today());
 
   return `
-  <div class="stack" style="--s: 32px">
-    <!-- Hero Section -->
-    <section class="hero">
-      <div class="bg" style="background-image:url('${esc(D.settings.bg)}')"></div>
-      <div class="shade"></div>
-      ${COURT}
-      <div class="txt stack" style="--s:22px">
-        <div class="hero-badge">
-          <span class="badge-dot"></span>
-          <span>PORTAL RASMI TEMPAHAN KEMUDAHAN SUKAN PELAJAR</span>
+  <div class="stack" style="--s: 28px">
+    <!-- 1. Jam Waktu Sekarang & Tarikh (Atas Sekali) -->
+    <section class="live-clock-card">
+      <div class="clock-content-left">
+        <div class="clock-icon-wrapper">
+          ${ic('clock')}
         </div>
-        <h2>Tempahan Fasiliti Sukan <em>Dewan Temenggong</em></h2>
-        <p>Sistem berpusat Jawatankuasa Sukan Pelajar (JSP) bagi memudahkan permohonan penggunaan gelanggang badminton dan meja ping pong secara telus dengan kelulusan automatik masa-nyata.</p>
-        <div class="btns">
-          <button class="btn volt" data-a="tab" data-t="booking-wizard">
+        <div class="clock-details">
+          <div class="clock-badge-row">
+            <span class="live-dot-ping-inline"></span>
+            <span class="clock-timezone-tag">WAKTU STANDARD MALAYSIA (MYT • GMT+8)</span>
+          </div>
+          <div class="clock-time-display" id="liveClockTime">${getClockTime()}</div>
+          <div class="clock-date-display" id="liveClockDate">
+            ${ic('calendar')}
+            <span>${getClockDate()}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="clock-divider"></div>
+
+      <div class="clock-content-right">
+        <div class="clock-session-header flex" style="gap:8px">
+          <span class="mute sm" style="font-weight:600">Status Operasi Hari Ini:</span>
+          ${isClosedToday 
+            ? chip('bad', 'Ditutup oleh Pentadbiran JSP', 'lock') 
+            : isOperatingToday 
+              ? chip('ok', 'Fasiliti Beroperasi Hari Ini', 'check-circle-2') 
+              : chip('mute', 'Hari Rehat / Tiada Sesi', 'moon')}
+        </div>
+        <div class="clock-session-body">
+          ${isClosedToday 
+            ? '<span class="mute sm">Operasi ditutup sementara bagi tarikh hari ini.</span>'
+            : isOperatingToday 
+              ? `<div class="clock-slot-highlight">${ic('zap')} <b>Sesi Aktif (${todaySchedule.dayName}):</b> <span>${todaySchedule.timeDisplay}</span></div>` 
+              : '<span class="mute sm">Dewan hanya dibuka rasmi pada hari <b>Isnin & Jumaat (5-7 PM)</b> dan <b>Rabu (8-10 PM)</b>.</span>'}
+        </div>
+        <div class="clock-action-row">
+          <button class="btn volt sm" data-a="tab" data-t="booking-wizard">
             ${ic('plus-circle')}
             <span>Tempah Slot Sekarang</span>
-            ${ic('arrow-right')}
-          </button>
-          <button class="btn ghost" data-a="tab" data-t="availability-calendar">
-            ${ic('calendar-days')}
-            <span>Semak Kalendar Kekosongan</span>
-          </button>
-          <button class="btn ghost" data-a="tab" data-t="student-check">
-            ${ic('search')}
-            <span>Semak Status Tempahan</span>
           </button>
         </div>
       </div>
     </section>
 
-    <!-- Executive Metrics & Statistics -->
+    <!-- 2. Kapasiti dan Statistik (Di bawah jam, bahagian atas) -->
     <section class="card stats-card">
       <div class="head">
         <div class="flex" style="gap: 12px">
@@ -263,6 +290,36 @@ function home() {
             ${o.closed ? chip('bad', 'Ditutup / Luar Operasi', 'x-circle') : o.rem > 0 ? chip('ok', 'Fasiliti Dibuka', 'check-circle-2') : chip('warn', 'Kapasiti Penuh', 'alert-circle')}
           </div>
           <span class="stat-sub mute">${fmt(S.date)}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Hero Section -->
+    <section class="hero">
+      <div class="bg" style="background-image:url('${esc(D.settings.bg)}')"></div>
+      <div class="shade"></div>
+      ${COURT}
+      <div class="txt stack" style="--s:22px">
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          <span>PORTAL RASMI TEMPAHAN KEMUDAHAN SUKAN PELAJAR</span>
+        </div>
+        <h2>Tempahan Fasiliti Sukan <em>Dewan Temenggong</em></h2>
+        <p>Sistem berpusat Jawatankuasa Sukan Pelajar (JSP) bagi memudahkan permohonan penggunaan gelanggang badminton dan meja ping pong secara telus dengan kelulusan automatik masa-nyata.</p>
+        <div class="btns">
+          <button class="btn volt" data-a="tab" data-t="booking-wizard">
+            ${ic('plus-circle')}
+            <span>Tempah Slot Sekarang</span>
+            ${ic('arrow-right')}
+          </button>
+          <button class="btn ghost" data-a="tab" data-t="availability-calendar">
+            ${ic('calendar-days')}
+            <span>Semak Kalendar Kekosongan</span>
+          </button>
+          <button class="btn ghost" data-a="tab" data-t="student-check">
+            ${ic('search')}
+            <span>Semak Status Tempahan</span>
+          </button>
         </div>
       </div>
     </section>
@@ -1010,5 +1067,16 @@ document.addEventListener('submit', async (e) => {
     await load();
   } catch (err) { toast(err.message, 'error'); }
 });
+
+// Real-time Live Clock Ticker (Updates seconds dynamically)
+setInterval(() => {
+  const timeEl = document.getElementById('liveClockTime');
+  const dateEl = document.getElementById('liveClockDate');
+  if (timeEl) timeEl.textContent = getClockTime();
+  if (dateEl) {
+    dateEl.innerHTML = `${ic('calendar')} <span>${getClockDate()}</span>`;
+    if (window.lucide) lucide.createIcons();
+  }
+}, 1000);
 
 load();
