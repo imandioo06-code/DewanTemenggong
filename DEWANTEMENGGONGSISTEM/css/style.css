@@ -1195,24 +1195,53 @@ button {
 }
 
 .clean-modal-dialog {
-  background: #ffffff;
+  background: var(--bg-card);
+  border: 1px solid var(--border-hairline);
   border-radius: var(--radius-md);
-  padding: 32px;
-  max-width: 400px;
+  padding: 32px 28px;
+  max-width: 420px;
   width: 100%;
   box-shadow: var(--shadow-float);
   position: relative;
+  animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes modalPop {
+  from { opacity: 0; transform: scale(0.95) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal-icon-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #090d16;
+  color: var(--volt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
 }
 
 .modal-close-btn {
   position: absolute;
-  top: 16px;
-  right: 16px;
-  color: var(--ink-tertiary);
-  padding: 4px;
+  top: 18px;
+  right: 18px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--bg-subtle);
+  color: var(--ink-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 
 .modal-close-btn:hover {
+  background: var(--bg-hover);
   color: var(--ink-primary);
 }
 

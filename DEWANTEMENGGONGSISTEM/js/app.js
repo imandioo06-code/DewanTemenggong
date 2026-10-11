@@ -966,11 +966,16 @@ function modals() {
     <div class="clean-modal-backdrop">
       <div class="clean-modal-dialog">
         <button class="modal-close-btn" data-a="close" aria-label="Tutup">${ic('x')}</button>
-        <h3 class="section-title">Akses Pegawai JSP</h3>
-        <p class="caption-muted">Masukkan kata laluan untuk pengurusan sistem.</p>
+        <div class="modal-icon-badge">${ic('key-round')}</div>
+        <h3 class="section-title">${S.lang === 'eng' ? 'JSP Admin Access' : 'Akses Admin JSP'}</h3>
+        <p class="caption-muted" style="margin-top:4px">
+          ${S.lang === 'eng' ? 'Please enter the admin password to access management controls.' : 'Sila masukkan kata laluan keselamatan admin.'}
+        </p>
         <form id="loginForm" style="margin-top:20px" class="flow-layout" style="--s:14px">
-          <input type="password" name="pw" placeholder="Kata laluan keselamatan..." autofocus class="minimal-input">
-          <button class="btn-primary" type="submit" style="width:100%">Log Masuk</button>
+          <input type="password" name="pw" placeholder="${S.lang === 'eng' ? 'Enter admin password...' : 'Kata laluan admin...'}" autofocus class="minimal-input" style="font-size:15px;padding:12px 14px">
+          <button class="btn-primary" type="submit" style="width:100%;padding:12px 20px;font-size:14px;margin-top:8px">
+            ${S.lang === 'eng' ? 'Log In as Admin' : 'Log Masuk Admin'}
+          </button>
         </form>
       </div>
     </div>`;
