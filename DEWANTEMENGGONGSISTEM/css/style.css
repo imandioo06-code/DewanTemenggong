@@ -21,15 +21,23 @@
   --border-subtle: #e5e5ea;
   --border-focus: #0071e3;
 
+  /* Signature Neon Volt (High-End Athletic Accent - Tasteful & Minimal) */
+  --volt: #ccff00;
+  --volt-hover: #b8e600;
+  --volt-text: #090d16;
+  --volt-subtle: rgba(204, 255, 0, 0.16);
+  --volt-border: rgba(204, 255, 0, 0.45);
+  --volt-glow: 0 4px 18px rgba(204, 255, 0, 0.28);
+
   /* Accent Colors (Clean & Understated) */
   --apple-blue: #0071e3;
   --apple-blue-hover: #0077ed;
-  --status-green: #34c759;
-  --status-green-bg: #eaf8ee;
-  --status-red: #ff3b30;
-  --status-red-bg: #fdf0f0;
-  --status-amber: #ff9500;
-  --status-amber-bg: #fff8eb;
+  --status-green: #22c55e;
+  --status-green-bg: #f0fdf4;
+  --status-red: #ef4444;
+  --status-red-bg: #fef2f2;
+  --status-amber: #f59e0b;
+  --status-amber-bg: #fffbeb;
 
   /* Typography */
   --font-system: 'Inter', -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
@@ -166,11 +174,12 @@ button {
 
 .brand-sub {
   font-size: 11px;
-  color: var(--ink-tertiary);
-  font-weight: 500;
-  background: var(--bg-subtle);
-  padding: 2px 6px;
+  color: #090d16;
+  font-weight: 700;
+  background: var(--volt);
+  padding: 2px 7px;
   border-radius: 4px;
+  letter-spacing: 0.04em;
 }
 
 /* Segmented Control Pills (iOS Style) */
@@ -195,10 +204,10 @@ button {
 }
 
 .nav-pill.active {
-  background: #ffffff;
-  color: var(--ink-primary);
+  background: #090d16;
+  color: var(--volt);
   font-weight: 600;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
 }
 
 .nav-actions {
@@ -340,7 +349,7 @@ button {
   flex: none;
 }
 
-.dot-green { background: var(--status-green); }
+.dot-green { background: #16a34a; box-shadow: 0 0 0 2px var(--volt); }
 .dot-red { background: var(--status-red); }
 .dot-gray { background: var(--ink-quaternary); }
 
@@ -470,17 +479,21 @@ button {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: var(--ink-primary);
-  color: #ffffff;
-  padding: 10px 20px;
+  background: var(--volt);
+  color: #090d16;
+  padding: 10px 22px;
   border-radius: var(--radius-pill);
   font-size: 13.5px;
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   transition: all 0.15s ease;
+  box-shadow: 0 2px 10px rgba(204, 255, 0, 0.25);
 }
 
 .btn-primary:hover {
-  background: #333336;
+  background: var(--volt-hover);
+  box-shadow: 0 4px 16px rgba(204, 255, 0, 0.4);
+  transform: translateY(-1px);
 }
 
 .btn-primary:active {
@@ -619,8 +632,9 @@ button {
 }
 
 .stepper-tab.active .stepper-num {
-  background: var(--ink-primary);
-  color: #fff;
+  background: var(--volt);
+  color: #090d16;
+  font-weight: 700;
 }
 
 .stepper-tab.done {
@@ -666,8 +680,8 @@ button {
 }
 
 .choice-card.selected {
-  border-color: var(--ink-primary);
-  box-shadow: 0 0 0 1px var(--ink-primary);
+  border-color: #090d16;
+  box-shadow: 0 0 0 2px var(--volt);
 }
 
 .choice-image {
@@ -703,9 +717,9 @@ button {
 }
 
 .choice-card.selected .choice-check {
-  background: var(--ink-primary);
-  border-color: var(--ink-primary);
-  color: #fff;
+  background: var(--volt);
+  border-color: var(--volt);
+  color: #090d16;
 }
 
 .unit-group {
@@ -734,8 +748,9 @@ button {
 }
 
 .unit-pill.active {
-  background: var(--ink-primary);
-  color: #fff;
+  background: #090d16;
+  color: var(--volt);
+  font-weight: 600;
 }
 
 .notice-minimal {
@@ -845,8 +860,9 @@ button {
 }
 
 .date-chip.active {
-  background: var(--ink-primary);
-  color: #fff;
+  background: #090d16;
+  color: var(--volt);
+  font-weight: 600;
 }
 
 .facility-section-title {
