@@ -1,5 +1,5 @@
-/* Dewan Temenggong - JSP | Frontend (Vanilla JS)
-   Sistem Pengurusan & Tempahan Kemudahan Sukan Berpusat */
+/* Dewan Temenggong - JSP
+   Minimalist System (Apple / Google Design Inspired) */
 
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -8,31 +8,23 @@ const pad = (n) => String(n).padStart(2, '0');
 const today = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
 const MONTHS = ['Januari', 'Februari', 'Mac', 'April', 'Mei', 'Jun', 'Julai', 'Ogos', 'September', 'Oktober', 'November', 'Disember'];
 const DAYS = ['Ahad', 'Isnin', 'Selasa', 'Rabu', 'Khamis', 'Jumaat', 'Sabtu'];
+
 const fmt = (d) => {
   if (!d) return '';
   const [y, m, x] = d.split('-');
   const dt = new Date(+y, +m - 1, +x);
   return `${DAYS[dt.getDay()]}, ${+x} ${MONTHS[+m - 1]} ${y}`;
 };
+
 const FALLBACK = 'https://images.unsplash.com/photo-1534158914592-062992fbe900?auto=format&fit=crop&q=80&w=200';
-const SRD_REMARK = 'Semua pengguna fasiliti sukan Dewan Temenggong DIWAJIBKAN mematuhi garis panduan Sahsiah Rupa Diri (SRD) universiti. Sila berpakaian sukan yang sopan dan lengkap. Keutamaan gelanggang diberikan kepada pelajar yang mematuhi kod etika berpakaian.';
+const SRD_REMARK = 'Sila patuhi garis panduan Sahsiah Rupa Diri (SRD). Berpakaian sukan yang lengkap dan sopan ketika menggunakan kemudahan dewan.';
 
 const TABS = [
-  ['home', 'Halaman Utama', 'layout-dashboard'],
-  ['booking-wizard', 'Tempah Slot', 'plus-circle'],
-  ['availability-calendar', 'Kalendar Kekosongan', 'calendar-days'],
-  ['student-check', 'Semak Status', 'search']
+  ['home', 'Utama'],
+  ['booking-wizard', 'Tempah'],
+  ['availability-calendar', 'Kalendar'],
+  ['student-check', 'Semak Status']
 ];
-
-const COURT = `<svg class="court" viewBox="0 0 400 220" fill="none" stroke="currentColor">
-  <rect x="10" y="10" width="380" height="200" rx="4" stroke-width="2"/>
-  <line x1="10" y1="40" x2="390" y2="40" stroke-width="1.5"/>
-  <line x1="10" y1="180" x2="390" y2="180" stroke-width="1.5"/>
-  <line x1="200" y1="10" x2="200" y2="210" stroke-width="3"/>
-  <line x1="100" y1="40" x2="100" y2="180" stroke-width="1.5"/>
-  <line x1="300" y1="40" x2="300" y2="180" stroke-width="1.5"/>
-  <line x1="100" y1="110" x2="300" y2="110" stroke-width="1.5"/>
-</svg>`;
 
 const S = {
   tab: 'home', step: 1, fac: 'fac-badminton', unit: 'b-lining', date: today(), notes: '',
@@ -40,7 +32,7 @@ const S = {
   view: { status: today(), admin: today() }, data: null, token: localStorage.getItem('dt_token') || '', modal: null, receipt: null
 };
 
-/* ---------- API Services ---------- */
+/* ---------- API ---------- */
 async function api(path, body) {
   const r = await fetch('/api/' + path, {
     method: body ? 'POST' : 'GET',
@@ -63,37 +55,20 @@ async function load() {
 let tt;
 function toast(msg, type = 'success') {
   const el = $('#toast');
-  const iconName = type === 'error' ? 'alert-triangle' : type === 'info' ? 'info' : 'check-circle-2';
   el.className = 'show ' + type;
-  el.innerHTML = `${ic(iconName)} <span>${msg}</span>`;
-  if (window.lucide) lucide.createIcons();
+  el.innerHTML = `<span>${msg}</span>`;
   clearTimeout(tt);
-  tt = setTimeout(() => (el.className = ''), 4200);
+  tt = setTimeout(() => (el.className = ''), 3800);
 }
 
-/* ---------- Business Logic Helpers ---------- */
+/* ---------- Helpers ---------- */
 const sched = (d) => {
   if (!d || !S.data) return null;
   const [y, m, x] = d.split('-').map(Number);
   return S.data.schedule[new Date(y, m - 1, x).getDay()] || null;
 };
 
-const chip = (t, text, icon = '') => `
-  <span class="chip ${t}">
-    ${icon ? ic(icon) : ''}
-    <span>${text}</span>
-  </span>`;
-
-const notice = (t, i, title, body) => `
-  <div class="notice ${t}">
-    <div class="notice-icon">${ic(i)}</div>
-    <div class="notice-body">
-      <b>${title}</b>
-      <div>${body}</div>
-    </div>
-  </div>`;
-
-const srd = () => notice('warn', 'shield-alert', 'Garis Panduan Sahsiah Rupa Diri (SRD)', SRD_REMARK);
+const chip = (t, text) => `<span class="chip ${t}">${text}</span>`;
 
 function overview(d) {
   const sc = sched(d), closed = S.data.closedDates.includes(d);
@@ -107,53 +82,45 @@ function overview(d) {
   return { tot, rem: Math.max(0, tot - bk), bk, closed: closed || !sc };
 }
 
-/* ---------- Header Component ---------- */
+const getClockTime = () => new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+const getClockDate = () => {
+  const d = new Date();
+  return `${DAYS[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+};
+
+/* ---------- Header ---------- */
 function header() {
   const D = S.data, adm = D.isAdmin;
   return `
-  <header class="top">
-    <div class="wrap in">
-      <div class="header-left">
-        <button class="brand" data-a="tab" data-t="home">
-          <div class="logo-wrapper">
-            <img class="logo" src="${esc(D.settings.logo)}" alt="Logo Rasmi JSP" onerror="this.onerror=null;this.src='${FALLBACK}'">
-            <span class="live-dot-ping"></span>
-          </div>
-          <div class="brand-text">
-            <b>DEWAN TEMENGGONG</b>
-            <small>Sistem Pengurusan & Tempahan Kemudahan JSP</small>
-          </div>
+  <header class="top-nav">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <button class="brand-link" data-a="tab" data-t="home">
+          <span class="brand-title">Dewan Temenggong</span>
+          <span class="brand-sub">JSP</span>
         </button>
       </div>
 
-      <nav class="tabs">
-        ${TABS.map(([id, t, icon]) => `
-          <button class="${S.tab === id ? 'on' : ''}" data-a="tab" data-t="${id}">
-            ${ic(icon)}
-            <span>${t}</span>
+      <nav class="nav-segmented">
+        ${TABS.map(([id, t]) => `
+          <button class="nav-pill ${S.tab === id ? 'active' : ''}" data-a="tab" data-t="${id}">
+            ${t}
           </button>
         `).join('')}
       </nav>
 
-      <div class="header-right">
-        <div class="live-status-pill hide-m">
-          <span class="pulse-dot"></span>
-          <span>Sistem Aktif</span>
-        </div>
+      <div class="nav-actions">
         ${adm ? `
-          <div class="flex" style="gap:8px">
-            <button class="hbtn ${S.tab === 'admin' ? 'on' : ''}" data-a="tab" data-t="admin">
-              ${ic('shield-check')}
-              <span class="hide-m">Portal Admin</span>
-            </button>
-            <button class="hbtn icon-only" data-a="logout" title="Log Keluar Admin">
-              ${ic('log-out')}
-            </button>
-          </div>
+          <button class="btn-subtle ${S.tab === 'admin' ? 'active' : ''}" data-a="tab" data-t="admin">
+            ${ic('shield')}
+            <span>Admin</span>
+          </button>
+          <button class="btn-icon" data-a="logout" title="Log Keluar">
+            ${ic('log-out')}
+          </button>
         ` : `
-          <button class="hbtn" data-a="modal" data-m="login">
-            ${ic('lock')}
-            <span class="hide-m">Akses Pegawai JSP</span>
+          <button class="btn-subtle" data-a="modal" data-m="login">
+            <span>Akses Admin</span>
           </button>
         `}
       </div>
@@ -162,456 +129,328 @@ function header() {
 }
 
 const bnav = () => `
-  <nav class="bnav">
+  <nav class="mobile-nav">
     ${TABS.map(([id, t, icon]) => `
-      <button class="${S.tab === id ? 'on' : ''}" data-a="tab" data-t="${id}">
-        ${ic(icon)}
+      <button class="${S.tab === id ? 'active' : ''}" data-a="tab" data-t="${id}">
         <span>${t}</span>
       </button>
     `).join('')}
   </nav>`;
 
-const getClockTime = () => new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
-const getClockDate = () => {
-  const d = new Date();
-  return `${DAYS[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
-};
-
-/* ---------- View: Halaman Utama ---------- */
+/* ---------- View: Utama (Home) ---------- */
 function home() {
   const D = S.data, o = overview(S.date), act = D.bookings.filter((b) => b.status === 'Diluluskan').length;
   const sc = sched(S.date);
   const now = new Date();
-  const dayIdx = now.getDay();
-  const todaySchedule = D.schedule ? D.schedule[dayIdx] : null;
+  const todaySchedule = D.schedule ? D.schedule[now.getDay()] : null;
   const isOperatingToday = !!todaySchedule;
   const isClosedToday = D.closedDates.includes(today());
 
   return `
-  <div class="stack" style="--s: 28px">
-    <!-- 1. Jam Waktu Sekarang & Tarikh (Atas Sekali) -->
-    <section class="live-clock-card">
-      <div class="clock-content-left">
-        <div class="clock-icon-wrapper">
-          ${ic('clock')}
+  <div class="flow-layout">
+    <!-- 1. Apple-style Clean Live Clock & Status (Atas Sekali) -->
+    <div class="card clean-widget-clock">
+      <div class="widget-clock-inner">
+        <div class="clock-display-block">
+          <div class="caption-muted">WAKTU SEMASA • MYT (GMT+8)</div>
+          <div class="clock-digits" id="liveClockTime">${getClockTime()}</div>
+          <div class="clock-calendar-sub" id="liveClockDate">${getClockDate()}</div>
         </div>
-        <div class="clock-details">
-          <div class="clock-badge-row">
-            <span class="live-dot-ping-inline"></span>
-            <span class="clock-timezone-tag">WAKTU STANDARD MALAYSIA (MYT • GMT+8)</span>
+
+        <div class="clock-status-block">
+          <div class="status-indicator-row">
+            <span class="status-dot ${isClosedToday ? 'dot-red' : isOperatingToday ? 'dot-green' : 'dot-gray'}"></span>
+            <span class="status-text">
+              ${isClosedToday 
+                ? 'Operasi Ditutup Hari Ini' 
+                : isOperatingToday 
+                  ? `Sesi Dibuka (${todaySchedule.dayName}: ${todaySchedule.timeDisplay})` 
+                  : 'Tiada Sesi Operasi Hari Ini (Hari Rehat)'}
+            </span>
           </div>
-          <div class="clock-time-display" id="liveClockTime">${getClockTime()}</div>
-          <div class="clock-date-display" id="liveClockDate">
-            ${ic('calendar')}
-            <span>${getClockDate()}</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="clock-divider"></div>
-
-      <div class="clock-content-right">
-        <div class="clock-session-header flex" style="gap:8px">
-          <span class="mute sm" style="font-weight:600">Status Operasi Hari Ini:</span>
-          ${isClosedToday 
-            ? chip('bad', 'Ditutup oleh Pentadbiran JSP', 'lock') 
-            : isOperatingToday 
-              ? chip('ok', 'Fasiliti Beroperasi Hari Ini', 'check-circle-2') 
-              : chip('mute', 'Hari Rehat / Tiada Sesi', 'moon')}
-        </div>
-        <div class="clock-session-body">
-          ${isClosedToday 
-            ? '<span class="mute sm">Operasi ditutup sementara bagi tarikh hari ini.</span>'
-            : isOperatingToday 
-              ? `<div class="clock-slot-highlight">${ic('zap')} <b>Sesi Aktif (${todaySchedule.dayName}):</b> <span>${todaySchedule.timeDisplay}</span></div>` 
-              : '<span class="mute sm">Dewan hanya dibuka rasmi pada hari <b>Isnin & Jumaat (5-7 PM)</b> dan <b>Rabu (8-10 PM)</b>.</span>'}
-        </div>
-        <div class="clock-action-row">
-          <button class="btn volt sm" data-a="tab" data-t="booking-wizard">
-            ${ic('plus-circle')}
-            <span>Tempah Slot Sekarang</span>
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- 2. Kapasiti dan Statistik (Di bawah jam, bahagian atas) -->
-    <section class="card stats-card">
-      <div class="head">
-        <div class="flex" style="gap: 12px">
-          <div class="icon-avatar">${ic('activity')}</div>
-          <div>
-            <h3>Kapasiti & Statistik Penggunaan</h3>
-            <p class="mute">Pemantauan masa-nyata kehadiran pelajar dan kuota fasiliti sukan.</p>
-          </div>
-        </div>
-        <div class="date-selector-wrapper">
-          <label class="sr-only">Tarikh Pilihan</label>
-          <input type="date" class="auto" value="${S.date}" data-d="sel">
-        </div>
-      </div>
-      <div class="stats-grid">
-        <div class="stat-item">
-          <div class="stat-top">
-            <span class="stat-label">Jumlah Rekod Tempahan</span>
-            <div class="stat-icon-wrap">${ic('archive')}</div>
-          </div>
-          <div class="stat-value">${D.bookings.length}</div>
-          <span class="stat-sub mute">Kumulatif sepanjang sesi</span>
-        </div>
-
-        <div class="stat-item">
-          <div class="stat-top">
-            <span class="stat-label">Tempahan Aktif (Lulus)</span>
-            <div class="stat-icon-wrap ok">${ic('check-circle-2')}</div>
-          </div>
-          <div class="stat-value" style="color:var(--ok)">${act}</div>
-          <span class="stat-sub mute">Status diluluskan automatik</span>
-        </div>
-
-        <div class="stat-item">
-          <div class="stat-top">
-            <span class="stat-label">Baki Kekosongan Hari Ini</span>
-            <div class="stat-icon-wrap volt">${ic('users')}</div>
-          </div>
-          <div class="stat-value">
-            ${o.closed ? '0' : o.rem}
-            <small>/ ${o.tot} Pax</small>
-          </div>
-          <span class="stat-sub mute">${sc ? sc.timeDisplay : 'Luar sesi operasi'}</span>
-        </div>
-
-        <div class="stat-item">
-          <div class="stat-top">
-            <span class="stat-label">Status Operasi Tarikh</span>
-            <div class="stat-icon-wrap">${ic('calendar-clock')}</div>
-          </div>
-          <div class="stat-status-wrap">
-            ${o.closed ? chip('bad', 'Ditutup / Luar Operasi', 'x-circle') : o.rem > 0 ? chip('ok', 'Fasiliti Dibuka', 'check-circle-2') : chip('warn', 'Kapasiti Penuh', 'alert-circle')}
-          </div>
-          <span class="stat-sub mute">${fmt(S.date)}</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- 3. Hero Section -->
-    <section class="hero">
-      <div class="bg" style="background-image:url('${esc(D.settings.bg)}')"></div>
-      <div class="shade"></div>
-      ${COURT}
-      <div class="txt stack" style="--s:22px">
-        <div class="hero-badge">
-          <span class="badge-dot"></span>
-          <span>PORTAL RASMI TEMPAHAN KEMUDAHAN SUKAN PELAJAR</span>
-        </div>
-        <h2>Tempahan Fasiliti Sukan <em>Dewan Temenggong</em></h2>
-        <p>Sistem berpusat Jawatankuasa Sukan Pelajar (JSP) bagi memudahkan permohonan penggunaan gelanggang badminton dan meja ping pong secara telus dengan kelulusan automatik masa-nyata.</p>
-        <div class="btns">
-          <button class="btn volt" data-a="tab" data-t="booking-wizard">
-            ${ic('plus-circle')}
-            <span>Tempah Slot Sekarang</span>
-            ${ic('arrow-right')}
-          </button>
-          <button class="btn ghost" data-a="tab" data-t="availability-calendar">
-            ${ic('calendar-days')}
-            <span>Semak Kalendar Kekosongan</span>
-          </button>
-          <button class="btn ghost" data-a="tab" data-t="student-check">
-            ${ic('search')}
-            <span>Semak Status Tempahan</span>
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Institutional Guidelines & Features -->
-    <section class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon-box bg-blue">
-          ${ic('user-check')}
-        </div>
-        <h3>Polisi 1 Orang 1 Peranti</h3>
-        <p>Setiap pelajar mendaftar secara individu menggunakan No. Matrik & No. Telefon sah. Sistem menghadkan 1 tempahan setiap hari bagi memastikan keadilan agihan slot.</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon-box bg-emerald">
-          ${ic('zap')}
-        </div>
-        <h3>Kelulusan Terus Automatik</h3>
-        <p>Tiada proses kelulusan manual yang memakan masa. Permohonan disahkan serta-merta dengan Slip Tempahan Rasmi selagi kuota unit belum mencecah had maksimum.</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon-box bg-amber">
-          ${ic('clock')}
-        </div>
-        <h3>Jadual Operasi Rasmi JSP</h3>
-        <p>Dewan dibuka khusus pada hari <b>Isnin & Jumaat (5:00 PM - 7:00 PM)</b> serta <b>Rabu (8:00 PM - 10:00 PM)</b> tertakluk kepada pengumuman pentadbiran.</p>
-      </div>
-    </section>
-  </div>`;
-}
-
-/* ---------- View: Borang Tempahan (Wizard) ---------- */
-function wizard() {
-  const D = S.data, fac = D.facilities.find((f) => f.id === S.fac), f = S.form;
-  let content = '';
-
-  const stepsHeader = [
-    { n: 1, title: 'Fasiliti', desc: 'Pilihan Sukan' },
-    { n: 2, title: 'Tarikh & Masa', desc: 'Slot Operasi' },
-    { n: 3, title: 'Maklumat Pelajar', desc: 'Data Pemohon' },
-    { n: 4, title: 'Pengesahan', desc: 'Slip E-Pas' }
-  ];
-
-  if (S.step === 1) {
-    content = `
-    <div class="step-pane">
-      <div class="pane-header">
-        <h3>Langkah 1: Pilih Jenis Kemudahan Sukan</h3>
-        <p class="mute">Sila pilih sukan dan unit gelanggang / meja yang ingin digunakan.</p>
-      </div>
-
-      <div class="g2 facility-grid">
-        ${D.facilities.map((x) => `
-          <button type="button" class="opt ${S.fac === x.id ? 'on' : ''}" data-a="fac" data-id="${x.id}">
-            <div class="im" style="background-image:url('${x.image}')">
-              <span class="facility-badge">${x.units.length} Unit Disediakan</span>
-            </div>
-            <div class="bd">
-              <div class="facility-header-row">
-                <h4>${x.name}</h4>
-                <div class="facility-radio-check">${S.fac === x.id ? ic('check') : ''}</div>
-              </div>
-              <p class="mute">${x.description}</p>
-              <div class="capacity-pill">
-                ${ic('users')}
-                <span>Maksimum <b>${x.maxCapacity} orang</b> per unit</span>
-              </div>
-            </div>
-          </button>
-        `).join('')}
-      </div>
-
-      <div class="unit-selection-block">
-        <label class="strong flex" style="gap:6px">
-          ${ic('grid')}
-          <span>Pilih Unit Spesifik (${fac.name})</span>
-        </label>
-        <div class="g2 unit-buttons-grid">
-          ${fac.units.map((u) => `
-            <button type="button" class="u ${S.unit === u.id ? 'on' : ''}" data-a="unit" data-id="${u.id}">
-              <span class="flex" style="gap:8px">
-                <span class="unit-dot"></span>
-                <span>${u.name}</span>
-              </span>
-              ${S.unit === u.id ? `<span class="u-check">${ic('check')} Terpilih</span>` : `<span class="u-action">Pilih</span>`}
+          <p class="caption-muted" style="margin-top:6px">
+            Jadual operasi rasmi: Isnin & Jumaat (5-7 PM), Rabu (8-10 PM).
+          </p>
+          <div style="margin-top:14px">
+            <button class="btn-primary" data-a="tab" data-t="booking-wizard">
+              Tempah slot hari ini
             </button>
-          `).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Kapasiti dan Statistik (Di bawah jam) -->
+    <div class="card clean-stats-bar">
+      <div class="stats-header">
+        <div>
+          <h3 class="section-title">Kapasiti & Statistik Sesi</h3>
+          <p class="caption-muted">Status penggunaan fasiliti sukan mengikut tarikh pilihan.</p>
+        </div>
+        <div class="date-input-wrap">
+          <input type="date" value="${S.date}" data-d="sel" class="minimal-date-input">
         </div>
       </div>
 
-      <div class="end pane-footer">
-        <button class="btn volt" data-a="step" data-n="2">
-          <span>Seterusnya: Tarikh & Masa</span>
-          ${ic('arrow-right')}
+      <div class="stats-row">
+        <div class="stat-cell">
+          <span class="stat-caption">Jumlah Tempahan</span>
+          <div class="stat-number">${D.bookings.length}</div>
+          <span class="stat-note">Sepanjang sesi</span>
+        </div>
+
+        <div class="stat-cell">
+          <span class="stat-caption">Tempahan Aktif</span>
+          <div class="stat-number stat-green">${act}</div>
+          <span class="stat-note">Telah diluluskan</span>
+        </div>
+
+        <div class="stat-cell">
+          <span class="stat-caption">Kekosongan Hari Ini</span>
+          <div class="stat-number">${o.closed ? '0' : o.rem} <span class="stat-unit">/ ${o.tot}</span></div>
+          <span class="stat-note">${sc ? sc.timeDisplay : 'Luar operasi'}</span>
+        </div>
+
+        <div class="stat-cell">
+          <span class="stat-caption">Status Dewan</span>
+          <div class="stat-badge-wrap">
+            ${o.closed ? chip('chip-bad', 'Ditutup') : o.rem > 0 ? chip('chip-ok', 'Tersedia') : chip('chip-warn', 'Penuh')}
+          </div>
+          <span class="stat-note">${fmt(S.date)}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Minimal Hero Presentation -->
+    <div class="hero-minimal">
+      <h1 class="hero-headline">Tempahan dewan sukan kolej.</h1>
+      <p class="hero-subline">
+        Sistem pengurusan gelanggang badminton dan meja ping pong Dewan Temenggong. Kelulusan automatik untuk kemudahan pelajar.
+      </p>
+      <div class="hero-button-row">
+        <button class="btn-primary" data-a="tab" data-t="booking-wizard">
+          Tempah slot sekarang
+        </button>
+        <button class="btn-secondary" data-a="tab" data-t="availability-calendar">
+          Lihat kalendar
+        </button>
+        <button class="btn-secondary" data-a="tab" data-t="student-check">
+          Semak status tempahan
         </button>
       </div>
-    </div>`;
-  } else if (S.step === 2) {
-    const sc = sched(S.date), cl = D.closedDates.includes(S.date);
-    const nt = cl ? notice('bad', 'alert-circle', 'Fasiliti Ditutup Pada Tarikh Ini', 'Pihak Jawatankuasa Sukan Pelajar (JSP) telah menutup sesi Dewan Temenggong bagi tarikh ini atas urusan penyelenggaraan atau program kolej.')
-      : !sc ? notice('warn', 'calendar-x', 'Luar Jadual Operasi Rasmi JSP', 'Dewan Temenggong hanya dibuka pada hari <b>Isnin & Jumaat (5:00 PM - 7:00 PM)</b> dan <b>Rabu (8:00 PM - 10:00 PM)</b> sahaja.')
-      : notice('ok', 'check-circle-2', `Jadual Beroperasi: ${sc.dayName} (${sc.timeDisplay})`, `Slot rasmi bagi tarikh ${fmt(S.date)} sedia untuk permohonan.`);
+    </div>
 
-    content = `
-    <div class="step-pane">
-      <div class="pane-header">
-        <h3>Langkah 2: Pilih Tarikh Tempahan</h3>
-        <p class="mute">Pilih tarikh operasi yang bertepatan dengan jadual rasmi Dewan Temenggong.</p>
+    <!-- 4. Guidelines Cards -->
+    <div class="clean-grid-3">
+      <div class="card clean-card-pad">
+        <h4 class="card-item-title">1 Pelajar 1 Peranti</h4>
+        <p class="caption-muted">
+          Pendaftaran individu menggunakan No. Matrik sah. Had 1 tempahan setiap hari bagi memastikan giliran yang adil untuk semua warga kolej.
+        </p>
       </div>
 
-      <div class="card inner-card pad">
-        <div class="form-group">
-          <label class="strong flex" style="gap:8px">
-            ${ic('calendar')}
-            <span>Tarikh Permohonan Penggunaan</span>
-          </label>
-          <input type="date" value="${S.date}" data-d="sel" style="max-width:320px">
-          <span class="mute sm" style="display:block;margin-top:6px">Tarikh dipilih: <b>${fmt(S.date)}</b></span>
-        </div>
-
-        <div class="schedule-quick-chips">
-          <div class="schedule-chip ${sc?.dayName === 'Isnin' ? 'active' : ''}">
-            <b>Isnin</b> 5:00 PM - 7:00 PM
-          </div>
-          <div class="schedule-chip ${sc?.dayName === 'Rabu' ? 'active' : ''}">
-            <b>Rabu</b> 8:00 PM - 10:00 PM
-          </div>
-          <div class="schedule-chip ${sc?.dayName === 'Jumaat' ? 'active' : ''}">
-            <b>Jumaat</b> 5:00 PM - 7:00 PM
-          </div>
-        </div>
-
-        <div style="margin-top:16px">${nt}</div>
+      <div class="card clean-card-pad">
+        <h4 class="card-item-title">Kelulusan Serta-merta</h4>
+        <p class="caption-muted">
+          Sistem mengesahkan tempahan secara langsung selagi kuota slot belum penuh. Anda akan menerima slip rujukan untuk ditunjukkan.
+        </p>
       </div>
 
-      <div class="between pane-footer">
-        <button class="btn line" data-a="step" data-n="1">
-          ${ic('arrow-left')}
-          <span>Kembali</span>
-        </button>
-        <button class="btn volt" data-a="step" data-n="3" ${cl || !sc ? 'disabled' : ''}>
-          <span>Seterusnya: Maklumat Pemohon</span>
-          ${ic('arrow-right')}
-        </button>
-      </div>
-    </div>`;
-  } else if (S.step === 3) {
-    const fld = (k, l, ph, icon, up) => `
-      <div class="form-group">
-        <label class="strong">${l}</label>
-        <div class="input-with-icon">
-          <span class="input-icon">${ic(icon)}</span>
-          <input type="text" placeholder="${ph}" value="${esc(f[k] || '')}" data-f="${k}" ${up ? 'style="text-transform:uppercase"' : ''}>
-        </div>
-      </div>`;
-
-    content = `
-    <div class="step-pane">
-      <div class="pane-header">
-        <h3>Langkah 3: Butiran Pelajar (Pemohon Individu)</h3>
-        <p class="mute">Sila pastikan data yang diisi adalah tepat mengikut rekod universiti.</p>
-      </div>
-
-      ${srd()}
-
-      <div class="form-card stack" style="--s: 18px">
-        ${fld('fullName', 'Nama Penuh Pelajar (Mengikut Kad Pengenalan) *', 'Contoh: MUHAMMAD HAZIM BIN ROSLI', 'user')}
-        ${fld('phoneNo', 'Nombor Telefon / WhatsApp Rasmi *', 'Contoh: 012-3456789', 'phone')}
-
-        <div class="g2">
-          ${fld('studentId', 'Nombor Matrik Pelajar *', 'Contoh: 2024694636', 'id-card', 1)}
-          ${fld('programCode', 'Kod Program Akademik *', 'Contoh: CS110 / BA111', 'graduation-cap', 1)}
-        </div>
-
-        <div class="g2">
-          <div class="form-group">
-            <label class="strong">Kuantiti Pemohon</label>
-            <div class="input-with-icon">
-              <span class="input-icon">${ic('users')}</span>
-              <input type="number" value="1" disabled>
-            </div>
-            <span class="mute sm" style="display:block;margin-top:4px">Ketetapan polisi sistem: 1 orang bagi setiap permohonan.</span>
-          </div>
-
-          <div class="form-group">
-            <label class="strong">Catatan Tambahan (Pilihan)</label>
-            <div class="input-with-icon">
-              <span class="input-icon">${ic('file-text')}</span>
-              <input type="text" placeholder="Contoh: Latihan kejohanan, rekreasi..." value="${esc(S.notes)}" data-s="notes">
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="between pane-footer">
-        <button class="btn line" data-a="step" data-n="2">
-          ${ic('arrow-left')}
-          <span>Kembali</span>
-        </button>
-        <button class="btn ink" data-a="submit">
-          ${ic('shield-check')}
-          <span>Sahkan & Hantar Permohonan</span>
-        </button>
-      </div>
-    </div>`;
-  } else if (S.receipt) {
-    const r = S.receipt;
-    content = `
-    <div class="step-pane" style="text-align:center">
-      <div class="receipt-success-badge">
-        <div class="okc">${ic('check')}</div>
-        <h2 style="margin-top:16px;font-size:28px">Tempahan Berjaya Diluluskan!</h2>
-        <p class="mute">Sistem telah mengesahkan slot tempahan anda secara automatik. Sila simpan e-slip ini.</p>
-      </div>
-
-      <!-- Digital Boarding Pass / E-Slip -->
-      <div class="ticket-slip">
-        <div class="ticket-header">
-          <div class="ticket-brand">
-            <b>DEWAN TEMENGGONG • SLIP RASMI JSP</b>
-            <small>Kolej Kediaman • Jawatankuasa Sukan Pelajar</small>
-          </div>
-          <div class="ticket-status-chip">
-            ${chip('ok', 'DILULUSKAN MASANYATA', 'check-circle-2')}
-          </div>
-        </div>
-
-        <div class="ticket-ref-bar">
-          <span class="mute sm">NO. RUJUKAN TEMPAHAN</span>
-          <div class="ticket-ref-code">${esc(r.refNo)}</div>
-        </div>
-
-        <div class="ticket-grid">
-          <div><span class="mute sm">Nama Pelajar</span><b>${esc(r.userName)}</b></div>
-          <div><span class="mute sm">No. Matrik</span><b>${esc(r.studentId)}</b></div>
-          <div><span class="mute sm">Fasiliti Sukan</span><b>${esc(r.facilityName)}</b></div>
-          <div><span class="mute sm">Gelanggang / Meja</span><b>${esc(r.unitName)}</b></div>
-          <div><span class="mute sm">Tarikh Penggunaan</span><b>${fmt(r.date)}</b></div>
-          <div><span class="mute sm">Sesi Masa</span><b>${esc(r.startTime)} - ${esc(r.endTime)}</b></div>
-        </div>
-
-        <div class="ticket-perforation"></div>
-
-        <div class="ticket-footer">
-          <div class="barcode-sim">
-            <span>||||| |||| |||||| |||| |||||||| |||| |||||| |||||</span>
-          </div>
-          <span class="mute sm">Tunjukkan slip ini kepada Pengawas Bertugas jika diminta.</span>
-        </div>
-      </div>
-
-      <div class="ticket-actions">
-        <button class="btn line" onclick="window.print()">
-          ${ic('printer')}
-          <span>Cetak / Simpan Slip (PDF)</span>
-        </button>
-        <button class="btn volt" data-a="tab" data-t="student-check">
-          ${ic('search')}
-          <span>Semak Rekod di Pangkalan Data</span>
-        </button>
-      </div>
-    </div>`;
-  }
-
-  return `
-  <div class="narrow">
-    <div class="card wizard-card">
-      <div class="pad stack" style="--s: 24px">
-        <!-- Stepper Navigation -->
-        <div class="stepper-bar">
-          ${stepsHeader.map((st) => `
-            <div class="step-node ${S.step === st.n ? 'active' : S.step > st.n ? 'completed' : ''}">
-              <div class="step-circle">
-                ${S.step > st.n ? ic('check') : st.n}
-              </div>
-              <div class="step-text-wrap hide-m">
-                <span class="step-title">${st.title}</span>
-                <small class="step-desc">${st.desc}</small>
-              </div>
-            </div>
-          `).join('')}
-        </div>
-
-        ${content}
+      <div class="card clean-card-pad">
+        <h4 class="card-item-title">Etika Sahsiah (SRD)</h4>
+        <p class="caption-muted">
+          ${SRD_REMARK}
+        </p>
       </div>
     </div>
   </div>`;
 }
 
-/* ---------- View: Folder Mengikut Fasiliti & Tarikh ---------- */
+/* ---------- View: Wizard Tempahan ---------- */
+function wizard() {
+  const D = S.data, fac = D.facilities.find((f) => f.id === S.fac), f = S.form;
+  let body = '';
+
+  const steps = [
+    { n: 1, label: 'Pilih Fasiliti' },
+    { n: 2, label: 'Tarikh & Waktu' },
+    { n: 3, label: 'Maklumat Diri' },
+    { n: 4, label: 'Pengesahan' }
+  ];
+
+  if (S.step === 1) {
+    body = `
+      <div class="wizard-step-body">
+        <h3 class="step-title">Pilih jenis sukan dan unit</h3>
+        <p class="caption-muted">Pilih kemudahan yang ingin anda gunakan hari ini.</p>
+
+        <div class="facility-choice-grid">
+          ${D.facilities.map((x) => `
+            <div class="card choice-card ${S.fac === x.id ? 'selected' : ''}" data-a="fac" data-id="${x.id}">
+              <div class="choice-image" style="background-image:url('${x.image}')"></div>
+              <div class="choice-content">
+                <div class="choice-header">
+                  <span class="choice-title">${x.name}</span>
+                  <span class="choice-check">${S.fac === x.id ? ic('check') : ''}</span>
+                </div>
+                <p class="caption-muted">${x.description}</p>
+                <div class="caption-muted" style="margin-top:10px;font-size:12px">
+                  Kapasiti: sehingga <b>${x.maxCapacity} orang</b> per unit
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="unit-group">
+          <label class="field-label">Pilih unit spesifik:</label>
+          <div class="unit-chips-row">
+            ${fac.units.map((u) => `
+              <button type="button" class="unit-pill ${S.unit === u.id ? 'active' : ''}" data-a="unit" data-id="${u.id}">
+                ${u.name}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="step-footer">
+          <div></div>
+          <button class="btn-primary" data-a="step" data-n="2">
+            Seterusnya: Tarikh & Masa
+          </button>
+        </div>
+      </div>`;
+  } else if (S.step === 2) {
+    const sc = sched(S.date), cl = D.closedDates.includes(S.date);
+    body = `
+      <div class="wizard-step-body">
+        <h3 class="step-title">Pilih tarikh operasi</h3>
+        <p class="caption-muted">Dewan beroperasi pada Isnin & Jumaat (5-7 PM) dan Rabu (8-10 PM).</p>
+
+        <div class="field-group" style="margin-top:20px;max-width:320px">
+          <label class="field-label">Tarikh penggunaan</label>
+          <input type="date" value="${S.date}" data-d="sel" class="minimal-input">
+        </div>
+
+        <div class="notice-minimal ${cl ? 'notice-bad' : sc ? 'notice-ok' : 'notice-warn'}">
+          ${cl 
+            ? 'Dewan ditutup oleh pentadbiran JSP pada tarikh ini. Sila pilih tarikh lain.' 
+            : sc 
+              ? `Jadual ${sc.dayName}: ${sc.timeDisplay}. Slot dibuka untuk permohonan.` 
+              : 'Luar hari operasi rasmi. Sila pilih hari Isnin, Rabu, atau Jumaat.'}
+        </div>
+
+        <div class="step-footer">
+          <button class="btn-secondary" data-a="step" data-n="1">Kembali</button>
+          <button class="btn-primary" data-a="step" data-n="3" ${cl || !sc ? 'disabled' : ''}>
+            Seterusnya: Maklumat Pelajar
+          </button>
+        </div>
+      </div>`;
+  } else if (S.step === 3) {
+    body = `
+      <div class="wizard-step-body">
+        <h3 class="step-title">Maklumat pemohon</h3>
+        <p class="caption-muted">Pastikan maklumat sepadan dengan rekod universiti anda.</p>
+
+        <div class="form-grid" style="margin-top:24px">
+          <div class="field-group">
+            <label class="field-label">Nama Penuh Pelajar *</label>
+            <input type="text" placeholder="Contoh: MUHAMMAD HAZIM" value="${esc(f.fullName || '')}" data-f="fullName" class="minimal-input">
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">No. Telefon / WhatsApp *</label>
+            <input type="text" placeholder="Contoh: 012-3456789" value="${esc(f.phoneNo || '')}" data-f="phoneNo" class="minimal-input">
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">No. Matrik Pelajar *</label>
+            <input type="text" placeholder="Contoh: 2024694636" value="${esc(f.studentId || '')}" data-f="studentId" class="minimal-input" style="text-transform:uppercase">
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Kod Program *</label>
+            <input type="text" placeholder="Contoh: CS110" value="${esc(f.programCode || '')}" data-f="programCode" class="minimal-input" style="text-transform:uppercase">
+          </div>
+
+          <div class="field-group field-span-2">
+            <label class="field-label">Catatan Tambahan (Pilihan)</label>
+            <input type="text" placeholder="Contoh: Latihan kejohanan" value="${esc(S.notes)}" data-s="notes" class="minimal-input">
+          </div>
+        </div>
+
+        <div class="step-footer">
+          <button class="btn-secondary" data-a="step" data-n="2">Kembali</button>
+          <button class="btn-primary" data-a="submit">Hantar dan Luluskan</button>
+        </div>
+      </div>`;
+  } else if (S.receipt) {
+    const r = S.receipt;
+    body = `
+      <div class="wizard-step-body text-center">
+        <div class="success-icon-wrap">
+          ${ic('check')}
+        </div>
+        <h3 class="step-title" style="margin-top:16px">Tempahan Disahkan</h3>
+        <p class="caption-muted">Permohonan anda telah diluluskan secara automatik.</p>
+
+        <!-- Minimal Pass Slip -->
+        <div class="card minimal-pass-card">
+          <div class="pass-header">
+            <span class="pass-label">NO. RUJUKAN</span>
+            <span class="pass-ref">${esc(r.refNo)}</span>
+          </div>
+          <div class="pass-details-list">
+            <div class="pass-row">
+              <span class="caption-muted">Nama Pelajar</span>
+              <b>${esc(r.userName)}</b>
+            </div>
+            <div class="pass-row">
+              <span class="caption-muted">No. Matrik</span>
+              <b>${esc(r.studentId)}</b>
+            </div>
+            <div class="pass-row">
+              <span class="caption-muted">Fasiliti & Unit</span>
+              <b>${esc(r.facilityName)} (${esc(r.unitName)})</b>
+            </div>
+            <div class="pass-row">
+              <span class="caption-muted">Tarikh & Masa</span>
+              <b>${fmt(r.date)} • ${esc(r.startTime)} - ${esc(r.endTime)}</b>
+            </div>
+            <div class="pass-row">
+              <span class="caption-muted">Status</span>
+              <span class="chip chip-ok">Diluluskan</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-button-row" style="justify-content:center;margin-top:24px">
+          <button class="btn-secondary" onclick="window.print()">Cetak / Simpan Slip</button>
+          <button class="btn-primary" data-a="tab" data-t="student-check">Semak Rekod Tempahan</button>
+        </div>
+      </div>`;
+  }
+
+  return `
+  <div class="narrow-container">
+    <div class="card clean-card-pad">
+      <!-- Minimal Stepper Header -->
+      <div class="stepper-dots-row">
+        ${steps.map((st) => `
+          <div class="stepper-tab ${S.step === st.n ? 'active' : S.step > st.n ? 'done' : ''}">
+            <span class="stepper-num">${st.n}</span>
+            <span class="stepper-text hide-m">${st.label}</span>
+          </div>
+        `).join('')}
+      </div>
+
+      ${body}
+    </div>
+  </div>`;
+}
+
+/* ---------- View: Browser / Senarai Tempahan ---------- */
 function browser(kind) {
   const D = S.data, adm = D.isAdmin, vd = S.view[kind];
   const base = kind === 'status' && S.search.trim() ? (S.results || []) : D.bookings;
@@ -619,83 +458,57 @@ function browser(kind) {
   const shown = vd ? base.filter((b) => b.date === vd) : base, sc = sched(vd);
 
   return `
-  <div class="stack" style="--s: 20px">
-    <div class="filter-panel stack" style="--s: 14px">
-      <div class="end-b">
-        <div>
-          <label class="strong flex" style="gap:6px">${ic('calendar')} Pilih Tarikh Operasi</label>
-          <input type="date" class="auto" value="${vd}" data-d="view" data-k="${kind}">
-        </div>
-        <button class="btn line" data-a="view" data-k="${kind}" data-v="">
-          ${ic('list-filter')}
-          <span>Papar Semua Tarikh</span>
-        </button>
+  <div class="flow-layout">
+    <div class="filter-strip">
+      <div class="filter-left">
+        <label class="field-label" style="margin:0">Pilih Tarikh:</label>
+        <input type="date" value="${vd}" data-d="view" data-k="${kind}" class="minimal-date-input">
+        <button class="btn-subtle" data-a="view" data-k="${kind}" data-v="">Semua Tarikh</button>
       </div>
 
       ${dates.length ? `
-        <div class="wrapf" style="padding-top:6px">
-          <span class="mute sm" style="font-weight:600">Tarikh Terdahulu:</span>
-          ${dates.slice(0, 8).map((d) => `
-            <button class="pill ${vd === d ? 'on' : ''}" data-a="view" data-k="${kind}" data-v="${d}">
-              <span>${d}</span>
-              <span class="pill-count">${base.filter((b) => b.date === d).length}</span>
+        <div class="quick-dates-row">
+          ${dates.slice(0, 6).map((d) => `
+            <button class="date-chip ${vd === d ? 'active' : ''}" data-a="view" data-k="${kind}" data-v="${d}">
+              ${d} (${base.filter((b) => b.date === d).length})
             </button>
           `).join('')}
         </div>
       ` : ''}
-
-      <div class="filter-status-row wrapf">
-        <span class="strong">${vd ? fmt(vd) : 'Semua Rekod Tempahan'}</span>
-        ${vd ? (D.closedDates.includes(vd) ? chip('bad', 'Fasiliti Ditutup (Admin JSP)', 'lock') : sc ? chip('ok', `${sc.dayName} (${sc.timeDisplay})`, 'check-circle') : chip('mute', 'Luar Sesi Operasi', 'clock')) : ''}
-      </div>
     </div>
 
-    <!-- Facility Cards Accordion -->
-    <div class="stack" style="--s: 16px">
+    <div class="flow-layout" style="--s:16px">
       ${D.facilities.map((f) => `
-        <div class="facility-browser-group">
-          <div class="group-title flex" style="gap:8px">
-            <span class="group-icon-dot"></span>
-            <h4>${f.name}</h4>
-          </div>
-
-          <div class="stack" style="--s: 10px; margin-top: 10px">
+        <div class="facility-section-block">
+          <h4 class="facility-section-title">${f.name}</h4>
+          <div class="units-stack">
             ${f.units.map((u) => {
               const ub = shown.filter((b) => b.unitId === u.id);
               const full = vd && ub.length >= f.maxCapacity;
               return `
-              <details class="folder" ${ub.length ? 'open' : ''}>
-                <summary>
-                  <span class="summary-left flex" style="gap:10px">
-                    ${ic('chevron-right', 'ar')}
-                    ${ic(f.type === 'badminton' ? 'activity' : 'circle-dot')}
-                    <span class="folder-name">${u.name}</span>
-                  </span>
-                  <span class="badge ${full ? 'bad' : 'ok'}">
-                    ${vd ? `${ub.length} / ${f.maxCapacity} Orang ${full ? '(Penuh)' : '(Tersedia)'}` : `${ub.length} Rekod`}
+              <details class="clean-accordion" ${ub.length ? 'open' : ''}>
+                <summary class="clean-summary">
+                  <span class="summary-title">${u.name}</span>
+                  <span class="chip ${full ? 'chip-bad' : 'chip-subtle'}">
+                    ${vd ? `${ub.length} / ${f.maxCapacity} Orang ${full ? '(Penuh)' : ''}` : `${ub.length} tempahan`}
                   </span>
                 </summary>
-
-                <div class="folder-content">
+                <div class="accordion-body">
                   ${ub.length ? ub.map((b) => `
-                    <div class="booking-row">
-                      <div class="booking-main">
-                        <div class="flex" style="gap:8px; flex-wrap:wrap">
-                          <span class="booking-ref-badge">${esc(b.refNo)}</span>
-                          ${chip('ok', 'Diluluskan Automatik', 'check')}
-                        </div>
-                        <p class="student-name strong">${esc(b.userName)}</p>
-                        <span class="mute sm">${esc(b.studentId)}${adm ? ' • Kod Program: ' + esc(b.programCode) : ''}</span>
-                        ${adm ? `<p class="mute sm" style="margin-top:4px">${ic('phone')} ${esc(b.phoneNo)}</p>` : ''}
+                    <div class="booking-entry">
+                      <div>
+                        <div class="entry-ref">${esc(b.refNo)}</div>
+                        <div class="entry-name">${esc(b.userName)}</div>
+                        <div class="caption-muted">${esc(b.studentId)}${adm ? ' • ' + esc(b.programCode) : ''}</div>
+                        ${adm ? `<div class="caption-muted" style="margin-top:2px">${esc(b.phoneNo)}</div>` : ''}
                       </div>
-
-                      <div class="booking-meta right">
-                        ${vd ? '' : `<b class="ink-t">${fmt(b.date)}</b><br>`}
-                        <span class="time-slot-badge">${esc(b.startTime)} - ${esc(b.endTime)}</span>
-                        <div class="mute sm" style="margin-top:4px">Didaftar: ${esc(b.createdAt)}</div>
+                      <div class="text-right">
+                        ${vd ? '' : `<div class="caption-muted">${fmt(b.date)}</div>`}
+                        <div class="entry-time">${esc(b.startTime)} - ${esc(b.endTime)}</div>
+                        <div class="caption-muted" style="font-size:11px">Dibuat: ${esc(b.createdAt)}</div>
                       </div>
                     </div>
-                  `).join('') : '<div class="empty-booking-row mute">Tiada tempahan aktif pada tarikh ini.</div>'}
+                  `).join('') : '<div class="empty-entry caption-muted">Tiada tempahan berdaftar.</div>'}
                 </div>
               </details>`;
             }).join('')}
@@ -706,79 +519,68 @@ function browser(kind) {
   </div>`;
 }
 
-/* ---------- View: Semak Status Tempahan ---------- */
+/* ---------- View: Semak Status ---------- */
 const status = () => `
-  <div class="narrow">
-    <div class="card pad stack" style="--s:22px">
-      <div class="view-header">
-        <div class="icon-avatar">${ic('search')}</div>
-        <div>
-          <h2>Semak Status & Rekod Tempahan</h2>
-          <p class="mute">Carian pantas menggunakan No. Matrik Pelajar atau No. Rujukan Tempahan.</p>
-        </div>
+  <div class="narrow-container">
+    <div class="card clean-card-pad">
+      <h3 class="section-title">Semak Status Tempahan</h3>
+      <p class="caption-muted">Cari rekod menggunakan No. Matrik Pelajar atau No. Rujukan Tempahan.</p>
+
+      <div class="search-input-wrap" style="margin-top:18px">
+        <input type="search" placeholder="Contoh: 2024694636 atau DT-..." value="${esc(S.search)}" data-s="search" class="minimal-input search-box">
       </div>
 
-      <div class="search-box-wrapper">
-        <span class="search-input-icon">${ic('search')}</span>
-        <input type="search" placeholder="Masukkan No. Matrik (cth: 2024694636) atau No. Rujukan (DT-...)..." value="${esc(S.search)}" data-s="search">
+      <div id="res-status" style="margin-top:24px">
+        ${browser('status')}
       </div>
-
-      ${srd()}
-
-      <div id="res-status">${browser('status')}</div>
     </div>
   </div>`;
 
-/* ---------- View: Kalendar Kekosongan ---------- */
+/* ---------- View: Kalendar ---------- */
 function calendar() {
   const D = S.data, sc = sched(S.date);
   return `
-  <div class="narrow">
-    <div class="card pad stack" style="--s: 24px">
-      <div class="between" style="border:0;padding:0;align-items:center;flex-wrap:wrap">
-        <div class="view-header">
-          <div class="icon-avatar">${ic('calendar-days')}</div>
-          <div>
-            <h2>Kalendar Kekosongan Sesi</h2>
-            <p class="mute">Semak status operasi mingguan dan kuota slot gelanggang.</p>
-          </div>
+  <div class="narrow-container">
+    <div class="card clean-card-pad">
+      <div class="calendar-top-bar">
+        <div>
+          <h3 class="section-title">Kalendar Kekosongan</h3>
+          <p class="caption-muted">Semak kuota semasa mengikut tarikh.</p>
         </div>
-        <input type="date" class="auto" value="${S.date}" data-d="sel">
+        <input type="date" value="${S.date}" data-d="sel" class="minimal-date-input">
       </div>
 
-      <div class="calendar-banner-card between" style="border:0;align-items:center;flex-wrap:wrap">
+      <div class="calendar-date-summary">
         <div>
-          <h3>${fmt(S.date)}</h3>
-          <p class="mute">Sesi Operasi: ${sc ? `<b>${sc.timeDisplay}</b>` : 'Luar Jadual Rasmi'}</p>
+          <b>${fmt(S.date)}</b>
+          <div class="caption-muted">Sesi: ${sc ? sc.timeDisplay : 'Luar sesi operasi'}</div>
         </div>
         <div>
-          ${D.closedDates.includes(S.date) ? chip('bad', 'Ditutup oleh Pentadbiran JSP', 'lock') : sc ? chip('ok', 'Dibuka Untuk Permohonan', 'check-circle-2') : chip('mute', 'Tiada Sesi Hari Ini', 'clock')}
+          ${D.closedDates.includes(S.date) ? chip('chip-bad', 'Dewan Ditutup') : sc ? chip('chip-ok', 'Dibuka') : chip('chip-subtle', 'Tiada Sesi')}
         </div>
       </div>
 
-      <div class="g2 facility-status-grid">
+      <div class="flow-layout" style="margin-top:20px;--s:16px">
         ${D.facilities.map((f) => `
-          <div class="card inner-facility-card pad stack" style="--s:16px;padding:22px">
-            <div class="between" style="border:0;padding:0">
-              <h4>${f.name}</h4>
-              <span class="ok-t">Maks ${f.maxCapacity} Orang / Unit</span>
+          <div class="card clean-card-pad" style="padding:20px">
+            <div class="facility-head-row">
+              <span class="choice-title">${f.name}</span>
+              <span class="caption-muted">Maks ${f.maxCapacity} orang / unit</span>
             </div>
 
-            <div class="stack" style="--s:10px">
+            <div class="unit-bars-list" style="margin-top:14px">
               ${f.units.map((u) => {
                 const n = D.bookings.filter((b) => b.unitId === u.id && b.date === S.date && b.status === 'Diluluskan').length;
                 const full = n >= f.maxCapacity;
                 const pct = Math.min(100, Math.round((n / f.maxCapacity) * 100));
                 return `
-                <div class="unit-occupancy-row">
-                  <div class="between" style="border:0;padding:0;margin-bottom:6px">
-                    <span class="strong">${u.name}</span>
-                    <b style="color:var(${full ? '--bad' : '--ok'});font-size:13px">
-                      ${n} / ${f.maxCapacity} ${full ? '(Penuh)' : '(Tersedia)'}
-                    </b>
+                <div class="unit-bar-item">
+                  <div class="unit-bar-labels">
+                    <span>${u.name}</span>
+                    <span class="${full ? 'stat-bad' : 'caption-muted'}">${n} / ${f.maxCapacity} ${full ? '(Penuh)' : ''}</span>
                   </div>
-                  <div class="progress-track">
-                    <div class="progress-fill ${full ? 'full' : ''}" style="width:${pct}%"></div>
+                  <div class="clean-progress-track">
+                    <div class="clean-progress-fill ${full ? 'fill-full' : ''}" style="width:${pct}%"></div>
                   </div>
                 </div>`;
               }).join('')}
@@ -790,70 +592,48 @@ function calendar() {
   </div>`;
 }
 
-/* ---------- View: Dashboard Admin Pegawai JSP ---------- */
+/* ---------- View: Admin ---------- */
 function admin() {
   const D = S.data, cl = D.closedDates.includes(S.date);
   return `
-  <div class="card pad stack" style="--s: 24px">
-    <div class="between" style="border:0;padding:0;align-items:center;flex-wrap:wrap">
-      <div class="view-header">
-        <div class="icon-avatar">${ic('shield-check')}</div>
+  <div class="flow-layout">
+    <div class="card clean-card-pad">
+      <div class="admin-top-header">
         <div>
-          <h2>Portal Pentadbiran & Kawalan Pegawai JSP</h2>
-          <p class="mute">Pengurusan operasi tarikh, visual dewan, eksport rekod data, dan integrasi Google Sheets.</p>
+          <h3 class="section-title">Panel Pentadbir JSP</h3>
+          <p class="caption-muted">Kawalan operasi dewan dan eksport data rekod.</p>
+        </div>
+        <div class="hero-button-row">
+          <button class="btn-secondary" data-a="modal" data-m="sheets">Google Sheets</button>
+          <button class="btn-primary" data-a="csv">Eksport CSV</button>
         </div>
       </div>
-      <div class="wrapf">
-        <button class="btn ink" data-a="modal" data-m="sheets">
-          ${ic('file-spreadsheet')}
-          <span>Pautan Google Sheets</span>
-        </button>
-        <button class="btn line" data-a="csv">
-          ${ic('download')}
-          <span>Eksport CSV</span>
-        </button>
-      </div>
-    </div>
 
-    <!-- Date Operational Switch -->
-    <div class="panel stack" style="--s:14px">
-      <h4>${ic('power')} Kawalan Operasi Tarikh Dewan</h4>
-      <p class="mute sm">Tutup tarikh tertentu jika terdapat kejohanan kolej, peperiksaan, atau kerja baik pulih dewan.</p>
-      <div class="wrapf">
-        <input type="date" class="auto" value="${S.date}" data-d="sel">
-        <button class="btn ${cl ? 'green' : 'red'}" data-a="toggle">
-          ${ic('power')}
-          <span>${cl ? 'Buka Semula Operasi Tarikh Ini' : 'Tutup Operasi Tarikh Ini'}</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- Visual Customizer -->
-    <div class="panel stack" style="--s:14px">
-      <h4>${ic('image')} Tetapan Gambar Latar & Logo Rasmi</h4>
-      <div class="g2">
-        <div class="form-group">
-          <label>URL Gambar Latar Belakang (Hero)</label>
-          <input type="text" value="${esc(S.bgIn)}" data-s="bgIn" placeholder="https://...">
+      <div class="admin-controls-grid" style="margin-top:24px">
+        <div class="admin-box">
+          <label class="field-label">Kawalan Buka / Tutup Tarikh</label>
+          <div class="hero-button-row" style="margin-top:8px">
+            <input type="date" value="${S.date}" data-d="sel" class="minimal-date-input">
+            <button class="${cl ? 'btn-primary' : 'btn-secondary'}" data-a="toggle">
+              ${cl ? 'Buka Tarikh Ini' : 'Tutup Tarikh Ini'}
+            </button>
+          </div>
         </div>
-        <div class="form-group">
-          <label>URL Logo JSP (Header)</label>
-          <input type="text" value="${esc(S.logoIn)}" data-s="logoIn" placeholder="https://...">
+
+        <div class="admin-box">
+          <label class="field-label">Pautan Visual (Latar Belakang & Logo)</label>
+          <div class="flow-layout" style="--s:10px;margin-top:8px">
+            <input type="text" value="${esc(S.bgIn)}" data-s="bgIn" placeholder="URL Latar Belakang..." class="minimal-input">
+            <input type="text" value="${esc(S.logoIn)}" data-s="logoIn" placeholder="URL Logo JSP..." class="minimal-input">
+            <button class="btn-secondary" data-a="saveVisual">Simpan Visual</button>
+          </div>
         </div>
       </div>
-      <div class="end">
-        <button class="btn volt" data-a="saveVisual">
-          ${ic('save')}
-          <span>Simpan Perubahan Visual</span>
-        </button>
-      </div>
-    </div>
 
-    <div>
-      <div class="between" style="border:0;padding:0;margin-bottom:12px">
-        <h3>Semua Rekod Tempahan Pelajar (${D.bookings.length})</h3>
+      <div style="margin-top:36px">
+        <h4 class="facility-section-title">Semua Rekod Tempahan (${D.bookings.length})</h4>
+        <div style="margin-top:14px">${browser('admin')}</div>
       </div>
-      <div style="margin-top:14px">${browser('admin')}</div>
     </div>
   </div>`;
 }
@@ -861,46 +641,28 @@ function admin() {
 /* ---------- Modals ---------- */
 function modals() {
   if (S.modal === 'login') return `
-    <div class="modal">
-      <div class="box">
-        <button class="x" data-a="close" aria-label="Tutup">${ic('x')}</button>
-        <div class="mi">${ic('lock')}</div>
-        <h3>Akses Pegawai Pentadbir JSP</h3>
-        <p class="mute">Sila masukkan kata laluan keselamatan admin untuk mengakses dashboard.</p>
-        <form id="loginForm" class="stack" style="--s:16px">
-          <div class="input-with-icon">
-            <span class="input-icon">${ic('key-round')}</span>
-            <input type="password" name="pw" placeholder="Kata laluan keselamatan admin..." autofocus>
-          </div>
-          <button class="btn volt full" type="submit">
-            ${ic('log-in')}
-            <span>Log Masuk Pegawai</span>
-          </button>
+    <div class="clean-modal-backdrop">
+      <div class="clean-modal-dialog">
+        <button class="modal-close-btn" data-a="close" aria-label="Tutup">${ic('x')}</button>
+        <h3 class="section-title">Akses Pegawai JSP</h3>
+        <p class="caption-muted">Masukkan kata laluan untuk pengurusan sistem.</p>
+        <form id="loginForm" style="margin-top:20px" class="flow-layout" style="--s:14px">
+          <input type="password" name="pw" placeholder="Kata laluan keselamatan..." autofocus class="minimal-input">
+          <button class="btn-primary" type="submit" style="width:100%">Log Masuk</button>
         </form>
       </div>
     </div>`;
 
   if (S.modal === 'sheets') return `
-    <div class="modal">
-      <div class="box">
-        <button class="x" data-a="close" aria-label="Tutup">${ic('x')}</button>
-        <div class="mi" style="background:var(--ok)">${ic('file-spreadsheet')}</div>
-        <h3>Integrasi Google Sheets</h3>
-        <p class="mute">Masukkan Web App URL Google Apps Script untuk sinkronisasi automatik setiap tempahan baru.</p>
-        <div class="form-group">
-          <label>Web App URL (Apps Script)</label>
-          <input type="text" value="${esc(S.sheetsIn)}" data-s="sheetsIn" placeholder="https://script.google.com/macros/s/.../exec">
+    <div class="clean-modal-backdrop">
+      <div class="clean-modal-dialog">
+        <button class="modal-close-btn" data-a="close" aria-label="Tutup">${ic('x')}</button>
+        <h3 class="section-title">Integrasi Google Sheets</h3>
+        <p class="caption-muted">Masukkan Web App URL Apps Script untuk auto-sync rekod.</p>
+        <div style="margin-top:16px" class="flow-layout" style="--s:14px">
+          <input type="text" value="${esc(S.sheetsIn)}" data-s="sheetsIn" placeholder="https://script.google.com/..." class="minimal-input">
+          <button class="btn-primary" data-a="saveSheets" style="width:100%">Simpan Pautan</button>
         </div>
-        <ol class="panel sm" style="padding-left:24px;margin:0">
-          <li>Cipta Google Sheet baharu di Google Drive.</li>
-          <li>Buka <b>Extensions ➔ Apps Script</b> dan tampal fungsi <code>doPost</code>.</li>
-          <li>Klik <b>Deploy ➔ New Deployment ➔ Web App (Anyone)</b>.</li>
-          <li>Salin pautan yang terhasil dan simpan di sini.</li>
-        </ol>
-        <button class="btn ink full" data-a="saveSheets">
-          ${ic('save')}
-          <span>Simpan Pautan Google Sheets</span>
-        </button>
       </div>
     </div>`;
 
@@ -911,10 +673,9 @@ function modals() {
 function render() {
   if (!S.data) {
     $('#app').innerHTML = `
-      <div class="loading-state">
-        <div class="spinner"></div>
-        <p class="strong" style="margin-top:16px">Menghubungkan ke Sistem Dewan Temenggong…</p>
-        <small class="mute">Memuatkan data pangkalan data Turso</small>
+      <div class="minimal-loader">
+        <div class="loader-pulse"></div>
+        <div class="caption-muted" style="margin-top:12px">Memuatkan Dewan Temenggong…</div>
       </div>`;
     return;
   }
@@ -926,25 +687,20 @@ function render() {
   const views = { home, 'booking-wizard': wizard, 'student-check': status, 'availability-calendar': calendar, admin };
 
   $('#app').innerHTML = header() + `
-    <main class="wrap">
+    <main class="main-wrapper">
       ${(views[S.tab] || home)()}
     </main>` + bnav() + modals() + `
-    <footer>
-      <div class="wrap footer-content">
-        <div class="footer-left">
-          <b>DEWAN TEMENGGONG</b> • Jawatankuasa Sukan Pelajar (JSP)
-          <div class="mute sm" style="margin-top:4px">Portal Tempahan Rasmi Fasiliti Sukan Kolej Kediaman. Hak Cipta Terpelihara © 2026.</div>
-        </div>
-        <div class="footer-right mute sm">
-          <span>Dikuasakan oleh Turso Cloud & Vercel Serverless</span>
-        </div>
+    <footer class="clean-footer">
+      <div class="nav-container footer-flex">
+        <span>© 2026 Dewan Temenggong • JSP Kolej Kediaman</span>
+        <span class="caption-muted">Turso Database & Vercel Cloud</span>
       </div>
     </footer>`;
 
   if (window.lucide) lucide.createIcons();
 }
 
-/* ---------- User Actions Handlers ---------- */
+/* ---------- Actions ---------- */
 const A = {
   tab: (d) => {
     if (d.t === 'booking-wizard') S.step = 1;
@@ -959,7 +715,7 @@ const A = {
   view: (d) => { S.view[d.k] = d.v; render(); },
   modal: (d) => { S.modal = d.m; render(); },
   close: () => { S.modal = null; render(); },
-  logout: () => { S.token = ''; localStorage.removeItem('dt_token'); S.tab = 'home'; toast('Admin telah berjaya log keluar.', 'info'); load(); },
+  logout: () => { S.token = ''; localStorage.removeItem('dt_token'); S.tab = 'home'; toast('Log keluar berjaya.'); load(); },
   async submit() {
     const f = S.form;
     try {
@@ -968,21 +724,21 @@ const A = {
       S.receipt = r.booking;
       S.step = 4;
       S.notes = '';
-      toast('Tempahan anda BERJAYA disahkan dan diluluskan!', 'success');
+      toast('Tempahan anda telah disahkan dan diluluskan.');
       await load();
     } catch (e) { toast(e.message, 'error'); }
   },
   async toggle() {
     try {
       const r = await api('admin', { action: 'toggle_date', date: S.date });
-      toast(`Operasi fasiliti pada tarikh ${fmt(S.date)} kini ${r.closed ? 'DITUTUP.' : 'DIBUKA SEMULA.'}`, r.closed ? 'info' : 'success');
+      toast(`Operasi tarikh ${fmt(S.date)} kini ${r.closed ? 'ditutup' : 'dibuka'}.`);
       await load();
     } catch (e) { toast(e.message, 'error'); }
   },
   async saveVisual() {
     try {
       await api('admin', { action: 'save_settings', bg: S.bgIn, logo: S.logoIn });
-      toast('Tetapan visual berjaya dikemaskini!', 'success');
+      toast('Visual berjaya dikemaskini.');
       await load();
     } catch (e) { toast(e.message, 'error'); }
   },
@@ -990,7 +746,7 @@ const A = {
     try {
       await api('admin', { action: 'save_settings', sheetsUrl: S.sheetsIn });
       S.modal = null;
-      toast('Pautan Google Sheets berjaya disimpan!', 'success');
+      toast('Pautan Google Sheets disimpan.');
       await load();
     } catch (e) { toast(e.message, 'error'); }
   },
@@ -1004,15 +760,15 @@ const A = {
     const csv = 'No Rujukan,Nama Pelajar,No Telefon,No Matrik,Kod Program,Kemudahan,Unit,Tarikh,Masa,Peserta,Status,Tarikh Dibuat\n' + rows.join('\n');
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' }));
-    a.download = `Rekod_Tempahan_Dewan_Temenggong_${today()}.csv`;
+    a.download = `Tempahan_Dewan_Temenggong_${today()}.csv`;
     a.click();
-    toast('Laporan CSV telah berjaya dimuat turun!', 'success');
+    toast('Fail CSV telah dimuat turun.');
   }
 };
 
-/* ---------- Event Listeners ---------- */
+/* ---------- Events ---------- */
 document.addEventListener('click', (e) => {
-  const m = e.target.closest('.modal');
+  const m = e.target.closest('.clean-modal-backdrop');
   if (m && e.target === m) { S.modal = null; return render(); }
   const el = e.target.closest('[data-a]');
   if (el && A[el.dataset.a]) A[el.dataset.a](el.dataset);
@@ -1063,20 +819,17 @@ document.addEventListener('submit', async (e) => {
     localStorage.setItem('dt_token', r.token);
     S.modal = null;
     S.tab = 'admin';
-    toast('Log masuk Pegawai Pentadbir JSP Berjaya!', 'success');
+    toast('Akses pentadbir berjaya.');
     await load();
   } catch (err) { toast(err.message, 'error'); }
 });
 
-// Real-time Live Clock Ticker (Updates seconds dynamically)
+// Live Clock Ticker
 setInterval(() => {
   const timeEl = document.getElementById('liveClockTime');
   const dateEl = document.getElementById('liveClockDate');
   if (timeEl) timeEl.textContent = getClockTime();
-  if (dateEl) {
-    dateEl.innerHTML = `${ic('calendar')} <span>${getClockDate()}</span>`;
-    if (window.lucide) lucide.createIcons();
-  }
+  if (dateEl) dateEl.textContent = getClockDate();
 }, 1000);
 
 load();
