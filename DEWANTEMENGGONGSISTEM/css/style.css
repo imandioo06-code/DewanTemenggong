@@ -5,6 +5,10 @@
    Minimalist System • Inspired by Apple & Google Design
    ========================================================================== */
 
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 :root {
   /* Apple / Google Clean Neutral Palette */
   --bg-page: #fbfbfd;
@@ -1243,6 +1247,34 @@ button {
 .modal-close-btn:hover {
   background: var(--bg-hover);
   color: var(--ink-primary);
+}
+
+/* Admin Login Modal Form */
+.login-form-wrap {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.login-password-input {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 12px 14px !important;
+  font-size: 15px !important;
+  display: block;
+}
+
+.login-submit-btn {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 12px 20px !important;
+  font-size: 14px !important;
+  margin-top: 4px;
 }
 
 #toast {

@@ -971,9 +971,9 @@ function modals() {
         <p class="caption-muted" style="margin-top:4px">
           ${S.lang === 'eng' ? 'Please enter the admin password to access management controls.' : 'Sila masukkan kata laluan keselamatan admin.'}
         </p>
-        <form id="loginForm" style="margin-top:20px" class="flow-layout" style="--s:14px">
-          <input type="password" name="pw" placeholder="${S.lang === 'eng' ? 'Enter admin password...' : 'Kata laluan admin...'}" autofocus class="minimal-input" style="font-size:15px;padding:12px 14px">
-          <button class="btn-primary" type="submit" style="width:100%;padding:12px 20px;font-size:14px;margin-top:8px">
+        <form id="loginForm" class="login-form-wrap">
+          <input type="password" name="pw" placeholder="${S.lang === 'eng' ? 'Enter admin password...' : 'Kata laluan admin...'}" autofocus class="minimal-input login-password-input">
+          <button class="btn-primary login-submit-btn" type="submit">
             ${S.lang === 'eng' ? 'Log In as Admin' : 'Log Masuk Admin'}
           </button>
         </form>
