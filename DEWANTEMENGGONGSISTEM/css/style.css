@@ -782,54 +782,117 @@ body.dark-mode .mobile-nav-btn.active {
 }
 
 /* ---------- Wizard Steps ---------- */
-.stepper-dots-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding-bottom: 24px;
-  margin-bottom: 24px;
+/* Modern Stepper Progress Bar Component */
+.stepper-progress-container {
+  position: relative;
+  padding: 10px 0 28px;
+  margin-bottom: 28px;
   border-bottom: 1px solid var(--border-hairline);
+}
+
+.stepper-progress-track {
+  position: absolute;
+  top: 24px;
+  left: 12%;
+  right: 12%;
+  height: 3px;
+  background: var(--bg-hover);
+  border-radius: var(--radius-pill);
+  z-index: 1;
+}
+
+body.dark-mode .stepper-progress-track {
+  background: #252b3b;
+}
+
+.stepper-progress-fill {
+  height: 100%;
+  background: var(--volt);
+  border-radius: var(--radius-pill);
+  transition: width 0.35s ease;
+  box-shadow: 0 0 10px rgba(204, 255, 0, 0.45);
+}
+
+.stepper-dots-row {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  z-index: 2;
+  margin: 0;
+  padding: 0;
+  border-bottom: 0;
 }
 
 .stepper-tab {
   display: flex;
+  flex-direction: column;
   align-items: center;
+  text-align: center;
   gap: 8px;
-  font-size: 13px;
+  flex: 1;
+  max-width: 90px;
+  font-size: 12px;
   color: var(--ink-quaternary);
   font-weight: 500;
+  transition: all 0.2s ease;
 }
 
 .stepper-num {
-  width: 24px;
-  height: 24px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  background: var(--bg-subtle);
+  background: var(--bg-card);
+  border: 2px solid var(--border-subtle);
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-tertiary);
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.stepper-text {
   font-size: 11.5px;
-  font-weight: 600;
+  line-height: 1.25;
+  color: var(--ink-tertiary);
+  font-weight: 500;
+  transition: color 0.2s ease;
 }
 
-.stepper-tab.active {
-  color: var(--ink-primary);
-  font-weight: 600;
-}
-
+/* Active Step */
 .stepper-tab.active .stepper-num {
   background: var(--volt);
+  border-color: var(--volt);
   color: #090d16;
+  font-weight: 800;
+  box-shadow: 0 0 0 4px var(--volt-subtle), 0 2px 8px rgba(0, 0, 0, 0.1);
+  transform: scale(1.08);
+}
+
+.stepper-tab.active .stepper-text {
+  color: var(--ink-primary);
   font-weight: 700;
 }
 
-.stepper-tab.done {
-  color: var(--ink-secondary);
+/* Completed Step */
+.stepper-tab.done .stepper-num {
+  background: #090d16;
+  border-color: #090d16;
+  color: var(--volt);
 }
 
-.stepper-tab.done .stepper-num {
-  background: var(--bg-hover);
-  color: var(--ink-primary);
+body.dark-mode .stepper-tab.done .stepper-num {
+  background: var(--volt);
+  border-color: var(--volt);
+  color: #090d16;
+}
+
+.stepper-tab.done .stepper-text {
+  color: var(--ink-secondary);
+  font-weight: 500;
 }
 
 .step-title {
@@ -1956,16 +2019,36 @@ body.dark-mode .mobile-nav-btn.active {
     padding: 10px 0 12px;
   }
 
-  /* Mobile Stepper & Wizard */
-  .stepper-dots-row { 
-    justify-content: center; 
-    gap: 6px; 
+  /* Mobile Stepper Progress Bar & Wizard */
+  .stepper-progress-container {
+    padding: 6px 0 20px;
     margin-bottom: 20px;
   }
-  .stepper-dot {
-    width: 28px;
-    height: 28px;
-    font-size: 12px;
+  .stepper-progress-track {
+    top: 20px;
+    left: 10%;
+    right: 10%;
+    height: 3px;
+  }
+  .stepper-dots-row { 
+    display: flex;
+    justify-content: space-between; 
+    align-items: flex-start;
+    margin: 0; 
+  }
+  .stepper-tab {
+    max-width: 72px;
+    gap: 6px;
+  }
+  .stepper-num {
+    width: 26px;
+    height: 26px;
+    font-size: 11.5px;
+  }
+  .stepper-text {
+    font-size: 10px;
+    line-height: 1.2;
+    display: block !important;
   }
   .step-footer { 
     flex-direction: column-reverse; 

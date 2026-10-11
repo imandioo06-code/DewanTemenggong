@@ -548,14 +548,19 @@ function wizard() {
   return `
   <div class="narrow-container">
     <div class="card clean-card-pad">
-      <!-- Minimal Stepper Header -->
-      <div class="stepper-dots-row">
-        ${steps.map((st) => `
-          <div class="stepper-tab ${S.step === st.n ? 'active' : S.step > st.n ? 'done' : ''}">
-            <span class="stepper-num">${st.n}</span>
-            <span class="stepper-text hide-m">${st.label}</span>
-          </div>
-        `).join('')}
+      <!-- Modern Stepper Progress Bar -->
+      <div class="stepper-progress-container">
+        <div class="stepper-progress-track">
+          <div class="stepper-progress-fill" style="width:${((S.step - 1) / (steps.length - 1)) * 100}%"></div>
+        </div>
+        <div class="stepper-dots-row">
+          ${steps.map((st) => `
+            <div class="stepper-tab ${S.step === st.n ? 'active' : S.step > st.n ? 'done' : ''}">
+              <span class="stepper-num">${S.step > st.n ? ic('check') : st.n}</span>
+              <span class="stepper-text">${st.label}</span>
+            </div>
+          `).join('')}
+        </div>
       </div>
 
       ${body}
