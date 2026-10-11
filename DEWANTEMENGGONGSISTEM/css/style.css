@@ -427,25 +427,46 @@ button {
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-top: 1px solid var(--border-hairline);
   grid-template-columns: repeat(4, 1fr);
-  z-index: 50;
-  padding: 6px 0;
+  z-index: 100;
+  padding: 4px 6px calc(6px + env(safe-area-inset-bottom, 0px));
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
 }
 
-.mobile-nav button {
-  padding: 10px 0;
-  font-size: 12px;
+.mobile-nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 6px 2px;
+  font-size: 11px;
   color: var(--ink-tertiary);
   font-weight: 500;
+  border-radius: var(--radius-sm);
+  transition: all 0.15s ease;
+  background: none;
+  border: 0;
+  cursor: pointer;
 }
 
-.mobile-nav button.active {
-  color: var(--apple-blue);
+.mobile-nav-btn .mobile-nav-icon .ic {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.mobile-nav-btn.active {
+  color: var(--ink-primary);
   font-weight: 600;
+}
+
+body.dark-mode .mobile-nav-btn.active {
+  color: var(--volt);
 }
 
 /* ---------- Card & Minimalist Container ---------- */
@@ -1799,52 +1820,238 @@ button {
 
 /* ---------- Responsive & Mobile Compatibility ---------- */
 @media (max-width: 768px) {
+  /* Layout & Padding for Mobile */
+  .main-wrapper {
+    padding: 16px 14px calc(80px + env(safe-area-inset-bottom, 0px));
+  }
+  
+  .flow-layout > * + * {
+    margin-top: 16px;
+  }
+
   .nav-segmented { display: none; }
   .mobile-nav { display: grid; }
-  .stats-row { grid-template-columns: 1fr 1fr; }
-  .stat-cell { border-top: 1px solid var(--border-hairline); }
-  .clean-grid-3, .facility-choice-grid, .admin-controls-grid { grid-template-columns: 1fr; }
-  .clock-status-block { border-left: 0; padding-left: 0; border-top: 1px solid var(--border-hairline); padding-top: 20px; }
-  .hero-headline { font-size: 26px; }
-  .hero-photo-content { padding: 28px 18px; }
-  .hero-button-row { flex-direction: column; width: 100%; }
-  .hero-button-row button { width: 100%; justify-content: center; }
-  .form-grid { grid-template-columns: 1fr; }
-  .field-span-2 { grid-column: span 1; }
-  .clean-card-pad { padding: 18px; }
-  .clean-widget-clock { padding: 18px; }
-  .clock-display-block .clock-digits { font-size: 38px; }
+  
+  /* Stats Cards */
+  .stats-row { 
+    grid-template-columns: 1fr 1fr; 
+  }
+  .stat-cell { 
+    padding: 14px 12px;
+  }
+  .stat-number {
+    font-size: 24px;
+  }
+  .stat-caption {
+    font-size: 10.5px;
+  }
+  
+  .clean-grid-3, .facility-choice-grid, .admin-controls-grid { 
+    grid-template-columns: 1fr; 
+    gap: 12px;
+  }
+  
+  /* Live Clock Widget on Mobile */
+  .clean-widget-clock { 
+    padding: 20px 16px; 
+  }
+  .widget-clock-inner {
+    gap: 18px;
+  }
+  .clock-status-block { 
+    border-left: 0; 
+    padding-left: 0; 
+    border-top: 1px solid var(--border-hairline); 
+    padding-top: 16px; 
+    width: 100%;
+  }
+  .clock-display-block .clock-digits { 
+    font-size: 34px; 
+  }
+  .clock-calendar-sub {
+    font-size: 13px;
+  }
+  
+  /* Hero Section */
+  .hero-minimal {
+    padding: 20px 0 8px;
+  }
+  .hero-headline { 
+    font-size: 24px; 
+    line-height: 1.25;
+  }
+  .hero-subline {
+    font-size: 14px;
+    margin-top: 8px;
+  }
+  .hero-photo-content { 
+    padding: 24px 16px; 
+  }
+  .hero-button-row { 
+    flex-direction: column; 
+    width: 100%; 
+    gap: 10px;
+  }
+  .hero-button-row button { 
+    width: 100%; 
+    justify-content: center; 
+    padding: 12px 18px;
+  }
+  
+  /* Forms & Inputs */
+  .form-grid { 
+    grid-template-columns: 1fr; 
+    gap: 12px;
+  }
+  .field-span-2 { 
+    grid-column: span 1; 
+  }
+  .minimal-input {
+    font-size: 16px; /* Prevents auto-zoom on iOS Safari */
+    padding: 12px 14px;
+  }
+  .clean-card-pad { 
+    padding: 18px 16px; 
+  }
+  .section-title {
+    font-size: 18px;
+  }
   
   /* Mobile Calendar Grid */
-  .cal-cell { min-height: 54px; padding: 4px 2px; }
-  .cal-day-num { font-size: 12px; }
-  .cal-badge-pill { font-size: 8.5px; padding: 2px 2px; }
-  .cal-weekdays-row { font-size: 11px; }
-  .cal-legend-row { flex-direction: column; gap: 6px; }
+  .big-calendar-card {
+    padding: 16px 12px;
+  }
+  .cal-top-controls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .cal-month-title {
+    font-size: 17px;
+  }
+  .cal-weekdays-row {
+    font-size: 11px;
+    gap: 2px;
+  }
+  .cal-days-grid {
+    gap: 3px;
+  }
+  .cal-cell { 
+    min-height: 52px; 
+    padding: 4px 2px; 
+    border-radius: 6px;
+  }
+  .cal-day-num { 
+    font-size: 12px; 
+  }
+  .cal-badge-pill { 
+    font-size: 8px; 
+    padding: 2px 2px; 
+    border-radius: 3px;
+  }
+  .cal-legend-row { 
+    flex-direction: column; 
+    align-items: flex-start;
+    gap: 6px; 
+    padding: 10px 0 12px;
+  }
 
   /* Mobile Stepper & Wizard */
-  .stepper-dots-row { justify-content: center; gap: 8px; }
-  .step-footer { flex-direction: column-reverse; gap: 10px; }
-  .step-footer button { width: 100%; justify-content: center; }
+  .stepper-dots-row { 
+    justify-content: center; 
+    gap: 6px; 
+    margin-bottom: 20px;
+  }
+  .stepper-dot {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+  .step-footer { 
+    flex-direction: column-reverse; 
+    gap: 10px; 
+    margin-top: 24px;
+  }
+  .step-footer button { 
+    width: 100%; 
+    justify-content: center; 
+    padding: 12px 20px;
+  }
 
   /* Mobile Pass Card */
-  .pass-date-time-grid { grid-template-columns: 1fr; gap: 8px; }
-  .pass-card-footer { flex-direction: column; gap: 10px; align-items: stretch; text-align: center; }
-  .pass-card-footer button { width: 100%; justify-content: center; }
+  .student-pass-card {
+    padding: 18px 16px;
+  }
+  .pass-date-time-grid { 
+    grid-template-columns: 1fr; 
+    gap: 10px; 
+  }
+  .pass-card-footer { 
+    flex-direction: column; 
+    gap: 10px; 
+    align-items: stretch; 
+    text-align: center; 
+  }
+  .pass-card-footer button { 
+    width: 100%; 
+    justify-content: center; 
+  }
 
   /* Mobile Top Bar */
-  .nav-container { padding: 0 12px; height: 56px; gap: 8px; }
+  .nav-container { 
+    padding: 0 14px; 
+    height: 58px; 
+    gap: 8px; 
+  }
   .brand-sub-full { display: none; }
-  .brand-title { font-size: 13.5px; }
-  .nav-actions { gap: 4px; }
-  .utility-switch-pill { padding: 4px 7px; font-size: 11px; }
-  .admin-top-header { flex-direction: column; align-items: flex-start; gap: 12px; }
-  .admin-top-header .hero-button-row { width: 100%; flex-direction: row; }
+  .brand-title { 
+    font-size: 14px; 
+  }
+  .nav-actions { 
+    gap: 6px; 
+  }
+  .utility-switch-pill { 
+    padding: 5px 8px; 
+    font-size: 11px; 
+  }
+  .admin-top-header { 
+    flex-direction: column; 
+    align-items: flex-start; 
+    gap: 12px; 
+  }
+  .admin-top-header .hero-button-row { 
+    width: 100%; 
+    flex-direction: row; 
+  }
+  
+  /* Footer Mobile */
+  .footer-centered-wrap {
+    padding: 18px 14px 28px;
+    font-size: 12px;
+    line-height: 1.5;
+  }
 }
 
 @media (max-width: 480px) {
   .nav-actions .btn-subtle span { display: none; }
   .utility-switch-pill span.lang-name { display: none; }
-  .switch-control-card { flex-direction: column; align-items: flex-start; gap: 10px; }
-  .clock-display-block .clock-digits { font-size: 32px; }
+  .switch-control-card { 
+    flex-direction: column; 
+    align-items: flex-start; 
+    gap: 10px; 
+  }
+  .clock-display-block .clock-digits { 
+    font-size: 30px; 
+  }
+  .stats-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .date-input-wrap {
+    width: 100%;
+  }
+  .date-input-wrap .minimal-date-input {
+    width: 100%;
+  }
 }

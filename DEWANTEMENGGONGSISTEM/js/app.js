@@ -211,14 +211,23 @@ function header() {
   </header>`;
 }
 
-const bnav = () => `
+const bnav = () => {
+  const tabIcons = {
+    'home': 'home',
+    'booking-wizard': 'calendar-plus',
+    'student-check': 'search',
+    'availability-calendar': 'calendar-days'
+  };
+  return `
   <nav class="mobile-nav">
     ${getTabs().map(([id, label]) => `
-      <button class="${S.tab === id ? 'active' : ''}" data-a="tab" data-t="${id}">
-        <span>${label}</span>
+      <button class="mobile-nav-btn ${S.tab === id ? 'active' : ''}" data-a="tab" data-t="${id}">
+        <span class="mobile-nav-icon">${ic(tabIcons[id] || 'circle')}</span>
+        <span class="mobile-nav-label">${label}</span>
       </button>
     `).join('')}
   </nav>`;
+};
 
 /* ---------- View: Utama (Home) ---------- */
 function home() {
