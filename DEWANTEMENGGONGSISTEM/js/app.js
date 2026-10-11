@@ -6,32 +6,126 @@ const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '
 const ic = (n, c = '') => `<i data-lucide="${n}" class="ic ${c}"></i>`;
 const pad = (n) => String(n).padStart(2, '0');
 const today = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
-const MONTHS = ['Januari', 'Februari', 'Mac', 'April', 'Mei', 'Jun', 'Julai', 'Ogos', 'September', 'Oktober', 'November', 'Disember'];
-const DAYS = ['Ahad', 'Isnin', 'Selasa', 'Rabu', 'Khamis', 'Jumaat', 'Sabtu'];
+const I18N = {
+  bm: {
+    siteTitle: 'DEWAN TEMENGGONG',
+    siteSub: 'Jawatankuasa Sukan Pelajar (JSP)',
+    navHome: 'Utama',
+    navBook: 'Tempah',
+    navStatus: 'Semak Status',
+    navCalendar: 'Kalendar Live',
+    adminAccess: 'Akses Admin JSP',
+    adminDashboard: 'Dashboard Admin',
+    logout: 'Log Keluar',
+    timeZoneTitle: 'WAKTU SEMASA • MYT (GMT+8)',
+    statusClosed: 'Operasi Ditutup Hari Ini',
+    statusOpen: 'Sesi Dibuka',
+    statusRest: 'Tiada Sesi Operasi Hari Ini (Hari Rehat)',
+    scheduleNote: 'Jadual operasi rasmi: Isnin & Jumaat (5-7 PM), Rabu (8-10 PM).',
+    btnBookToday: 'Tempah slot hari ini',
+    btnBookNow: 'Tempah slot sekarang',
+    btnViewCal: 'Lihat kalendar kekosongan',
+    btnCheckStatus: 'Semak status tempahan',
+    statsTitle: 'Kapasiti & Statistik Sesi',
+    statsSub: 'Status penggunaan fasiliti sukan mengikut tarikh pilihan.',
+    statTotal: 'Jumlah Tempahan',
+    statTotalSub: 'Sepanjang sesi',
+    statActive: 'Tempahan Aktif',
+    statActiveSub: 'Telah diluluskan',
+    statVacancy: 'Kekosongan Hari Ini',
+    statHallStatus: 'Status Dewan',
+    heroTag: 'DEWAN TEMENGGONG',
+    heroHeading: 'Pusat Sukan & Fasiliti Kolej Kediaman.',
+    heroSub: 'Sistem tempahan berpusat gelanggang badminton dan meja ping pong. Kelulusan automatik masa-nyata untuk kemudahan pelajar kolej.',
+    guideline1Title: '1 Pelajar 1 Peranti',
+    guideline1Desc: 'Pendaftaran individu menggunakan No. Matrik sah. Had 1 tempahan setiap hari bagi memastikan giliran yang adil untuk semua warga kolej.',
+    guideline2Title: 'Kelulusan Serta-merta',
+    guideline2Desc: 'Sistem mengesahkan tempahan secara langsung selagi kuota slot belum penuh. Anda akan menerima slip rujukan untuk ditunjukkan.',
+    guideline3Title: 'Etika Sahsiah (SRD)',
+    themeLight: 'Mod Cerah',
+    themeDark: 'Mod Gelap',
+    langToggle: 'ENG',
+    footerText: '© 2026 Dewan Temenggong • Jawatankuasa Sukan Pelajar UiTM Alor Gajah, Melaka'
+  },
+  en: {
+    siteTitle: 'DEWAN TEMENGGONG',
+    siteSub: 'Student Sports Committee (JSP)',
+    navHome: 'Home',
+    navBook: 'Book',
+    navStatus: 'Check Status',
+    navCalendar: 'Live Calendar',
+    adminAccess: 'JSP Admin Access',
+    adminDashboard: 'Admin Dashboard',
+    logout: 'Log Out',
+    timeZoneTitle: 'CURRENT TIME • MYT (GMT+8)',
+    statusClosed: 'Operations Closed Today',
+    statusOpen: 'Session Open',
+    statusRest: 'No Operations Today (Rest Day)',
+    scheduleNote: 'Official hours: Mon & Fri (5-7 PM), Wed (8-10 PM).',
+    btnBookToday: 'Book slot today',
+    btnBookNow: 'Book a slot now',
+    btnViewCal: 'View availability calendar',
+    btnCheckStatus: 'Check booking status',
+    statsTitle: 'Session Capacity & Statistics',
+    statsSub: 'Sports facility usage status by selected date.',
+    statTotal: 'Total Bookings',
+    statTotalSub: 'All-time sessions',
+    statActive: 'Active Bookings',
+    statActiveSub: 'Approved bookings',
+    statVacancy: 'Today Vacancy',
+    statHallStatus: 'Hall Status',
+    heroTag: 'DEWAN TEMENGGONG',
+    heroHeading: 'College Residential Sports Centre.',
+    heroSub: 'Centralised booking system for badminton courts and ping pong tables. Instant automatic approvals for student convenience.',
+    guideline1Title: '1 Student 1 Device',
+    guideline1Desc: 'Individual registration with valid Student ID. Limit of 1 booking per day ensures fair turns for all college residents.',
+    guideline2Title: 'Instant Approval',
+    guideline2Desc: 'System automatically confirms bookings as long as the slot quota is available. You will receive an official pass slip.',
+    guideline3Title: 'Dress Code & Ethics (SRD)',
+    themeLight: 'Light Mode',
+    themeDark: 'Dark Mode',
+    langToggle: 'BM',
+    footerText: '© 2026 Dewan Temenggong • Student Sports Committee UiTM Alor Gajah, Melaka'
+  }
+};
+
+const t = (k) => (I18N[S.lang] && I18N[S.lang][k]) || I18N.bm[k] || k;
+
+const MONTHS_BM = ['Januari', 'Februari', 'Mac', 'April', 'Mei', 'Jun', 'Julai', 'Ogos', 'September', 'Oktober', 'November', 'Disember'];
+const MONTHS_EN = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const DAYS_BM = ['Ahad', 'Isnin', 'Selasa', 'Rabu', 'Khamis', 'Jumaat', 'Sabtu'];
+const DAYS_EN = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 const fmt = (d) => {
   if (!d) return '';
   const [y, m, x] = d.split('-');
   const dt = new Date(+y, +m - 1, +x);
-  return `${DAYS[dt.getDay()]}, ${+x} ${MONTHS[+m - 1]} ${y}`;
+  const months = S.lang === 'en' ? MONTHS_EN : MONTHS_BM;
+  const days = S.lang === 'en' ? DAYS_EN : DAYS_BM;
+  return `${days[dt.getDay()]}, ${+x} ${months[+m - 1]} ${y}`;
 };
 
 const FALLBACK = '/content img/logojspimg.png';
 const SRD_REMARK = 'Sila patuhi garis panduan Sahsiah Rupa Diri (SRD). Berpakaian sukan yang lengkap dan sopan ketika menggunakan kemudahan dewan.';
 
-const TABS = [
-  ['home', 'Utama'],
-  ['booking-wizard', 'Tempah'],
-  ['student-check', 'Semak Status'],
-  ['availability-calendar', 'Kalendar Live']
-];
-
 const S = {
   tab: 'home', step: 1, fac: 'fac-badminton', unit: 'b-lining', date: today(), notes: '',
   calYear: new Date().getFullYear(), calMonth: new Date().getMonth(),
+  theme: localStorage.getItem('dt_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'),
+  lang: localStorage.getItem('dt_lang') || 'bm',
   form: JSON.parse(localStorage.getItem('dt_form') || '{}'), search: '', results: null,
   view: { status: today(), admin: today() }, data: null, token: localStorage.getItem('dt_token') || '', modal: null, receipt: null
 };
+
+// Sync theme attribute immediately
+document.documentElement.setAttribute('data-theme', S.theme);
+
+const getTabs = () => [
+  ['home', t('navHome'), 'home'],
+  ['booking-wizard', t('navBook'), 'plus-circle'],
+  ['student-check', t('navStatus'), 'search'],
+  ['availability-calendar', t('navCalendar'), 'calendar']
+];
 
 /* ---------- API ---------- */
 async function api(path, body) {
@@ -86,12 +180,17 @@ function overview(d) {
 const getClockTime = () => new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
 const getClockDate = () => {
   const d = new Date();
-  return `${DAYS[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+  const months = S.lang === 'en' ? MONTHS_EN : MONTHS_BM;
+  const days = S.lang === 'en' ? DAYS_EN : DAYS_BM;
+  return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
 };
 
 /* ---------- Header ---------- */
 function header() {
   const D = S.data, adm = D.isAdmin;
+  const tabs = getTabs();
+  const isDark = S.theme === 'dark';
+
   return `
   <header class="top-nav">
     <div class="nav-container">
@@ -99,33 +198,44 @@ function header() {
         <button class="brand-link" data-a="tab" data-t="home">
           <img src="/content img/logojspimg.png" alt="Logo JSP" class="nav-logo-thumb" onerror="this.style.display='none'">
           <div class="brand-text-col">
-            <span class="brand-title">DEWAN TEMENGGONG</span>
-            <span class="brand-sub-full">Jawatankuasa Sukan Pelajar (JSP)</span>
+            <span class="brand-title">${t('siteTitle')}</span>
+            <span class="brand-sub-full">${t('siteSub')}</span>
           </div>
         </button>
       </div>
 
       <nav class="nav-segmented">
-        ${TABS.map(([id, t]) => `
+        ${tabs.map(([id, label]) => `
           <button class="nav-pill ${S.tab === id ? 'active' : ''}" data-a="tab" data-t="${id}">
-            ${t}
+            ${label}
           </button>
         `).join('')}
       </nav>
 
       <div class="nav-actions">
+        <!-- Switch Language BM / ENG -->
+        <button class="btn-toggle-round" data-a="toggleLang" title="Tukar Bahasa (BM / ENG)">
+          ${S.lang === 'bm' ? 'EN' : 'BM'}
+        </button>
+
+        <!-- Switch Light / Dark Mode -->
+        <button class="btn-toggle-round" data-a="toggleTheme" title="${isDark ? t('themeLight') : t('themeDark')}">
+          ${isDark ? ic('sun') : ic('moon')}
+        </button>
+
+        <!-- Admin Access Button -->
         ${adm ? `
           <button class="btn-subtle ${S.tab === 'admin' ? 'active' : ''}" data-a="tab" data-t="admin">
             ${ic('shield')}
             <span>Admin</span>
           </button>
-          <button class="btn-icon" data-a="logout" title="Log Keluar">
+          <button class="btn-icon" data-a="logout" title="${t('logout')}">
             ${ic('log-out')}
           </button>
         ` : `
           <button class="btn-subtle" data-a="modal" data-m="login">
             ${ic('key-round')}
-            <span>Akses Admin JSP</span>
+            <span>${t('adminAccess')}</span>
           </button>
         `}
       </div>
@@ -135,9 +245,10 @@ function header() {
 
 const bnav = () => `
   <nav class="mobile-nav">
-    ${TABS.map(([id, t]) => `
+    ${getTabs().map(([id, label, iconName]) => `
       <button class="${S.tab === id ? 'active' : ''}" data-a="tab" data-t="${id}">
-        <span>${t}</span>
+        ${ic(iconName || 'calendar')}
+        <span>${label}</span>
       </button>
     `).join('')}
   </nav>`;
@@ -157,7 +268,7 @@ function home() {
     <div class="card clean-widget-clock">
       <div class="widget-clock-inner">
         <div class="clock-display-block">
-          <div class="caption-muted">WAKTU SEMASA • MYT (GMT+8)</div>
+          <div class="caption-muted">${t('timeZoneTitle')}</div>
           <div class="clock-digits" id="liveClockTime">${getClockTime()}</div>
           <div class="clock-calendar-sub" id="liveClockDate">${getClockDate()}</div>
         </div>
@@ -167,18 +278,18 @@ function home() {
             <span class="status-dot ${isClosedToday ? 'dot-red' : isOperatingToday ? 'dot-green' : 'dot-gray'}"></span>
             <span class="status-text">
               ${isClosedToday 
-                ? 'Operasi Ditutup Hari Ini' 
+                ? t('statusClosed')
                 : isOperatingToday 
-                  ? `Sesi Dibuka (${todaySchedule.dayName}: ${todaySchedule.timeDisplay})` 
-                  : 'Tiada Sesi Operasi Hari Ini (Hari Rehat)'}
+                  ? `${t('statusOpen')} (${todaySchedule.dayName}: ${todaySchedule.timeDisplay})` 
+                  : t('statusRest')}
             </span>
           </div>
           <p class="caption-muted" style="margin-top:6px">
-            Jadual operasi rasmi: Isnin & Jumaat (5-7 PM), Rabu (8-10 PM).
+            ${t('scheduleNote')}
           </p>
           <div style="margin-top:14px">
             <button class="btn-primary" data-a="tab" data-t="booking-wizard">
-              Tempah slot hari ini
+              ${t('btnBookToday')}
             </button>
           </div>
         </div>
@@ -189,8 +300,8 @@ function home() {
     <div class="card clean-stats-bar">
       <div class="stats-header">
         <div>
-          <h3 class="section-title">Kapasiti & Statistik Sesi</h3>
-          <p class="caption-muted">Status penggunaan fasiliti sukan mengikut tarikh pilihan.</p>
+          <h3 class="section-title">${t('statsTitle')}</h3>
+          <p class="caption-muted">${t('statsSub')}</p>
         </div>
         <div class="date-input-wrap">
           <input type="date" value="${S.date}" data-d="sel" class="minimal-date-input">
@@ -199,27 +310,31 @@ function home() {
 
       <div class="stats-row">
         <div class="stat-cell">
-          <span class="stat-caption">Jumlah Tempahan</span>
+          <span class="stat-caption">${t('statTotal')}</span>
           <div class="stat-number">${D.bookings.length}</div>
-          <span class="stat-note">Sepanjang sesi</span>
+          <span class="stat-note">${t('statTotalSub')}</span>
         </div>
 
         <div class="stat-cell">
-          <span class="stat-caption">Tempahan Aktif</span>
+          <span class="stat-caption">${t('statActive')}</span>
           <div class="stat-number stat-green">${act}</div>
-          <span class="stat-note">Telah diluluskan</span>
+          <span class="stat-note">${t('statActiveSub')}</span>
         </div>
 
         <div class="stat-cell">
-          <span class="stat-caption">Kekosongan Hari Ini</span>
+          <span class="stat-caption">${t('statVacancy')}</span>
           <div class="stat-number">${o.closed ? '0' : o.rem} <span class="stat-unit">/ ${o.tot}</span></div>
-          <span class="stat-note">${sc ? sc.timeDisplay : 'Luar operasi'}</span>
+          <span class="stat-note">${sc ? sc.timeDisplay : (S.lang === 'en' ? 'Off-hours' : 'Luar operasi')}</span>
         </div>
 
         <div class="stat-cell">
-          <span class="stat-caption">Status Dewan</span>
+          <span class="stat-caption">${t('statHallStatus')}</span>
           <div class="stat-badge-wrap">
-            ${o.closed ? chip('chip-bad', 'Ditutup') : o.rem > 0 ? chip('chip-ok', 'Tersedia') : chip('chip-warn', 'Penuh')}
+            ${o.closed 
+              ? chip('chip-bad', S.lang === 'en' ? 'Closed' : 'Ditutup') 
+              : o.rem > 0 
+                ? chip('chip-ok', S.lang === 'en' ? 'Available' : 'Tersedia') 
+                : chip('chip-warn', S.lang === 'en' ? 'Full' : 'Penuh')}
           </div>
           <span class="stat-note">${fmt(S.date)}</span>
         </div>
@@ -229,20 +344,20 @@ function home() {
     <!-- 3. Hero Presentation dengan backgrounddt.jpeg -->
     <div class="card hero-photo-card" style="background-image: linear-gradient(180deg, rgba(9, 13, 22, 0.45) 0%, rgba(9, 13, 22, 0.88) 100%), url('/content img/backgrounddt.jpeg');">
       <div class="hero-photo-content">
-        <span class="hero-tag">DEWAN TEMENGGONG</span>
-        <h1 class="hero-headline text-white">Pusat Sukan & Fasiliti Kolej Kediaman.</h1>
+        <span class="hero-tag">${t('heroTag')}</span>
+        <h1 class="hero-headline text-white">${t('heroHeading')}</h1>
         <p class="hero-subline text-white-muted">
-          Sistem tempahan berpusat gelanggang badminton dan meja ping pong. Kelulusan automatik masa-nyata untuk kemudahan pelajar kolej.
+          ${t('heroSub')}
         </p>
         <div class="hero-button-row">
           <button class="btn-primary" data-a="tab" data-t="booking-wizard">
-            Tempah slot sekarang
+            ${t('btnBookNow')}
           </button>
           <button class="btn-glass" data-a="tab" data-t="availability-calendar">
-            Lihat kalendar kekosongan
+            ${t('btnViewCal')}
           </button>
           <button class="btn-glass" data-a="tab" data-t="student-check">
-            Semak status tempahan
+            ${t('btnCheckStatus')}
           </button>
         </div>
       </div>
@@ -251,21 +366,21 @@ function home() {
     <!-- 4. Guidelines Cards -->
     <div class="clean-grid-3">
       <div class="card clean-card-pad">
-        <h4 class="card-item-title">1 Pelajar 1 Peranti</h4>
+        <h4 class="card-item-title">${t('guideline1Title')}</h4>
         <p class="caption-muted">
-          Pendaftaran individu menggunakan No. Matrik sah. Had 1 tempahan setiap hari bagi memastikan giliran yang adil untuk semua warga kolej.
+          ${t('guideline1Desc')}
         </p>
       </div>
 
       <div class="card clean-card-pad">
-        <h4 class="card-item-title">Kelulusan Serta-merta</h4>
+        <h4 class="card-item-title">${t('guideline2Title')}</h4>
         <p class="caption-muted">
-          Sistem mengesahkan tempahan secara langsung selagi kuota slot belum penuh. Anda akan menerima slip rujukan untuk ditunjukkan.
+          ${t('guideline2Desc')}
         </p>
       </div>
 
       <div class="card clean-card-pad">
-        <h4 class="card-item-title">Etika Sahsiah (SRD)</h4>
+        <h4 class="card-item-title">${t('guideline3Title')}</h4>
         <p class="caption-muted">
           ${SRD_REMARK}
         </p>
@@ -922,7 +1037,7 @@ function render() {
     </main>` + bnav() + modals() + `
     <footer class="clean-footer">
       <div class="footer-centered-wrap">
-        © 2026 Dewan Temenggong • Jawatankuasa Sukan Pelajar UiTM Alor Gajah, Melaka
+        ${t('footerText')}
       </div>
     </footer>`;
 
@@ -944,6 +1059,17 @@ const A = {
   view: (d) => { S.view[d.k] = d.v; render(); },
   modal: (d) => { S.modal = d.m; render(); },
   close: () => { S.modal = null; render(); },
+  toggleTheme: () => {
+    S.theme = S.theme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('dt_theme', S.theme);
+    document.documentElement.setAttribute('data-theme', S.theme);
+    render();
+  },
+  toggleLang: () => {
+    S.lang = S.lang === 'bm' ? 'en' : 'bm';
+    localStorage.setItem('dt_lang', S.lang);
+    render();
+  },
   logout: () => { S.token = ''; localStorage.removeItem('dt_token'); S.tab = 'home'; toast('Log keluar berjaya.'); load(); },
   calDate: (d) => {
     S.date = d.date;
