@@ -14,6 +14,10 @@ export default wrap(async (req, res) => {
   if (!unit) fail(400, 'Kemudahan atau unit tidak sah.');
   const date = t('date', 10);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) fail(400, 'Tarikh tidak sah.');
+
+  const todayStr = new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Kuala_Lumpur' }).slice(0, 10);
+  if (date < todayStr) fail(400, 'Tempahan tidak dibenarkan untuk tarikh yang sudah lepas. Sila pilih tarikh hari ini atau tarikh akan datang.');
+
   const sc = sched(date);
   if (!sc) fail(400, 'Dewan hanya dibuka pada hari Isnin, Rabu dan Jumaat.');
   const closed = await db.execute({ sql: 'SELECT 1 FROM closed_dates WHERE date = ?', args: [date] });

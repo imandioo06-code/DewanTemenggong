@@ -111,7 +111,7 @@ const SRD_REMARK = 'Sila patuhi garis panduan Sahsiah Rupa Diri (SRD). Berpakaia
 const S = {
   tab: 'home', step: 1, fac: 'fac-badminton', unit: 'b-lining', date: today(), notes: '',
   calYear: new Date().getFullYear(), calMonth: new Date().getMonth(),
-  theme: localStorage.getItem('dt_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'),
+  theme: localStorage.getItem('dt_theme') || 'light',
   lang: localStorage.getItem('dt_lang') || 'bm',
   form: JSON.parse(localStorage.getItem('dt_form') || '{}'), search: '', results: null,
   view: { status: today(), admin: today() }, data: null, token: localStorage.getItem('dt_token') || '', modal: null, receipt: null
@@ -445,10 +445,37 @@ function wizard() {
       </div>`;
   } else if (S.step === 2) {
     const sc = sched(S.date), cl = D.closedDates.includes(S.date);
+    const isPastDate = S.date < today();
+
+    let noticeType = 'notice-ok';
+    let noticeText = '';
+
+    if (isPastDate) {
+      noticeType = 'notice-bad';
+      noticeText = S.lang === 'en' 
+        ? 'This date has already passed. Please select today or a future date on the live calendar.'
+        : 'Tarikh ini telah lepas. Anda tidak boleh menempah pada tarikh yang sudah berlalu. Sila pilih tarikh hari ini atau tarikh akan datang pada kalendar.';
+    } else if (cl) {
+      noticeType = 'notice-bad';
+      noticeText = S.lang === 'en'
+        ? 'The sports hall is closed by administration on this date. Please select another date.'
+        : 'Dewan ditutup oleh pentadbiran JSP pada tarikh ini. Sila pilih tarikh lain pada kalendar.';
+    } else if (sc) {
+      noticeType = 'notice-ok';
+      noticeText = S.lang === 'en'
+        ? `Schedule ${sc.dayName}: ${sc.timeDisplay}. Slots are open for booking.`
+        : `Jadual ${sc.dayName}: ${sc.timeDisplay}. Slot tersedia untuk permohonan.`;
+    } else {
+      noticeType = 'notice-warn';
+      noticeText = S.lang === 'en'
+        ? 'Outside official operating days. Please select an open session (Mon, Wed, or Fri).'
+        : 'Tarikh ini luar hari operasi rasmi. Sila pilih hari bertanda hijau (Isnin, Rabu, atau Jumaat) di atas.';
+    }
+
     body = `
       <div class="wizard-step-body">
-        <h3 class="step-title">Pilih tarikh operasi</h3>
-        <p class="caption-muted">Dewan beroperasi pada Isnin & Jumaat (5-7 PM) dan Rabu (8-10 PM). Pilih tarikh terus dari kalendar live di bawah.</p>
+        <h3 class="step-title">${S.lang === 'en' ? 'Select operating date' : 'Pilih tarikh operasi'}</h3>
+        <p class="caption-muted">${S.lang === 'en' ? 'Hall operates Mon & Fri (5-7 PM) and Wed (8-10 PM). Select a date directly on the live calendar below.' : 'Dewan beroperasi pada Isnin & Jumaat (5-7 PM) dan Rabu (8-10 PM). Pilih tarikh terus dari kalendar live di bawah.'}</p>
 
         <!-- Kalendar Live Interaktif untuk Pemilihan Tarikh -->
         <div style="margin-top:20px">
@@ -458,30 +485,36 @@ function wizard() {
         <div class="card clean-card-pad" style="margin-top:16px;padding:16px 20px;background:var(--bg-subtle)">
           <div class="calendar-date-summary" style="margin:0">
             <div>
-              <span class="caption-muted sm">TARIKH DIPILIH UNTUK TEMPAHAN:</span>
+              <span class="caption-muted sm">${S.lang === 'en' ? 'SELECTED BOOKING DATE:' : 'TARIKH DIPILIH UNTUK TEMPAHAN:'}</span>
               <h4 style="font-size:16px;margin-top:2px">${fmt(S.date)}</h4>
               <div class="caption-muted" style="font-size:12.5px">
-                ${sc ? `Waktu Operasi: <b>${sc.dayName} (${sc.timeDisplay})</b>` : 'Luar sesi operasi rasmi'}
+                ${isPastDate 
+                  ? `<span style="color:#ef4444;font-weight:600">${S.lang === 'en' ? '⚠️ Past date (Cannot book)' : '⚠️ Tarikh telah lepas (Tidak boleh tempah)'}</span>`
+                  : sc 
+                    ? `${S.lang === 'en' ? 'Session' : 'Waktu Operasi'}: <b>${sc.dayName} (${sc.timeDisplay})</b>` 
+                    : (S.lang === 'en' ? 'Outside operating hours' : 'Luar sesi operasi rasmi')}
               </div>
             </div>
             <div>
-              ${cl ? chip('chip-bad', 'Dewan Ditutup') : sc ? chip('chip-ok', 'Sesi Dibuka') : chip('chip-subtle', 'Tiada Sesi')}
+              ${isPastDate 
+                ? chip('chip-bad', S.lang === 'en' ? 'Past Date' : 'Tarikh Lepas')
+                : cl 
+                  ? chip('chip-bad', S.lang === 'en' ? 'Closed' : 'Dewan Ditutup') 
+                  : sc 
+                    ? chip('chip-ok', S.lang === 'en' ? 'Open' : 'Sesi Dibuka') 
+                    : chip('chip-subtle', S.lang === 'en' ? 'No Session' : 'Tiada Sesi')}
             </div>
           </div>
         </div>
 
-        <div class="notice-minimal ${cl ? 'notice-bad' : sc ? 'notice-ok' : 'notice-warn'}" style="margin-top:14px">
-          ${cl 
-            ? 'Dewan ditutup oleh pentadbiran JSP pada tarikh ini. Sila pilih tarikh lain pada kalendar.' 
-            : sc 
-              ? `Jadual ${sc.dayName}: ${sc.timeDisplay}. Slot tersedia untuk permohonan.` 
-              : 'Tarikh ini luar hari operasi rasmi. Sila pilih hari bertanda hijau (Isnin, Rabu, atau Jumaat) di atas.'}
+        <div class="notice-minimal ${noticeType}" style="margin-top:14px">
+          ${noticeText}
         </div>
 
         <div class="step-footer">
-          <button class="btn-secondary" data-a="step" data-n="1">Kembali</button>
-          <button class="btn-primary" data-a="step" data-n="3" ${cl || !sc ? 'disabled' : ''}>
-            Seterusnya: Maklumat Pelajar
+          <button class="btn-secondary" data-a="step" data-n="1">${S.lang === 'en' ? 'Back' : 'Kembali'}</button>
+          <button class="btn-primary" data-a="step" data-n="3" ${isPastDate || cl || !sc ? 'disabled' : ''}>
+            ${S.lang === 'en' ? 'Next: Student Details' : 'Seterusnya: Maklumat Pelajar'}
           </button>
         </div>
       </div>`;
@@ -789,23 +822,29 @@ function renderBigMonthlyCalendar() {
     const daySched = D.schedule ? D.schedule[dayOfWeek] : null;
     const isOperating = !!daySched;
 
+    const isPast = dateStr < today();
+
     // Check bookings for this date
     let badgeHtml = '';
-    if (isClosed) {
-      badgeHtml = '<span class="cal-badge-pill badge-closed">Ditutup</span>';
+    if (isPast) {
+      badgeHtml = `<span class="cal-badge-muted">${S.lang === 'en' ? 'Past' : 'Lepas'}</span>`;
+    } else if (isClosed) {
+      badgeHtml = `<span class="cal-badge-pill badge-closed">${S.lang === 'en' ? 'Closed' : 'Ditutup'}</span>`;
     } else if (isOperating) {
       const ov = overview(dateStr);
       if (ov.rem === 0) {
-        badgeHtml = '<span class="cal-badge-pill badge-full">Penuh</span>';
+        badgeHtml = `<span class="cal-badge-pill badge-full">${S.lang === 'en' ? 'Full' : 'Penuh'}</span>`;
       } else {
         badgeHtml = `<span class="cal-badge-pill badge-open">${daySched.dayName.slice(0,3)} • ${daySched.timeDisplay.split(' - ')[0]}</span>`;
       }
     } else {
-      badgeHtml = '<span class="cal-badge-muted">Rehat</span>';
+      badgeHtml = `<span class="cal-badge-muted">${S.lang === 'en' ? 'Rest' : 'Rehat'}</span>`;
     }
 
+    const clickAttr = isPast && S.tab === 'booking-wizard' ? '' : `data-a="calDate" data-date="${dateStr}"`;
+
     cells.push(`
-      <div class="cal-cell ${isOperating ? 'operating' : 'non-operating'} ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}" data-a="calDate" data-date="${dateStr}">
+      <div class="cal-cell ${isPast ? 'is-past' : ''} ${isOperating ? 'operating' : 'non-operating'} ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}" ${clickAttr} title="${isPast && S.tab === 'booking-wizard' ? (S.lang === 'en' ? 'Past date cannot be booked' : 'Tarikh yang telah lepas tidak boleh ditempah') : ''}">
         <div class="cal-cell-header">
           <span class="cal-day-num">${d}</span>
           ${isToday ? '<span class="cal-today-dot" title="Hari Ini"></span>' : ''}

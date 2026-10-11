@@ -1371,6 +1371,19 @@ button {
   background: #fcfdfd;
 }
 
+.cal-cell.is-past {
+  opacity: 0.38;
+  cursor: not-allowed;
+  background: var(--bg-subtle);
+  border-color: var(--border-hairline);
+}
+
+.cal-cell.is-past:hover {
+  transform: none;
+  border-color: var(--border-hairline);
+  box-shadow: none;
+}
+
 .cal-cell.selected {
   border-color: #090d16;
   box-shadow: 0 0 0 2px var(--volt);
