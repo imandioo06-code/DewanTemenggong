@@ -1,7 +1,26 @@
 import { createClient } from '@libsql/client';
 import crypto from 'node:crypto';
 
-export const db = createClient({ url: process.env.TURSO_DATABASE_URL, authToken: process.env.TURSO_AUTH_TOKEN });
+let _db;
+export const getDb = () => {
+  if (!_db) {
+    const url = process.env.TURSO_DATABASE_URL;
+    const authToken = process.env.TURSO_AUTH_TOKEN;
+    if (!url) {
+      const err = new Error('TURSO_DATABASE_URL tidak ditetapkan dalam Vercel Environment Variables. Sila tetapkan TURSO_DATABASE_URL dan TURSO_AUTH_TOKEN di Dashboard Vercel.');
+      err.status = 500;
+      throw err;
+    }
+    _db = createClient({ url, authToken });
+  }
+  return _db;
+};
+
+export const db = new Proxy({}, {
+  get(target, prop) {
+    return getDb()[prop];
+  }
+});
 
 export const FACILITIES = [
   { id: 'fac-badminton', name: 'Gelanggang Badminton', type: 'badminton', maxCapacity: 10,
