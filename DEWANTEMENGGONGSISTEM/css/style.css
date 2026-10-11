@@ -1115,6 +1115,371 @@ button {
   gap: 12px;
 }
 
+/* ---------- Hero Photo Card (backgrounddt.jpeg) ---------- */
+.hero-photo-card {
+  border-radius: var(--radius-md);
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.hero-photo-content {
+  padding: 48px 40px;
+  max-width: 680px;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-tag {
+  display: inline-block;
+  background: var(--volt);
+  color: #090d16;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  margin-bottom: 12px;
+}
+
+.text-white {
+  color: #ffffff !important;
+}
+
+.text-white-muted {
+  color: #d1d5db !important;
+}
+
+.btn-glass {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #ffffff;
+  padding: 10px 18px;
+  border-radius: var(--radius-pill);
+  font-size: 13.5px;
+  font-weight: 500;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  transition: all 0.15s ease;
+}
+
+.btn-glass:hover {
+  background: rgba(255, 255, 255, 0.24);
+  color: #ffffff;
+}
+
+.nav-logo-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex: none;
+}
+
+/* ---------- Big Monthly Visual Calendar (Penunjuk Aras) ---------- */
+.big-calendar-card {
+  background: #ffffff;
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+}
+
+.cal-top-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.cal-month-title {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.cal-nav-buttons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cal-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding: 10px 0 16px;
+  border-bottom: 1px solid var(--border-hairline);
+  font-size: 12px;
+  color: var(--ink-secondary);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.cal-weekdays-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 12px 0 8px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.cal-cell {
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 10px 8px;
+  min-height: 74px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.cal-cell.empty {
+  background: transparent;
+  border-color: transparent;
+  cursor: default;
+}
+
+.cal-cell:hover:not(.empty) {
+  border-color: var(--ink-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.cal-cell.operating {
+  background: #fcfdfd;
+}
+
+.cal-cell.selected {
+  border-color: #090d16;
+  box-shadow: 0 0 0 2px var(--volt);
+  background: #fafafc;
+}
+
+.cal-cell-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cal-day-num {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-primary);
+}
+
+.cal-cell.selected .cal-day-num {
+  color: #090d16;
+  font-weight: 700;
+}
+
+.cal-today-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--apple-blue);
+}
+
+.cal-cell-body {
+  margin-top: 4px;
+}
+
+.cal-badge-pill {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 3px 6px;
+  border-radius: 4px;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.badge-open {
+  background: var(--status-green-bg);
+  color: #15803d;
+  border: 1px solid rgba(22, 163, 74, 0.2);
+}
+
+.badge-full {
+  background: var(--status-red-bg);
+  color: #b91c1c;
+}
+
+.badge-closed {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.cal-badge-muted {
+  font-size: 10.5px;
+  color: var(--ink-quaternary);
+  display: block;
+  text-align: center;
+}
+
+/* ---------- Minimalist Student Pass Cards (Semak Status) ---------- */
+.pass-cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.student-pass-card {
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease;
+  animation: passCardEnter 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes passCardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.student-pass-card:hover {
+  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+}
+
+.pass-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-hairline);
+}
+
+.pass-ref-label {
+  font-size: 10.5px;
+  color: var(--ink-tertiary);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  display: block;
+}
+
+.pass-ref-val {
+  font-family: monospace;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink-primary);
+}
+
+.pass-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--status-green-bg);
+  color: #15803d;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.pass-student-details {
+  margin: 16px 0 12px;
+}
+
+.pass-student-name {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ink-primary);
+  margin: 0;
+}
+
+.pass-student-sub {
+  font-size: 13px;
+  color: var(--ink-secondary);
+}
+
+.pass-facility-box {
+  background: var(--bg-subtle);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  margin-bottom: 16px;
+}
+
+.pass-facility-title {
+  font-size: 14px;
+  color: var(--ink-primary);
+}
+
+.pass-unit-title {
+  font-size: 13px;
+  color: var(--ink-secondary);
+  margin-top: 2px;
+}
+
+.pass-date-time-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-hairline);
+}
+
+.pass-dt-val {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-primary);
+  margin-top: 2px;
+}
+
+.pass-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+}
+
+.empty-search-card {
+  padding: 32px 24px;
+  text-align: center;
+  background: var(--bg-subtle);
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 768px) {
   .nav-segmented { display: none; }
@@ -1123,9 +1488,13 @@ button {
   .stat-cell { border-top: 1px solid var(--border-hairline); }
   .clean-grid-3, .facility-choice-grid, .admin-controls-grid { grid-template-columns: 1fr; }
   .clock-status-block { border-left: 0; padding-left: 0; border-top: 1px solid var(--border-hairline); padding-top: 20px; }
-  .hero-headline { font-size: 30px; }
+  .hero-headline { font-size: 28px; }
+  .hero-photo-content { padding: 32px 20px; }
   .form-grid { grid-template-columns: 1fr; }
   .field-span-2 { grid-column: span 1; }
   .clean-card-pad { padding: 20px; }
   .clean-widget-clock { padding: 20px; }
+  .cal-cell { min-height: 60px; padding: 6px 4px; }
+  .cal-badge-pill { font-size: 9px; padding: 2px 4px; }
+  .pass-date-time-grid { grid-template-columns: 1fr; gap: 8px; }
 }

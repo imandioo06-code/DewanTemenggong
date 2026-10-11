@@ -16,7 +16,7 @@ const fmt = (d) => {
   return `${DAYS[dt.getDay()]}, ${+x} ${MONTHS[+m - 1]} ${y}`;
 };
 
-const FALLBACK = 'https://images.unsplash.com/photo-1534158914592-062992fbe900?auto=format&fit=crop&q=80&w=200';
+const FALLBACK = '/content img/logojspimg.png';
 const SRD_REMARK = 'Sila patuhi garis panduan Sahsiah Rupa Diri (SRD). Berpakaian sukan yang lengkap dan sopan ketika menggunakan kemudahan dewan.';
 
 const TABS = [
@@ -28,6 +28,7 @@ const TABS = [
 
 const S = {
   tab: 'home', step: 1, fac: 'fac-badminton', unit: 'b-lining', date: today(), notes: '',
+  calYear: new Date().getFullYear(), calMonth: new Date().getMonth(),
   form: JSON.parse(localStorage.getItem('dt_form') || '{}'), search: '', results: null,
   view: { status: today(), admin: today() }, data: null, token: localStorage.getItem('dt_token') || '', modal: null, receipt: null
 };
@@ -96,6 +97,7 @@ function header() {
     <div class="nav-container">
       <div class="nav-brand">
         <button class="brand-link" data-a="tab" data-t="home">
+          <img src="/content img/logojspimg.png" alt="Logo JSP" class="nav-logo-thumb" onerror="this.style.display='none'">
           <span class="brand-title">Dewan Temenggong</span>
           <span class="brand-sub">JSP</span>
         </button>
@@ -130,7 +132,7 @@ function header() {
 
 const bnav = () => `
   <nav class="mobile-nav">
-    ${TABS.map(([id, t, icon]) => `
+    ${TABS.map(([id, t]) => `
       <button class="${S.tab === id ? 'active' : ''}" data-a="tab" data-t="${id}">
         <span>${t}</span>
       </button>
@@ -148,7 +150,7 @@ function home() {
 
   return `
   <div class="flow-layout">
-    <!-- 1. Apple-style Clean Live Clock & Status (Atas Sekali) -->
+    <!-- 1. Jam Waktu Sekarang & Status (Atas Sekali) -->
     <div class="card clean-widget-clock">
       <div class="widget-clock-inner">
         <div class="clock-display-block">
@@ -221,22 +223,25 @@ function home() {
       </div>
     </div>
 
-    <!-- 3. Minimal Hero Presentation -->
-    <div class="hero-minimal">
-      <h1 class="hero-headline">Tempahan dewan sukan kolej.</h1>
-      <p class="hero-subline">
-        Sistem pengurusan gelanggang badminton dan meja ping pong Dewan Temenggong. Kelulusan automatik untuk kemudahan pelajar.
-      </p>
-      <div class="hero-button-row">
-        <button class="btn-primary" data-a="tab" data-t="booking-wizard">
-          Tempah slot sekarang
-        </button>
-        <button class="btn-secondary" data-a="tab" data-t="availability-calendar">
-          Lihat kalendar
-        </button>
-        <button class="btn-secondary" data-a="tab" data-t="student-check">
-          Semak status tempahan
-        </button>
+    <!-- 3. Hero Presentation dengan backgrounddt.jpeg -->
+    <div class="card hero-photo-card" style="background-image: linear-gradient(180deg, rgba(9, 13, 22, 0.45) 0%, rgba(9, 13, 22, 0.88) 100%), url('/content img/backgrounddt.jpeg');">
+      <div class="hero-photo-content">
+        <span class="hero-tag">DEWAN TEMENGGONG</span>
+        <h1 class="hero-headline text-white">Pusat Sukan & Fasiliti Kolej Kediaman.</h1>
+        <p class="hero-subline text-white-muted">
+          Sistem tempahan berpusat gelanggang badminton dan meja ping pong. Kelulusan automatik masa-nyata untuk kemudahan pelajar kolej.
+        </p>
+        <div class="hero-button-row">
+          <button class="btn-primary" data-a="tab" data-t="booking-wizard">
+            Tempah slot sekarang
+          </button>
+          <button class="btn-glass" data-a="tab" data-t="availability-calendar">
+            Lihat kalendar kekosongan
+          </button>
+          <button class="btn-glass" data-a="tab" data-t="student-check">
+            Semak status tempahan
+          </button>
+        </div>
       </div>
     </div>
 
@@ -519,44 +524,206 @@ function browser(kind) {
   </div>`;
 }
 
-/* ---------- View: Semak Status ---------- */
+/* ---------- View: Semak Status (Kad Minimalist) ---------- */
+function renderStudentPassCards() {
+  const q = S.search.trim();
+  if (!q) return '';
+  const bookings = S.results || [];
+  if (!bookings.length) {
+    return `
+      <div class="card empty-search-card">
+        <div class="caption-muted" style="font-size:14px">
+          Tiada rekod tempahan dijumpai untuk carian: <b>"${esc(q)}"</b>.
+        </div>
+        <div class="caption-muted sm" style="margin-top:6px">
+          Sila pastikan No. Matrik atau No. Rujukan dimasukkan dengan tepat.
+        </div>
+      </div>`;
+  }
+
+  return `
+    <div class="pass-cards-list">
+      <div class="caption-muted sm" style="margin-bottom:12px;font-weight:600">
+        Dijumpai ${bookings.length} rekod tempahan:
+      </div>
+      ${bookings.map((b) => `
+        <div class="student-pass-card">
+          <div class="pass-card-top">
+            <div class="pass-ref-block">
+              <span class="pass-ref-label">NO. RUJUKAN</span>
+              <span class="pass-ref-val">${esc(b.refNo)}</span>
+            </div>
+            <div class="pass-status-pill">
+              <span class="status-dot dot-green"></span>
+              <span>Diluluskan</span>
+            </div>
+          </div>
+
+          <div class="pass-card-body">
+            <div class="pass-student-details">
+              <h4 class="pass-student-name">${esc(b.userName)}</h4>
+              <span class="pass-student-sub">${esc(b.studentId)} ${b.programCode ? '• ' + esc(b.programCode) : ''}</span>
+            </div>
+
+            <div class="pass-facility-box">
+              <div class="pass-facility-title">
+                ${b.facilityId.includes('badminton') ? '🏸 ' : '🏓 '} <b>${esc(b.facilityName)}</b>
+              </div>
+              <div class="pass-unit-title">${esc(b.unitName)}</div>
+            </div>
+
+            <div class="pass-date-time-grid">
+              <div>
+                <span class="caption-muted sm">Tarikh Sesi</span>
+                <div class="pass-dt-val">${fmt(b.date)}</div>
+              </div>
+              <div>
+                <span class="caption-muted sm">Waktu Operasi</span>
+                <div class="pass-dt-val">${esc(b.startTime)} - ${esc(b.endTime)}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pass-card-footer">
+            <span class="caption-muted" style="font-size:11.5px">Didaftar pada: ${esc(b.createdAt)}</span>
+            <button class="btn-subtle" onclick="window.print()">
+              ${ic('printer')} <span>Cetak Slip</span>
+            </button>
+          </div>
+        </div>
+      `).join('')}
+    </div>`;
+}
+
 const status = () => `
   <div class="narrow-container">
     <div class="card clean-card-pad">
       <h3 class="section-title">Semak Status Tempahan</h3>
-      <p class="caption-muted">Cari rekod menggunakan No. Matrik Pelajar atau No. Rujukan Tempahan.</p>
+      <p class="caption-muted">Cari rekod menggunakan No. Matrik Pelajar (cth: 2024694636) atau No. Rujukan Tempahan.</p>
 
       <div class="search-input-wrap" style="margin-top:18px">
-        <input type="search" placeholder="Contoh: 2024694636 atau DT-..." value="${esc(S.search)}" data-s="search" class="minimal-input search-box">
+        <input type="search" placeholder="Masukkan No. Matrik atau No. Rujukan..." value="${esc(S.search)}" data-s="search" class="minimal-input search-box" autofocus>
       </div>
 
-      <div id="res-status" style="margin-top:24px">
-        ${browser('status')}
+      <div id="res-status" style="margin-top:20px">
+        ${renderStudentPassCards()}
       </div>
     </div>
   </div>`;
 
-/* ---------- View: Kalendar ---------- */
+/* ---------- View: Kalendar Visual Besar (Penunjuk Aras) ---------- */
+function renderBigMonthlyCalendar() {
+  const D = S.data;
+  const year = S.calYear;
+  const month = S.calMonth;
+  const monthName = MONTHS[month];
+
+  // Days in month
+  const firstDayIndex = new Date(year, month, 1).getDay(); // 0 is Sunday
+  // Convert so Monday is 0, Sunday is 6
+  const startOffset = (firstDayIndex + 6) % 7;
+  const totalDays = new Date(year, month + 1, 0).getDate();
+
+  const dayHeaders = ['Isnin', 'Selasa', 'Rabu', 'Khamis', 'Jumaat', 'Sabtu', 'Ahad'];
+
+  let cells = [];
+  // Empty cells before start
+  for (let i = 0; i < startOffset; i++) {
+    cells.push('<div class="cal-cell empty"></div>');
+  }
+
+  // Days 1..totalDays
+  for (let d = 1; d <= totalDays; d++) {
+    const dateStr = `${year}-${pad(month + 1)}-${pad(d)}`;
+    const dayOfWeek = new Date(year, month, d).getDay();
+    const isToday = dateStr === today();
+    const isSelected = dateStr === S.date;
+    const isClosed = D.closedDates.includes(dateStr);
+    const daySched = D.schedule ? D.schedule[dayOfWeek] : null;
+    const isOperating = !!daySched;
+
+    // Check bookings for this date
+    let badgeHtml = '';
+    if (isClosed) {
+      badgeHtml = '<span class="cal-badge-pill badge-closed">Ditutup</span>';
+    } else if (isOperating) {
+      const ov = overview(dateStr);
+      if (ov.rem === 0) {
+        badgeHtml = '<span class="cal-badge-pill badge-full">Penuh</span>';
+      } else {
+        badgeHtml = `<span class="cal-badge-pill badge-open">${daySched.dayName.slice(0,3)} • ${daySched.timeDisplay.split(' - ')[0]}</span>`;
+      }
+    } else {
+      badgeHtml = '<span class="cal-badge-muted">Rehat</span>';
+    }
+
+    cells.push(`
+      <div class="cal-cell ${isOperating ? 'operating' : 'non-operating'} ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}" data-a="calDate" data-date="${dateStr}">
+        <div class="cal-cell-header">
+          <span class="cal-day-num">${d}</span>
+          ${isToday ? '<span class="cal-today-dot" title="Hari Ini"></span>' : ''}
+        </div>
+        <div class="cal-cell-body">
+          ${badgeHtml}
+        </div>
+      </div>
+    `);
+  }
+
+  return `
+    <div class="big-calendar-card">
+      <div class="cal-top-controls">
+        <div class="cal-month-title-wrap">
+          <h3 class="cal-month-title">${monthName} ${year}</h3>
+          <span class="caption-muted sm">Penunjuk Aras Sesi Operasi & Kekosongan</span>
+        </div>
+        <div class="cal-nav-buttons">
+          <button class="btn-subtle" data-a="calNav" data-dir="-1" title="Bulan Lepas">
+            ${ic('chevron-left')}
+          </button>
+          <button class="btn-subtle" data-a="calToday" title="Bulan Semasa">
+            Bulan Ini
+          </button>
+          <button class="btn-subtle" data-a="calNav" data-dir="1" title="Bulan Depan">
+            ${ic('chevron-right')}
+          </button>
+        </div>
+      </div>
+
+      <!-- Legend -->
+      <div class="cal-legend-row">
+        <div class="legend-item"><span class="legend-dot dot-green"></span> <span>Dibuka (Isnin, Rabu, Jumaat)</span></div>
+        <div class="legend-item"><span class="legend-dot dot-red"></span> <span>Ditutup / Penuh</span></div>
+        <div class="legend-item"><span class="legend-dot dot-gray"></span> <span>Hari Rehat (Luar Sesi)</span></div>
+      </div>
+
+      <!-- Calendar Grid -->
+      <div class="cal-weekdays-row">
+        ${dayHeaders.map(dh => `<div class="cal-weekday-col">${dh}</div>`).join('')}
+      </div>
+      <div class="cal-grid">
+        ${cells.join('')}
+      </div>
+    </div>`;
+}
+
 function calendar() {
   const D = S.data, sc = sched(S.date);
   return `
-  <div class="narrow-container">
-    <div class="card clean-card-pad">
-      <div class="calendar-top-bar">
-        <div>
-          <h3 class="section-title">Kalendar Kekosongan</h3>
-          <p class="caption-muted">Semak kuota semasa mengikut tarikh.</p>
-        </div>
-        <input type="date" value="${S.date}" data-d="sel" class="minimal-date-input">
-      </div>
+  <div class="flow-layout">
+    <!-- Big Visual Calendar (Penunjuk Aras) -->
+    ${renderBigMonthlyCalendar()}
 
+    <!-- Selected Date Overview Card -->
+    <div class="card clean-card-pad" style="margin-top:20px">
       <div class="calendar-date-summary">
         <div>
-          <b>${fmt(S.date)}</b>
-          <div class="caption-muted">Sesi: ${sc ? sc.timeDisplay : 'Luar sesi operasi'}</div>
+          <span class="caption-muted sm">TARIKH DIPILIH</span>
+          <h3 style="font-size:18px;margin-top:2px">${fmt(S.date)}</h3>
+          <div class="caption-muted">Sesi: ${sc ? `<b>${sc.dayName} (${sc.timeDisplay})</b>` : 'Luar sesi operasi rasmi'}</div>
         </div>
         <div>
-          ${D.closedDates.includes(S.date) ? chip('chip-bad', 'Dewan Ditutup') : sc ? chip('chip-ok', 'Dibuka') : chip('chip-subtle', 'Tiada Sesi')}
+          ${D.closedDates.includes(S.date) ? chip('chip-bad', 'Dewan Ditutup') : sc ? chip('chip-ok', 'Dibuka Untuk Permohonan') : chip('chip-subtle', 'Tiada Sesi Hari Ini')}
         </div>
       </div>
 
@@ -577,7 +744,7 @@ function calendar() {
                 <div class="unit-bar-item">
                   <div class="unit-bar-labels">
                     <span>${u.name}</span>
-                    <span class="${full ? 'stat-bad' : 'caption-muted'}">${n} / ${f.maxCapacity} ${full ? '(Penuh)' : ''}</span>
+                    <span class="${full ? 'stat-bad' : 'caption-muted'}">${n} / ${f.maxCapacity} ${full ? '(Penuh)' : '(Tersedia)'}</span>
                   </div>
                   <div class="clean-progress-track">
                     <div class="clean-progress-fill ${full ? 'fill-full' : ''}" style="width:${pct}%"></div>
@@ -716,6 +883,27 @@ const A = {
   modal: (d) => { S.modal = d.m; render(); },
   close: () => { S.modal = null; render(); },
   logout: () => { S.token = ''; localStorage.removeItem('dt_token'); S.tab = 'home'; toast('Log keluar berjaya.'); load(); },
+  calDate: (d) => {
+    S.date = d.date;
+    render();
+  },
+  calNav: (d) => {
+    const dir = parseInt(d.dir, 10);
+    let m = S.calMonth + dir;
+    let y = S.calYear;
+    if (m < 0) { m = 11; y--; }
+    else if (m > 11) { m = 0; y++; }
+    S.calMonth = m;
+    S.calYear = y;
+    render();
+  },
+  calToday: () => {
+    const now = new Date();
+    S.calYear = now.getFullYear();
+    S.calMonth = now.getMonth();
+    S.date = today();
+    render();
+  },
   async submit() {
     const f = S.form;
     try {
@@ -777,7 +965,12 @@ document.addEventListener('click', (e) => {
 document.addEventListener('change', (e) => {
   const d = e.target.dataset.d;
   if (!d) return;
-  if (d === 'sel') S.date = e.target.value;
+  if (d === 'sel') {
+    S.date = e.target.value;
+    const [y, m] = S.date.split('-').map(Number);
+    S.calYear = y;
+    S.calMonth = m - 1;
+  }
   else S.view[e.target.dataset.k] = e.target.value;
   render();
 });
@@ -802,10 +995,9 @@ async function doSearch() {
   } catch (e) {
     return toast(e.message, 'error');
   }
-  S.view.status = q ? '' : today();
   const r = $('#res-status');
   if (r) {
-    r.innerHTML = browser('status');
+    r.innerHTML = renderStudentPassCards();
     if (window.lucide) lucide.createIcons();
   }
 }

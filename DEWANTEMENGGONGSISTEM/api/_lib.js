@@ -6,11 +6,11 @@ export const db = createClient({ url: process.env.TURSO_DATABASE_URL, authToken:
 export const FACILITIES = [
   { id: 'fac-badminton', name: 'Gelanggang Badminton', type: 'badminton', maxCapacity: 10,
     description: 'Gelanggang badminton berkualiti tinggi. Had 10 orang setiap gelanggang.',
-    image: 'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?auto=format&fit=crop&q=80&w=600',
+    image: '/content img/court.jpeg',
     units: [{ id: 'b-lining', name: 'Gelanggang Li-Ning (Court 1)' }, { id: 'b-yonex', name: 'Gelanggang Yonex (Court 2)' }] },
   { id: 'fac-pingpong', name: 'Meja Ping Pong', type: 'pingpong', maxCapacity: 6,
     description: 'Meja pingpong standard kejohanan.',
-    image: 'https://images.unsplash.com/photo-1534158914592-062992fbe900?auto=format&fit=crop&q=80&w=600',
+    image: '/content img/meja.jpeg',
     units: [{ id: 'p-datonaning', name: "Meja Dato' Naning (Meja 1)" }, { id: 'p-dolsaid', name: 'Meja Dol Said (Meja 2)' }, { id: 'p-hangnadim', name: 'Meja Hang Nadim (Meja 3)' }] }
 ];
 
@@ -21,8 +21,8 @@ export const SCHEDULE = {
   5: { dayName: 'Jumaat', timeDisplay: '5:00 PM - 7:00 PM', slots: [{ start: '5:00 PM', end: '7:00 PM' }] }
 };
 export const DEFAULTS = {
-  bg: 'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?auto=format&fit=crop&q=80&w=1600',
-  logo: 'https://images.unsplash.com/photo-1534158914592-062992fbe900?auto=format&fit=crop&q=80&w=200'
+  bg: '/content img/backgrounddt.jpeg',
+  logo: '/content img/logojspimg.png'
 };
 
 export const sched = (d) => { const [y, m, x] = d.split('-').map(Number); return SCHEDULE[new Date(y, m - 1, x).getDay()] || null; };
