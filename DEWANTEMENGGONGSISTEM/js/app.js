@@ -12,47 +12,141 @@ const I18N = {
   bm: {
     months: ['Januari', 'Februari', 'Mac', 'April', 'Mei', 'Jun', 'Julai', 'Ogos', 'September', 'Oktober', 'November', 'Disember'],
     days: ['Ahad', 'Isnin', 'Selasa', 'Rabu', 'Khamis', 'Jumaat', 'Sabtu'],
+    daysShort: ['Isnin', 'Selasa', 'Rabu', 'Khamis', 'Jumaat', 'Sabtu', 'Ahad'],
     tabs: { home: 'Utama', wizard: 'Tempah', status: 'Semak Status', calendar: 'Kalendar Live' },
     header: { brandSub: 'Jawatankuasa Sukan Pelajar (JSP)', admin: 'Akses Admin JSP', logout: 'Log Keluar' },
     clock: { title: 'WAKTU SEMASA • MYT (GMT+8)', closed: 'Operasi Ditutup Hari Ini', open: 'Sesi Dibuka', rest: 'Tiada Sesi Operasi Hari Ini (Hari Rehat)', scheduleNote: 'Jadual operasi rasmi: Isnin & Jumaat (5-7 PM), Rabu (8-10 PM).', bookBtn: 'Tempah slot hari ini' },
-    stats: { title: 'Kapasiti & Statistik Sesi', sub: 'Status penggunaan fasiliti sukan mengikut tarikh pilihan.', total: 'Jumlah Tempahan', totalSub: 'Sepanjang sesi', active: 'Tempahan Aktif', activeSub: 'Telah diluluskan', vacancy: 'Kekosongan Hari Ini', status: 'Status Dewan', closedBadge: 'Ditutup', availBadge: 'Tersedia', fullBadge: 'Penuh' },
+    stats: { title: 'Kapasiti & Statistik Sesi', sub: 'Status penggunaan fasiliti sukan mengikut tarikh pilihan.', total: 'Jumlah Tempahan', totalSub: 'Sepanjang sesi', active: 'Tempahan Aktif', activeSub: 'Telah diluluskan', vacancy: 'Kekosongan Hari Ini', status: 'Status Dewan', closedBadge: 'Ditutup', availBadge: 'Tersedia', fullBadge: 'Penuh', outsideOp: 'Luar operasi' },
     hero: { tag: 'DEWAN TEMENGGONG', title: 'Pusat Sukan & Fasiliti Kolej Kediaman.', desc: 'Sistem tempahan berpusat gelanggang badminton dan meja ping pong. Kelulusan automatik masa-nyata untuk kemudahan pelajar kolej.', bookNow: 'Tempah slot sekarang', viewCal: 'Lihat kalendar kekosongan', checkStatus: 'Semak status tempahan' },
-    guidelines: { g1Title: '1 Pelajar 1 Peranti', g1Desc: 'Pendaftaran individu menggunakan No. Matrik sah. Had 1 tempahan setiap hari bagi memastikan giliran yang adil untuk semua warga kolej.', g2Title: 'Kelulusan Serta-merta', g2Desc: 'Sistem mengesahkan tempahan secara langsung selagi kuota slot belum penuh. Anda akan menerima slip rujukan untuk ditunjukkan.', g3Title: 'Etika Sahsiah (SRD)' },
+    guidelines: { 
+      g1Title: '1 Pelajar 1 Peranti', 
+      g1Desc: 'Pendaftaran individu menggunakan No. Matrik sah. Had 1 tempahan setiap hari bagi memastikan giliran yang adil untuk semua warga kolej.', 
+      g2Title: 'Kelulusan Serta-merta', 
+      g2Desc: 'Sistem mengesahkan tempahan secara langsung selagi kuota slot belum penuh. Anda akan menerima slip rujukan untuk ditunjukkan.', 
+      g3Title: 'Etika Sahsiah (SRD)',
+      srd: 'Sila patuhi garis panduan Sahsiah Rupa Diri (SRD). Berpakaian sukan yang lengkap dan sopan ketika menggunakan kemudahan dewan.'
+    },
     wizard: {
+      steps: [
+        { n: 1, label: 'Pilih Fasiliti' },
+        { n: 2, label: 'Tarikh & Waktu' },
+        { n: 3, label: 'Maklumat Diri' },
+        { n: 4, label: 'Pengesahan' }
+      ],
       step1Title: 'Pilih jenis sukan dan unit', step1Desc: 'Pilih kemudahan yang ingin anda gunakan hari ini.',
       step2Title: 'Pilih tarikh operasi', step2Desc: 'Dewan beroperasi pada Isnin & Jumaat (5-7 PM) dan Rabu (8-10 PM). Pilih tarikh terus dari kalendar live di bawah.',
       step3Title: 'Maklumat pemohon', step3Desc: 'Pastikan maklumat sepadan dengan rekod universiti anda.',
       step4Title: 'Tempahan Disahkan', step4Desc: 'Permohonan anda telah diluluskan secara automatik.',
-      cap: 'Kapasiti', unitLabel: 'Pilih unit spesifik:', nextDate: 'Seterusnya: Tarikh & Masa', nextStudent: 'Seterusnya: Maklumat Pelajar', submit: 'Hantar dan Luluskan', back: 'Kembali',
+      cap: 'Kapasiti: sehingga', perUnit: 'orang per unit', unitLabel: 'Pilih unit spesifik:', 
+      nextDate: 'Seterusnya: Tarikh & Masa', nextStudent: 'Seterusnya: Maklumat Pelajar', submit: 'Hantar dan Luluskan', back: 'Kembali',
       datePast: 'Tarikh ini telah lepas. Sila pilih tarikh hari ini atau tarikh akan datang.', dateClosed: 'Dewan ditutup oleh pentadbiran JSP pada tarikh ini. Sila pilih tarikh lain pada kalendar.', dateOpen: 'Slot dibuka untuk permohonan.', dateNonOp: 'Tarikh ini luar hari operasi rasmi. Sila pilih hari bertanda hijau (Isnin, Rabu, atau Jumaat) di atas.',
+      selDateLabel: 'TARIKH DIPILIH UNTUK TEMPAHAN:', opTime: 'Waktu Operasi', outSession: 'Luar sesi operasi rasmi',
       fullName: 'Nama Penuh Pelajar *', phoneNo: 'No. Telefon / WhatsApp *', studentId: 'No. Matrik Pelajar *', progCode: 'Kod Program *', notes: 'Catatan Tambahan (Pilihan)',
-      printSlip: 'Cetak / Simpan Slip', checkRecord: 'Semak Rekod Tempahan'
+      fullNamePh: 'Contoh: MUHAMMAD HAZIM', phoneNoPh: 'Contoh: 012-3456789', studentIdPh: 'Contoh: 2024694636', progCodePh: 'Contoh: CS110', notesPh: 'Contoh: Latihan kejohanan',
+      printSlip: 'Cetak / Simpan Slip', checkRecord: 'Semak Rekod Tempahan',
+      refNo: 'NO. RUJUKAN', applicantName: 'Nama Pelajar', studentMatric: 'No. Matrik', facilityUnit: 'Fasiliti & Unit', dateTime: 'Tarikh & Masa', statusApproved: 'Diluluskan'
     },
-    calendar: { title: 'Kalendar Live', sub: 'Penunjuk Aras Sesi Operasi & Kekosongan', lastMonth: 'Bulan Lepas', thisMonth: 'Bulan Ini', nextMonth: 'Bulan Depan', legendOpen: 'Dibuka (Isnin, Rabu, Jumaat)', legendClosed: 'Ditutup / Penuh', legendRest: 'Hari Rehat (Luar Sesi)', todayBadge: 'Hari Ini' },
-    statusView: { title: 'Semak Status Tempahan', sub: 'Cari rekod menggunakan No. Matrik Pelajar (cth: 2024694636) atau No. Rujukan Tempahan.', placeholder: 'Masukkan No. Matrik atau No. Rujukan...', noRecord: 'Tiada rekod tempahan dijumpai untuk carian:' },
+    calendar: { 
+      title: 'Kalendar Live', sub: 'Penunjuk Aras Sesi Operasi & Kekosongan', 
+      lastMonth: 'Bulan Lepas', thisMonth: 'Bulan Ini', nextMonth: 'Bulan Depan', 
+      legendOpen: 'Dibuka (Isnin, Rabu, Jumaat)', legendClosed: 'Ditutup / Penuh', legendRest: 'Hari Rehat (Luar Sesi)', 
+      todayBadge: 'Hari Ini', passedBadge: 'Lepas', restBadge: 'Rehat',
+      selDate: 'TARIKH DIPILIH', hallClosed: 'Dewan Ditutup', openForBooking: 'Dibuka Untuk Permohonan', noSessionToday: 'Tiada Sesi Hari Ini',
+      maxPerUnit: 'Maks', personsPerUnit: 'orang / unit'
+    },
+    statusView: { 
+      title: 'Semak Status Tempahan', sub: 'Cari rekod menggunakan No. Matrik Pelajar (cth: 2024694636) atau No. Rujukan Tempahan.', 
+      placeholder: 'Masukkan No. Matrik atau No. Rujukan...', 
+      noRecord: 'Tiada rekod tempahan dijumpai untuk carian:', 
+      checkMatricTip: 'Sila pastikan No. Matrik atau No. Rujukan dimasukkan dengan tepat.',
+      foundCount: 'rekod tempahan dijumpai:',
+      sessionDate: 'Tarikh Sesi', opHours: 'Waktu Operasi', registeredAt: 'Didaftar pada:', deleteBtn: 'Padam', printBtn: 'Cetak Slip'
+    },
+    browserView: {
+      selectDate: 'Pilih Tarikh:', allDates: 'Semua Tarikh', bookingsCount: 'tempahan', fullBadge: '(Penuh)', availBadge: '(Tersedia)',
+      noBooking: 'Tiada tempahan berdaftar.', createdOn: 'Dibuat:', deleteBooking: 'Padam Tempahan'
+    },
+    adminView: {
+      title: 'Panel Pentadbir JSP', sub: 'Kawalan operasi dewan, penutupan tarikh, pengurusan rekod tempahan, dan eksport.',
+      exportCsv: 'Eksport CSV', gSheets: 'Google Sheets',
+      controlTitle: 'Kawalan Buka / Tutup Tarikh Dewan', controlSub: 'Pilih tarikh di bawah dan gunakan suis (switch) untuk membuka atau menutup operasi.',
+      opClosed: '🔴 Operasi Ditutup', opOpen: '🟢 Operasi Dibuka',
+      closedNotice: 'Pelajar TIDAK boleh menempah slot pada tarikh ini.',
+      openNotice: 'Terbuka untuk tempahan.',
+      offScheduleNotice: 'Tarikh ini luar jadual rasmi tetapi status operasi terbuka.',
+      visualTitle: 'Pautan Visual (Latar Belakang & Logo)', bgPh: 'URL Latar Belakang...', logoPh: 'URL Logo JSP...', saveVisual: 'Simpan Visual',
+      allRecords: 'Semua Rekod Tempahan', recordsSub: 'Pilih tarikh dari kalendar bulanan untuk semak dan padam (remove) sebarang tempahan pengguna.'
+    },
     footer: '© 2026 Dewan Temenggong • Jawatankuasa Sukan Pelajar UiTM Alor Gajah, Melaka'
   },
   eng: {
     months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
     days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    daysShort: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
     tabs: { home: 'Home', wizard: 'Book', status: 'Check Status', calendar: 'Live Calendar' },
     header: { brandSub: 'Student Sports Committee (JSP)', admin: 'JSP Admin Access', logout: 'Logout' },
     clock: { title: 'CURRENT TIME • MYT (GMT+8)', closed: 'Operation Closed Today', open: 'Session Open', rest: 'No Operation Today (Rest Day)', scheduleNote: 'Official schedule: Monday & Friday (5-7 PM), Wednesday (8-10 PM).', bookBtn: 'Book today\'s slot' },
-    stats: { title: 'Session Capacity & Statistics', sub: 'Facility utilization status for selected date.', total: 'Total Bookings', totalSub: 'All-time sessions', active: 'Active Bookings', activeSub: 'Approved bookings', vacancy: 'Today\'s Vacancies', status: 'Hall Status', closedBadge: 'Closed', availBadge: 'Available', fullBadge: 'Full' },
+    stats: { title: 'Session Capacity & Statistics', sub: 'Facility utilization status for selected date.', total: 'Total Bookings', totalSub: 'All-time sessions', active: 'Active Bookings', activeSub: 'Approved bookings', vacancy: 'Today\'s Vacancies', status: 'Hall Status', closedBadge: 'Closed', availBadge: 'Available', fullBadge: 'Full', outsideOp: 'Off-session' },
     hero: { tag: 'DEWAN TEMENGGONG', title: 'College Sports & Facility Center.', desc: 'Centralized booking system for badminton courts and table tennis. Instant automated approval for residential college students.', bookNow: 'Book a slot now', viewCal: 'View availability calendar', checkStatus: 'Check booking status' },
-    guidelines: { g1Title: '1 Student 1 Device', g1Desc: 'Individual registration with valid Student ID. Limit of 1 booking per day to ensure fair turns for all college residents.', g2Title: 'Instant Approval', g2Desc: 'The system validates bookings directly as long as slot quotas are available. You will receive a reference slip to present.', g3Title: 'Dress & Conduct (SRD)' },
+    guidelines: { 
+      g1Title: '1 Student 1 Device', 
+      g1Desc: 'Individual registration with valid Student ID. Limit of 1 booking per day to ensure fair turns for all college residents.', 
+      g2Title: 'Instant Approval', 
+      g2Desc: 'The system validates bookings directly as long as slot quotas are available. You will receive a reference slip to present.', 
+      g3Title: 'Dress & Conduct (SRD)',
+      srd: 'Please comply with student dress code and conduct (SRD) guidelines. Wear proper and polite athletic attire when using sports facilities.'
+    },
     wizard: {
+      steps: [
+        { n: 1, label: 'Select Sport' },
+        { n: 2, label: 'Date & Time' },
+        { n: 3, label: 'Student Info' },
+        { n: 4, label: 'Confirmation' }
+      ],
       step1Title: 'Select sport & facility', step1Desc: 'Choose the sports facility you wish to use today.',
       step2Title: 'Select operating date', step2Desc: 'The sports hall operates on Monday & Friday (5-7 PM) and Wednesday (8-10 PM). Pick your date from the live calendar below.',
       step3Title: 'Applicant details', step3Desc: 'Ensure information matches your official student records.',
       step4Title: 'Booking Confirmed', step4Desc: 'Your booking has been approved automatically.',
-      cap: 'Capacity', unitLabel: 'Select specific unit:', nextDate: 'Next: Date & Time', nextStudent: 'Next: Student Details', submit: 'Submit and Approve', back: 'Back',
+      cap: 'Capacity: up to', perUnit: 'persons per unit', unitLabel: 'Select specific unit:', 
+      nextDate: 'Next: Date & Time', nextStudent: 'Next: Student Details', submit: 'Submit and Approve', back: 'Back',
       datePast: 'This date has already passed. Please select today or an upcoming date.', dateClosed: 'The hall is closed by JSP admin on this date. Please pick another date.', dateOpen: 'Slots are open for application.', dateNonOp: 'This date is outside official operating days. Please select green dates (Monday, Wednesday, or Friday) above.',
+      selDateLabel: 'SELECTED DATE FOR BOOKING:', opTime: 'Operating Time', outSession: 'Outside official session',
       fullName: 'Student Full Name *', phoneNo: 'Phone / WhatsApp No. *', studentId: 'Student ID No. *', progCode: 'Program Code *', notes: 'Additional Notes (Optional)',
-      printSlip: 'Print / Save Slip', checkRecord: 'Check Bookings'
+      fullNamePh: 'Example: MUHAMMAD HAZIM', phoneNoPh: 'Example: 012-3456789', studentIdPh: 'Example: 2024694636', progCodePh: 'Example: CS110', notesPh: 'Example: Tournament practice',
+      printSlip: 'Print / Save Slip', checkRecord: 'Check Bookings',
+      refNo: 'REF. NUMBER', applicantName: 'Student Name', studentMatric: 'Student ID', facilityUnit: 'Facility & Unit', dateTime: 'Date & Time', statusApproved: 'Approved'
     },
-    calendar: { title: 'Live Calendar', sub: 'Hall Operating Sessions & Quota Indicator', lastMonth: 'Prev Month', thisMonth: 'Current Month', nextMonth: 'Next Month', legendOpen: 'Open (Mon, Wed, Fri)', legendClosed: 'Closed / Full', legendRest: 'Rest Day (Off-session)', todayBadge: 'Today' },
-    statusView: { title: 'Check Booking Status', sub: 'Search using Student ID (e.g. 2024694636) or Booking Reference Number.', placeholder: 'Enter Student ID or Reference Number...', noRecord: 'No booking records found for query:' },
+    calendar: { 
+      title: 'Live Calendar', sub: 'Hall Operating Sessions & Quota Indicator', 
+      lastMonth: 'Prev Month', thisMonth: 'Current Month', nextMonth: 'Next Month', 
+      legendOpen: 'Open (Mon, Wed, Fri)', legendClosed: 'Closed / Full', legendRest: 'Rest Day (Off-session)', 
+      todayBadge: 'Today', passedBadge: 'Passed', restBadge: 'Rest',
+      selDate: 'SELECTED DATE', hallClosed: 'Hall Closed', openForBooking: 'Open For Booking', noSessionToday: 'No Session Today',
+      maxPerUnit: 'Max', personsPerUnit: 'persons / unit'
+    },
+    statusView: { 
+      title: 'Check Booking Status', sub: 'Search using Student ID (e.g. 2024694636) or Booking Reference Number.', 
+      placeholder: 'Enter Student ID or Reference Number...', 
+      noRecord: 'No booking records found for query:', 
+      checkMatricTip: 'Please verify that your Student ID or Reference Number is typed accurately.',
+      foundCount: 'booking records found:',
+      sessionDate: 'Session Date', opHours: 'Operating Time', registeredAt: 'Registered on:', deleteBtn: 'Delete', printBtn: 'Print Slip'
+    },
+    browserView: {
+      selectDate: 'Select Date:', allDates: 'All Dates', bookingsCount: 'bookings', fullBadge: '(Full)', availBadge: '(Available)',
+      noBooking: 'No registered bookings.', createdOn: 'Created:', deleteBooking: 'Delete Booking'
+    },
+    adminView: {
+      title: 'JSP Admin Control Panel', sub: 'Hall operation controls, closure dates, booking records management, and export.',
+      exportCsv: 'Export CSV', gSheets: 'Google Sheets',
+      controlTitle: 'Hall Date Operation Switch', controlSub: 'Select a date below and toggle the switch to open or close operations.',
+      opClosed: '🔴 Operation Closed', opOpen: '🟢 Operation Open',
+      closedNotice: 'Students CANNOT book slots on this date.',
+      openNotice: 'Open for student bookings.',
+      offScheduleNotice: 'This date is outside official schedule but marked as open.',
+      visualTitle: 'Visual Links (Background & Logo)', bgPh: 'Background Image URL...', logoPh: 'JSP Logo URL...', saveVisual: 'Save Visual',
+      allRecords: 'All Booking Records', recordsSub: 'Pick a date from the monthly calendar to inspect and remove any user booking.'
+    },
     footer: '© 2026 Dewan Temenggong • Student Sports Committee UiTM Alor Gajah, Melaka'
   }
 };
@@ -244,7 +338,7 @@ function home() {
     <div class="card clean-widget-clock">
       <div class="widget-clock-inner">
         <div class="clock-display-block">
-          <div class="caption-muted">WAKTU SEMASA • MYT (GMT+8)</div>
+          <div class="caption-muted">${t('clock.title')}</div>
           <div class="clock-digits" id="liveClockTime">${getClockTime()}</div>
           <div class="clock-calendar-sub" id="liveClockDate">${getClockDate()}</div>
         </div>
@@ -254,18 +348,18 @@ function home() {
             <span class="status-dot ${isClosedToday ? 'dot-red' : isOperatingToday ? 'dot-green' : 'dot-gray'}"></span>
             <span class="status-text">
               ${isClosedToday 
-                ? 'Operasi Ditutup Hari Ini' 
+                ? t('clock.closed') 
                 : isOperatingToday 
-                  ? `Sesi Dibuka (${todaySchedule.dayName}: ${todaySchedule.timeDisplay})` 
-                  : 'Tiada Sesi Operasi Hari Ini (Hari Rehat)'}
+                  ? `${t('clock.open')} (${todaySchedule.dayName}: ${todaySchedule.timeDisplay})` 
+                  : t('clock.rest')}
             </span>
           </div>
           <p class="caption-muted" style="margin-top:6px">
-            Jadual operasi rasmi: Isnin & Jumaat (5-7 PM), Rabu (8-10 PM).
+            ${t('clock.scheduleNote')}
           </p>
           <div style="margin-top:14px">
             <button class="btn-primary" data-a="tab" data-t="booking-wizard">
-              Tempah slot hari ini
+              ${t('clock.bookBtn')}
             </button>
           </div>
         </div>
@@ -276,8 +370,8 @@ function home() {
     <div class="card clean-stats-bar">
       <div class="stats-header">
         <div>
-          <h3 class="section-title">Kapasiti & Statistik Sesi</h3>
-          <p class="caption-muted">Status penggunaan fasiliti sukan mengikut tarikh pilihan.</p>
+          <h3 class="section-title">${t('stats.title')}</h3>
+          <p class="caption-muted">${t('stats.sub')}</p>
         </div>
         <div class="date-input-wrap">
           <input type="date" value="${S.date}" data-d="sel" class="minimal-date-input">
@@ -286,27 +380,27 @@ function home() {
 
       <div class="stats-row">
         <div class="stat-cell">
-          <span class="stat-caption">Jumlah Tempahan</span>
+          <span class="stat-caption">${t('stats.total')}</span>
           <div class="stat-number">${D.bookings.length}</div>
-          <span class="stat-note">Sepanjang sesi</span>
+          <span class="stat-note">${t('stats.totalSub')}</span>
         </div>
 
         <div class="stat-cell">
-          <span class="stat-caption">Tempahan Aktif</span>
+          <span class="stat-caption">${t('stats.active')}</span>
           <div class="stat-number stat-green">${act}</div>
-          <span class="stat-note">Telah diluluskan</span>
+          <span class="stat-note">${t('stats.activeSub')}</span>
         </div>
 
         <div class="stat-cell">
-          <span class="stat-caption">Kekosongan Hari Ini</span>
+          <span class="stat-caption">${t('stats.vacancy')}</span>
           <div class="stat-number">${o.closed ? '0' : o.rem} <span class="stat-unit">/ ${o.tot}</span></div>
-          <span class="stat-note">${sc ? sc.timeDisplay : 'Luar operasi'}</span>
+          <span class="stat-note">${sc ? sc.timeDisplay : t('stats.outsideOp')}</span>
         </div>
 
         <div class="stat-cell">
-          <span class="stat-caption">Status Dewan</span>
+          <span class="stat-caption">${t('stats.status')}</span>
           <div class="stat-badge-wrap">
-            ${o.closed ? chip('chip-bad', 'Ditutup') : o.rem > 0 ? chip('chip-ok', 'Tersedia') : chip('chip-warn', 'Penuh')}
+            ${o.closed ? chip('chip-bad', t('stats.closedBadge')) : o.rem > 0 ? chip('chip-ok', t('stats.availBadge')) : chip('chip-warn', t('stats.fullBadge'))}
           </div>
           <span class="stat-note">${fmt(S.date)}</span>
         </div>
@@ -316,20 +410,20 @@ function home() {
     <!-- 3. Hero Presentation dengan backgrounddt.jpeg -->
     <div class="card hero-photo-card" style="background-image: linear-gradient(180deg, rgba(9, 13, 22, 0.45) 0%, rgba(9, 13, 22, 0.88) 100%), url('/content img/backgrounddt.jpeg');">
       <div class="hero-photo-content">
-        <span class="hero-tag">DEWAN TEMENGGONG</span>
-        <h1 class="hero-headline text-white">Pusat Sukan & Fasiliti Kolej Kediaman.</h1>
+        <span class="hero-tag">${t('hero.tag')}</span>
+        <h1 class="hero-headline text-white">${t('hero.title')}</h1>
         <p class="hero-subline text-white-muted">
-          Sistem tempahan berpusat gelanggang badminton dan meja ping pong. Kelulusan automatik masa-nyata untuk kemudahan pelajar kolej.
+          ${t('hero.desc')}
         </p>
         <div class="hero-button-row">
           <button class="btn-primary" data-a="tab" data-t="booking-wizard">
-            Tempah slot sekarang
+            ${t('hero.bookNow')}
           </button>
           <button class="btn-glass" data-a="tab" data-t="availability-calendar">
-            Lihat kalendar kekosongan
+            ${t('hero.viewCal')}
           </button>
           <button class="btn-glass" data-a="tab" data-t="student-check">
-            Semak status tempahan
+            ${t('hero.checkStatus')}
           </button>
         </div>
       </div>
@@ -338,23 +432,23 @@ function home() {
     <!-- 4. Guidelines Cards -->
     <div class="clean-grid-3">
       <div class="card clean-card-pad">
-        <h4 class="card-item-title">1 Pelajar 1 Peranti</h4>
+        <h4 class="card-item-title">${t('guidelines.g1Title')}</h4>
         <p class="caption-muted">
-          Pendaftaran individu menggunakan No. Matrik sah. Had 1 tempahan setiap hari bagi memastikan giliran yang adil untuk semua warga kolej.
+          ${t('guidelines.g1Desc')}
         </p>
       </div>
 
       <div class="card clean-card-pad">
-        <h4 class="card-item-title">Kelulusan Serta-merta</h4>
+        <h4 class="card-item-title">${t('guidelines.g2Title')}</h4>
         <p class="caption-muted">
-          Sistem mengesahkan tempahan secara langsung selagi kuota slot belum penuh. Anda akan menerima slip rujukan untuk ditunjukkan.
+          ${t('guidelines.g2Desc')}
         </p>
       </div>
 
       <div class="card clean-card-pad">
-        <h4 class="card-item-title">Etika Sahsiah (SRD)</h4>
+        <h4 class="card-item-title">${t('guidelines.g3Title')}</h4>
         <p class="caption-muted">
-          ${SRD_REMARK}
+          ${t('guidelines.srd')}
         </p>
       </div>
     </div>
@@ -366,18 +460,13 @@ function wizard() {
   const D = S.data, fac = D.facilities.find((f) => f.id === S.fac), f = S.form;
   let body = '';
 
-  const steps = [
-    { n: 1, label: 'Pilih Fasiliti' },
-    { n: 2, label: 'Tarikh & Waktu' },
-    { n: 3, label: 'Maklumat Diri' },
-    { n: 4, label: 'Pengesahan' }
-  ];
+  const steps = (I18N[S.lang] || I18N.bm).wizard.steps;
 
   if (S.step === 1) {
     body = `
       <div class="wizard-step-body">
-        <h3 class="step-title">Pilih jenis sukan dan unit</h3>
-        <p class="caption-muted">Pilih kemudahan yang ingin anda gunakan hari ini.</p>
+        <h3 class="step-title">${t('wizard.step1Title')}</h3>
+        <p class="caption-muted">${t('wizard.step1Desc')}</p>
 
         <div class="facility-choice-grid">
           ${D.facilities.map((x) => `
@@ -385,12 +474,12 @@ function wizard() {
               <div class="choice-image" style="background-image:url('${x.image}')"></div>
               <div class="choice-content">
                 <div class="choice-header">
-                  <span class="choice-title">${x.name}</span>
+                  <span class="choice-title">${S.lang === 'eng' ? (x.type === 'badminton' ? 'Badminton Court' : 'Table Tennis') : x.name}</span>
                   <span class="choice-check">${S.fac === x.id ? ic('check') : ''}</span>
                 </div>
-                <p class="caption-muted">${x.description}</p>
+                <p class="caption-muted">${S.lang === 'eng' ? (x.type === 'badminton' ? 'High quality tournament courts. Limit of 10 persons per court.' : 'Standard tournament ping pong tables.') : x.description}</p>
                 <div class="caption-muted" style="margin-top:10px;font-size:12px">
-                  Kapasiti: sehingga <b>${x.maxCapacity} orang</b> per unit
+                  ${t('wizard.cap')} <b>${x.maxCapacity} ${t('wizard.perUnit')}</b>
                 </div>
               </div>
             </div>
@@ -398,7 +487,7 @@ function wizard() {
         </div>
 
         <div class="unit-group">
-          <label class="field-label">Pilih unit spesifik:</label>
+          <label class="field-label">${t('wizard.unitLabel')}</label>
           <div class="unit-chips-row">
             ${fac.units.map((u) => `
               <button type="button" class="unit-pill ${S.unit === u.id ? 'active' : ''}" data-a="unit" data-id="${u.id}">
@@ -411,7 +500,7 @@ function wizard() {
         <div class="step-footer">
           <div></div>
           <button class="btn-primary" data-a="step" data-n="2">
-            Seterusnya: Tarikh & Masa
+            ${t('wizard.nextDate')}
           </button>
         </div>
       </div>`;
@@ -431,10 +520,10 @@ function wizard() {
         <div class="card clean-card-pad" style="margin-top:16px;padding:16px 20px;background:var(--bg-subtle)">
           <div class="calendar-date-summary" style="margin:0">
             <div>
-              <span class="caption-muted sm">${S.lang === 'eng' ? 'SELECTED DATE FOR BOOKING:' : 'TARIKH DIPILIH UNTUK TEMPAHAN:'}</span>
+              <span class="caption-muted sm">${t('wizard.selDateLabel')}</span>
               <h4 style="font-size:16px;margin-top:2px">${fmt(S.date)}</h4>
               <div class="caption-muted" style="font-size:12.5px">
-                ${sc ? `${S.lang === 'eng' ? 'Operating Time' : 'Waktu Operasi'}: <b>${sc.dayName} (${sc.timeDisplay})</b>` : (S.lang === 'eng' ? 'Outside official session' : 'Luar sesi operasi rasmi')}
+                ${sc ? `${t('wizard.opTime')}: <b>${sc.dayName} (${sc.timeDisplay})</b>` : t('wizard.outSession')}
               </div>
             </div>
             <div>
@@ -463,39 +552,39 @@ function wizard() {
   } else if (S.step === 3) {
     body = `
       <div class="wizard-step-body">
-        <h3 class="step-title">Maklumat pemohon</h3>
-        <p class="caption-muted">Pastikan maklumat sepadan dengan rekod universiti anda.</p>
+        <h3 class="step-title">${t('wizard.step3Title')}</h3>
+        <p class="caption-muted">${t('wizard.step3Desc')}</p>
 
         <div class="form-grid" style="margin-top:24px">
           <div class="field-group">
-            <label class="field-label">Nama Penuh Pelajar *</label>
-            <input type="text" placeholder="Contoh: MUHAMMAD HAZIM" value="${esc(f.fullName || '')}" data-f="fullName" class="minimal-input">
+            <label class="field-label">${t('wizard.fullName')}</label>
+            <input type="text" placeholder="${t('wizard.fullNamePh')}" value="${esc(f.fullName || '')}" data-f="fullName" class="minimal-input">
           </div>
 
           <div class="field-group">
-            <label class="field-label">No. Telefon / WhatsApp *</label>
-            <input type="text" placeholder="Contoh: 012-3456789" value="${esc(f.phoneNo || '')}" data-f="phoneNo" class="minimal-input">
+            <label class="field-label">${t('wizard.phoneNo')}</label>
+            <input type="text" placeholder="${t('wizard.phoneNoPh')}" value="${esc(f.phoneNo || '')}" data-f="phoneNo" class="minimal-input">
           </div>
 
           <div class="field-group">
-            <label class="field-label">No. Matrik Pelajar *</label>
-            <input type="text" placeholder="Contoh: 2024694636" value="${esc(f.studentId || '')}" data-f="studentId" class="minimal-input" style="text-transform:uppercase">
+            <label class="field-label">${t('wizard.studentId')}</label>
+            <input type="text" placeholder="${t('wizard.studentIdPh')}" value="${esc(f.studentId || '')}" data-f="studentId" class="minimal-input" style="text-transform:uppercase">
           </div>
 
           <div class="field-group">
-            <label class="field-label">Kod Program *</label>
-            <input type="text" placeholder="Contoh: CS110" value="${esc(f.programCode || '')}" data-f="programCode" class="minimal-input" style="text-transform:uppercase">
+            <label class="field-label">${t('wizard.progCode')}</label>
+            <input type="text" placeholder="${t('wizard.progCodePh')}" value="${esc(f.programCode || '')}" data-f="programCode" class="minimal-input" style="text-transform:uppercase">
           </div>
 
           <div class="field-group field-span-2">
-            <label class="field-label">Catatan Tambahan (Pilihan)</label>
-            <input type="text" placeholder="Contoh: Latihan kejohanan" value="${esc(S.notes)}" data-s="notes" class="minimal-input">
+            <label class="field-label">${t('wizard.notes')}</label>
+            <input type="text" placeholder="${t('wizard.notesPh')}" value="${esc(S.notes)}" data-s="notes" class="minimal-input">
           </div>
         </div>
 
         <div class="step-footer">
-          <button class="btn-secondary" data-a="step" data-n="2">Kembali</button>
-          <button class="btn-primary" data-a="submit">Hantar dan Luluskan</button>
+          <button class="btn-secondary" data-a="step" data-n="2">${t('wizard.back')}</button>
+          <button class="btn-primary" data-a="submit">${t('wizard.submit')}</button>
         </div>
       </div>`;
   } else if (S.receipt) {
@@ -505,42 +594,42 @@ function wizard() {
         <div class="success-icon-wrap">
           ${ic('check')}
         </div>
-        <h3 class="step-title" style="margin-top:16px">Tempahan Disahkan</h3>
-        <p class="caption-muted">Permohonan anda telah diluluskan secara automatik.</p>
+        <h3 class="step-title" style="margin-top:16px">${t('wizard.step4Title')}</h3>
+        <p class="caption-muted">${t('wizard.step4Desc')}</p>
 
         <!-- Minimal Pass Slip -->
         <div class="card minimal-pass-card">
           <div class="pass-header">
-            <span class="pass-label">NO. RUJUKAN</span>
+            <span class="pass-label">${t('wizard.refNo')}</span>
             <span class="pass-ref">${esc(r.refNo)}</span>
           </div>
           <div class="pass-details-list">
             <div class="pass-row">
-              <span class="caption-muted">Nama Pelajar</span>
+              <span class="caption-muted">${t('wizard.applicantName')}</span>
               <b>${esc(r.userName)}</b>
             </div>
             <div class="pass-row">
-              <span class="caption-muted">No. Matrik</span>
+              <span class="caption-muted">${t('wizard.studentMatric')}</span>
               <b>${esc(r.studentId)}</b>
             </div>
             <div class="pass-row">
-              <span class="caption-muted">Fasiliti & Unit</span>
+              <span class="caption-muted">${t('wizard.facilityUnit')}</span>
               <b>${esc(r.facilityName)} (${esc(r.unitName)})</b>
             </div>
             <div class="pass-row">
-              <span class="caption-muted">Tarikh & Masa</span>
+              <span class="caption-muted">${t('wizard.dateTime')}</span>
               <b>${fmt(r.date)} • ${esc(r.startTime)} - ${esc(r.endTime)}</b>
             </div>
             <div class="pass-row">
-              <span class="caption-muted">Status</span>
-              <span class="chip chip-ok">Diluluskan</span>
+              <span class="caption-muted">${t('stats.status')}</span>
+              <span class="chip chip-ok">${t('wizard.statusApproved')}</span>
             </div>
           </div>
         </div>
 
         <div class="hero-button-row" style="justify-content:center;margin-top:24px">
-          <button class="btn-secondary" onclick="window.print()">Cetak / Simpan Slip</button>
-          <button class="btn-primary" data-a="tab" data-t="student-check">Semak Rekod Tempahan</button>
+          <button class="btn-secondary" onclick="window.print()">${t('wizard.printSlip')}</button>
+          <button class="btn-primary" data-a="tab" data-t="student-check">${t('wizard.checkRecord')}</button>
         </div>
       </div>`;
   }
@@ -579,9 +668,9 @@ function browser(kind) {
   <div class="flow-layout">
     <div class="filter-strip">
       <div class="filter-left">
-        <label class="field-label" style="margin:0">Pilih Tarikh:</label>
+        <label class="field-label" style="margin:0">${t('browserView.selectDate')}</label>
         <input type="date" value="${vd}" data-d="view" data-k="${kind}" class="minimal-date-input">
-        <button class="btn-subtle" data-a="view" data-k="${kind}" data-v="">Semua Tarikh</button>
+        <button class="btn-subtle" data-a="view" data-k="${kind}" data-v="">${t('browserView.allDates')}</button>
       </div>
 
       ${dates.length ? `
@@ -598,7 +687,7 @@ function browser(kind) {
     <div class="flow-layout" style="--s:16px">
       ${D.facilities.map((f) => `
         <div class="facility-section-block">
-          <h4 class="facility-section-title">${f.name}</h4>
+          <h4 class="facility-section-title">${S.lang === 'eng' ? (f.type === 'badminton' ? 'Badminton Court' : 'Table Tennis') : f.name}</h4>
           <div class="units-stack">
             ${f.units.map((u) => {
               const ub = shown.filter((b) => b.unitId === u.id);
@@ -608,7 +697,7 @@ function browser(kind) {
                 <summary class="clean-summary">
                   <span class="summary-title">${u.name}</span>
                   <span class="chip ${full ? 'chip-bad' : 'chip-subtle'}">
-                    ${vd ? `${ub.length} / ${f.maxCapacity} Orang ${full ? '(Penuh)' : ''}` : `${ub.length} tempahan`}
+                    ${vd ? `${ub.length} / ${f.maxCapacity} ${S.lang === 'eng' ? 'Persons' : 'Orang'} ${full ? t('browserView.fullBadge') : ''}` : `${ub.length} ${t('browserView.bookingsCount')}`}
                   </span>
                 </summary>
                 <div class="accordion-body">
@@ -623,17 +712,17 @@ function browser(kind) {
                       <div class="text-right">
                         ${vd ? '' : `<div class="caption-muted">${fmt(b.date)}</div>`}
                         <div class="entry-time">${esc(b.startTime)} - ${esc(b.endTime)}</div>
-                        <div class="caption-muted" style="font-size:11px">Dibuat: ${esc(b.createdAt)}</div>
+                        <div class="caption-muted" style="font-size:11px">${t('browserView.createdOn')} ${esc(b.createdAt)}</div>
                         ${adm ? `
                           <div>
                             <button class="btn-delete-booking" data-a="deleteBooking" data-id="${b.id}" data-ref="${esc(b.refNo)}" data-name="${esc(b.userName)}">
-                              ${ic('trash-2')} Padam Tempahan
+                              ${ic('trash-2')} ${t('browserView.deleteBooking')}
                             </button>
                           </div>
                         ` : ''}
                       </div>
                     </div>
-                  `).join('') : '<div class="empty-entry caption-muted">Tiada tempahan berdaftar.</div>'}
+                  `).join('') : `<div class="empty-entry caption-muted">${t('browserView.noBooking')}</div>`}
                 </div>
               </details>`;
             }).join('')}
@@ -653,10 +742,10 @@ function renderStudentPassCards() {
     return `
       <div class="card empty-search-card">
         <div class="caption-muted" style="font-size:14px">
-          Tiada rekod tempahan dijumpai untuk carian: <b>"${esc(q)}"</b>.
+          ${t('statusView.noRecord')} <b>"${esc(q)}"</b>.
         </div>
         <div class="caption-muted sm" style="margin-top:6px">
-          Sila pastikan No. Matrik atau No. Rujukan dimasukkan dengan tepat.
+          ${t('statusView.checkMatricTip')}
         </div>
       </div>`;
   }
@@ -664,18 +753,18 @@ function renderStudentPassCards() {
   return `
     <div class="pass-cards-list">
       <div class="caption-muted sm" style="margin-bottom:12px;font-weight:600">
-        Dijumpai ${bookings.length} rekod tempahan:
+        ${bookings.length} ${t('statusView.foundCount')}
       </div>
       ${bookings.map((b) => `
         <div class="student-pass-card">
           <div class="pass-card-top">
             <div class="pass-ref-block">
-              <span class="pass-ref-label">NO. RUJUKAN</span>
+              <span class="pass-ref-label">${t('wizard.refNo')}</span>
               <span class="pass-ref-val">${esc(b.refNo)}</span>
             </div>
             <div class="pass-status-pill">
               <span class="status-dot dot-green"></span>
-              <span>Diluluskan</span>
+              <span>${t('wizard.statusApproved')}</span>
             </div>
           </div>
 
@@ -694,26 +783,26 @@ function renderStudentPassCards() {
 
             <div class="pass-date-time-grid">
               <div>
-                <span class="caption-muted sm">Tarikh Sesi</span>
+                <span class="caption-muted sm">${t('statusView.sessionDate')}</span>
                 <div class="pass-dt-val">${fmt(b.date)}</div>
               </div>
               <div>
-                <span class="caption-muted sm">Waktu Operasi</span>
+                <span class="caption-muted sm">${t('statusView.opHours')}</span>
                 <div class="pass-dt-val">${esc(b.startTime)} - ${esc(b.endTime)}</div>
               </div>
             </div>
           </div>
 
           <div class="pass-card-footer">
-            <span class="caption-muted" style="font-size:11.5px">Didaftar pada: ${esc(b.createdAt)}</span>
+            <span class="caption-muted" style="font-size:11.5px">${t('statusView.registeredAt')} ${esc(b.createdAt)}</span>
             <div style="display:flex;gap:8px;align-items:center">
               ${S.data && S.data.isAdmin ? `
                 <button class="btn-delete-booking" style="margin:0" data-a="deleteBooking" data-id="${b.id}" data-ref="${esc(b.refNo)}" data-name="${esc(b.userName)}">
-                  ${ic('trash-2')} Padam
+                  ${ic('trash-2')} ${t('statusView.deleteBtn')}
                 </button>
               ` : ''}
               <button class="btn-subtle" onclick="window.print()">
-                ${ic('printer')} <span>Cetak Slip</span>
+                ${ic('printer')} <span>${t('statusView.printBtn')}</span>
               </button>
             </div>
           </div>
@@ -725,11 +814,11 @@ function renderStudentPassCards() {
 const status = () => `
   <div class="narrow-container">
     <div class="card clean-card-pad">
-      <h3 class="section-title">Semak Status Tempahan</h3>
-      <p class="caption-muted">Cari rekod menggunakan No. Matrik Pelajar (cth: 2024694636) atau No. Rujukan Tempahan.</p>
+      <h3 class="section-title">${t('statusView.title')}</h3>
+      <p class="caption-muted">${t('statusView.sub')}</p>
 
       <div class="search-input-wrap" style="margin-top:18px">
-        <input type="search" placeholder="Masukkan No. Matrik atau No. Rujukan..." value="${esc(S.search)}" data-s="search" class="minimal-input search-box" autofocus>
+        <input type="search" placeholder="${t('statusView.placeholder')}" value="${esc(S.search)}" data-s="search" class="minimal-input search-box" autofocus>
       </div>
 
       <div id="res-status" style="margin-top:20px">
@@ -856,12 +945,12 @@ function calendar() {
     <div class="card clean-card-pad" style="margin-top:20px">
       <div class="calendar-date-summary">
         <div>
-          <span class="caption-muted sm">TARIKH DIPILIH</span>
+          <span class="caption-muted sm">${t('calendar.selDate')}</span>
           <h3 style="font-size:18px;margin-top:2px">${fmt(S.date)}</h3>
-          <div class="caption-muted">Sesi: ${sc ? `<b>${sc.dayName} (${sc.timeDisplay})</b>` : 'Luar sesi operasi rasmi'}</div>
+          <div class="caption-muted">${t('wizard.opTime')}: ${sc ? `<b>${sc.dayName} (${sc.timeDisplay})</b>` : t('wizard.outSession')}</div>
         </div>
         <div>
-          ${D.closedDates.includes(S.date) ? chip('chip-bad', 'Dewan Ditutup') : sc ? chip('chip-ok', 'Dibuka Untuk Permohonan') : chip('chip-subtle', 'Tiada Sesi Hari Ini')}
+          ${D.closedDates.includes(S.date) ? chip('chip-bad', t('calendar.hallClosed')) : sc ? chip('chip-ok', t('calendar.openForBooking')) : chip('chip-subtle', t('calendar.noSessionToday'))}
         </div>
       </div>
 
@@ -869,8 +958,8 @@ function calendar() {
         ${D.facilities.map((f) => `
           <div class="card clean-card-pad" style="padding:20px">
             <div class="facility-head-row">
-              <span class="choice-title">${f.name}</span>
-              <span class="caption-muted">Maks ${f.maxCapacity} orang / unit</span>
+              <span class="choice-title">${S.lang === 'eng' ? (f.type === 'badminton' ? 'Badminton Court' : 'Table Tennis') : f.name}</span>
+              <span class="caption-muted">${t('calendar.maxPerUnit')} ${f.maxCapacity} ${t('calendar.personsPerUnit')}</span>
             </div>
 
             <div class="unit-bars-list" style="margin-top:14px">
@@ -882,7 +971,7 @@ function calendar() {
                 <div class="unit-bar-item">
                   <div class="unit-bar-labels">
                     <span>${u.name}</span>
-                    <span class="${full ? 'stat-bad' : 'caption-muted'}">${n} / ${f.maxCapacity} ${full ? '(Penuh)' : '(Tersedia)'}</span>
+                    <span class="${full ? 'stat-bad' : 'caption-muted'}">${n} / ${f.maxCapacity} ${full ? t('browserView.fullBadge') : t('browserView.availBadge')}</span>
                   </div>
                   <div class="clean-progress-track">
                     <div class="clean-progress-fill ${full ? 'fill-full' : ''}" style="width:${pct}%"></div>
@@ -905,20 +994,20 @@ function admin() {
     <div class="card clean-card-pad">
       <div class="admin-top-header">
         <div>
-          <h3 class="section-title">Panel Pentadbir JSP</h3>
-          <p class="caption-muted">Kawalan operasi dewan, penutupan tarikh, pengurusan rekod tempahan, dan eksport.</p>
+          <h3 class="section-title">${t('adminView.title')}</h3>
+          <p class="caption-muted">${t('adminView.sub')}</p>
         </div>
         <div class="hero-button-row">
-          <button class="btn-secondary" data-a="modal" data-m="sheets">${ic('file-spreadsheet')} Google Sheets</button>
-          <button class="btn-primary" data-a="csv">${ic('download')} Eksport CSV</button>
+          <button class="btn-secondary" data-a="modal" data-m="sheets">${ic('file-spreadsheet')} ${t('adminView.gSheets')}</button>
+          <button class="btn-primary" data-a="csv">${ic('download')} ${t('adminView.exportCsv')}</button>
         </div>
       </div>
 
       <!-- Kawalan Operasi & Buka/Tutup Tarikh -->
       <div class="admin-controls-grid" style="margin-top:24px">
         <div class="admin-box">
-          <label class="field-label">Kawalan Buka / Tutup Tarikh Dewan</label>
-          <p class="caption-muted" style="font-size:12.5px;margin-bottom:8px">Pilih tarikh di bawah dan gunakan suis (switch) untuk membuka atau menutup operasi.</p>
+          <label class="field-label">${t('adminView.controlTitle')}</label>
+          <p class="caption-muted" style="font-size:12.5px;margin-bottom:8px">${t('adminView.controlSub')}</p>
           <div style="max-width:280px">
             <input type="date" value="${S.date}" data-d="sel" class="minimal-date-input" style="width:100%">
           </div>
@@ -927,14 +1016,14 @@ function admin() {
           <div class="switch-control-card">
             <div class="switch-label-group">
               <span class="switch-status-text">
-                ${cl ? '🔴 Operasi Ditutup' : '🟢 Operasi Dibuka'} (${fmt(S.date)})
+                ${cl ? t('adminView.opClosed') : t('adminView.opOpen')} (${fmt(S.date)})
               </span>
               <span class="switch-subtext">
                 ${cl 
-                  ? 'Pelajar TIDAK boleh menempah slot pada tarikh ini.' 
+                  ? t('adminView.closedNotice') 
                   : sc 
-                    ? `Sesi rasmi (${sc.dayName}: ${sc.timeDisplay}). Terbuka untuk tempahan.` 
-                    : 'Tarikh ini luar jadual rasmi tetapi status operasi terbuka.'}
+                    ? `${t('wizard.opTime')} (${sc.dayName}: ${sc.timeDisplay}). ${t('adminView.openNotice')}` 
+                    : t('adminView.offScheduleNotice')}
               </span>
             </div>
             <button type="button" class="switch-btn ${cl ? 'is-closed' : ''}" data-a="toggle" title="Klik untuk tukar status operasi">
@@ -944,11 +1033,11 @@ function admin() {
         </div>
 
         <div class="admin-box">
-          <label class="field-label">Pautan Visual (Latar Belakang & Logo)</label>
+          <label class="field-label">${t('adminView.visualTitle')}</label>
           <div class="flow-layout" style="--s:10px;margin-top:8px">
-            <input type="text" value="${esc(S.bgIn)}" data-s="bgIn" placeholder="URL Latar Belakang..." class="minimal-input">
-            <input type="text" value="${esc(S.logoIn)}" data-s="logoIn" placeholder="URL Logo JSP..." class="minimal-input">
-            <button class="btn-secondary" data-a="saveVisual">${ic('check')} Simpan Visual</button>
+            <input type="text" value="${esc(S.bgIn)}" data-s="bgIn" placeholder="${t('adminView.bgPh')}" class="minimal-input">
+            <input type="text" value="${esc(S.logoIn)}" data-s="logoIn" placeholder="${t('adminView.logoPh')}" class="minimal-input">
+            <button class="btn-secondary" data-a="saveVisual">${ic('check')} ${t('adminView.saveVisual')}</button>
           </div>
         </div>
       </div>
@@ -957,8 +1046,8 @@ function admin() {
       <div style="margin-top:36px">
         <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;margin-bottom:16px">
           <div>
-            <h4 class="facility-section-title">Semua Rekod Tempahan (${D.bookings.length})</h4>
-            <p class="caption-muted">Pilih tarikh dari kalendar bulanan untuk semak dan padam (remove) sebarang tempahan pengguna.</p>
+            <h4 class="facility-section-title">${t('adminView.allRecords')} (${D.bookings.length})</h4>
+            <p class="caption-muted">${t('adminView.recordsSub')}</p>
           </div>
         </div>
 
@@ -998,11 +1087,11 @@ function modals() {
     <div class="clean-modal-backdrop">
       <div class="clean-modal-dialog">
         <button class="modal-close-btn" data-a="close" aria-label="Tutup">${ic('x')}</button>
-        <h3 class="section-title">Integrasi Google Sheets</h3>
-        <p class="caption-muted">Masukkan Web App URL Apps Script untuk auto-sync rekod.</p>
+        <h3 class="section-title">${S.lang === 'eng' ? 'Google Sheets Integration' : 'Integrasi Google Sheets'}</h3>
+        <p class="caption-muted">${S.lang === 'eng' ? 'Enter Google Apps Script Web App URL for real-time automatic sheet syncing.' : 'Masukkan Web App URL Apps Script untuk auto-sync rekod.'}</p>
         <div style="margin-top:16px" class="flow-layout" style="--s:14px">
           <input type="text" value="${esc(S.sheetsIn)}" data-s="sheetsIn" placeholder="https://script.google.com/..." class="minimal-input">
-          <button class="btn-primary" data-a="saveSheets" style="width:100%">Simpan Pautan</button>
+          <button class="btn-primary" data-a="saveSheets" style="width:100%">${S.lang === 'eng' ? 'Save URL' : 'Simpan Pautan'}</button>
         </div>
       </div>
     </div>`;
