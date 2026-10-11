@@ -22,8 +22,8 @@ const SRD_REMARK = 'Sila patuhi garis panduan Sahsiah Rupa Diri (SRD). Berpakaia
 const TABS = [
   ['home', 'Utama'],
   ['booking-wizard', 'Tempah'],
-  ['availability-calendar', 'Kalendar'],
-  ['student-check', 'Semak Status']
+  ['student-check', 'Semak Status'],
+  ['availability-calendar', 'Kalendar Live']
 ];
 
 const S = {
@@ -98,8 +98,10 @@ function header() {
       <div class="nav-brand">
         <button class="brand-link" data-a="tab" data-t="home">
           <img src="/content img/logojspimg.png" alt="Logo JSP" class="nav-logo-thumb" onerror="this.style.display='none'">
-          <span class="brand-title">Dewan Temenggong</span>
-          <span class="brand-sub">JSP</span>
+          <div class="brand-text-col">
+            <span class="brand-title">DEWAN TEMENGGONG</span>
+            <span class="brand-sub-full">Jawatankuasa Sukan Pelajar (JSP)</span>
+          </div>
         </button>
       </div>
 
@@ -122,7 +124,8 @@ function header() {
           </button>
         ` : `
           <button class="btn-subtle" data-a="modal" data-m="login">
-            <span>Akses Admin</span>
+            ${ic('key-round')}
+            <span>Akses Admin JSP</span>
           </button>
         `}
       </div>
@@ -330,19 +333,34 @@ function wizard() {
     body = `
       <div class="wizard-step-body">
         <h3 class="step-title">Pilih tarikh operasi</h3>
-        <p class="caption-muted">Dewan beroperasi pada Isnin & Jumaat (5-7 PM) dan Rabu (8-10 PM).</p>
+        <p class="caption-muted">Dewan beroperasi pada Isnin & Jumaat (5-7 PM) dan Rabu (8-10 PM). Pilih tarikh terus dari kalendar live di bawah.</p>
 
-        <div class="field-group" style="margin-top:20px;max-width:320px">
-          <label class="field-label">Tarikh penggunaan</label>
-          <input type="date" value="${S.date}" data-d="sel" class="minimal-input">
+        <!-- Kalendar Live Interaktif untuk Pemilihan Tarikh -->
+        <div style="margin-top:20px">
+          ${renderBigMonthlyCalendar()}
         </div>
 
-        <div class="notice-minimal ${cl ? 'notice-bad' : sc ? 'notice-ok' : 'notice-warn'}">
+        <div class="card clean-card-pad" style="margin-top:16px;padding:16px 20px;background:var(--bg-subtle)">
+          <div class="calendar-date-summary" style="margin:0">
+            <div>
+              <span class="caption-muted sm">TARIKH DIPILIH UNTUK TEMPAHAN:</span>
+              <h4 style="font-size:16px;margin-top:2px">${fmt(S.date)}</h4>
+              <div class="caption-muted" style="font-size:12.5px">
+                ${sc ? `Waktu Operasi: <b>${sc.dayName} (${sc.timeDisplay})</b>` : 'Luar sesi operasi rasmi'}
+              </div>
+            </div>
+            <div>
+              ${cl ? chip('chip-bad', 'Dewan Ditutup') : sc ? chip('chip-ok', 'Sesi Dibuka') : chip('chip-subtle', 'Tiada Sesi')}
+            </div>
+          </div>
+        </div>
+
+        <div class="notice-minimal ${cl ? 'notice-bad' : sc ? 'notice-ok' : 'notice-warn'}" style="margin-top:14px">
           ${cl 
-            ? 'Dewan ditutup oleh pentadbiran JSP pada tarikh ini. Sila pilih tarikh lain.' 
+            ? 'Dewan ditutup oleh pentadbiran JSP pada tarikh ini. Sila pilih tarikh lain pada kalendar.' 
             : sc 
-              ? `Jadual ${sc.dayName}: ${sc.timeDisplay}. Slot dibuka untuk permohonan.` 
-              : 'Luar hari operasi rasmi. Sila pilih hari Isnin, Rabu, atau Jumaat.'}
+              ? `Jadual ${sc.dayName}: ${sc.timeDisplay}. Slot tersedia untuk permohonan.` 
+              : 'Tarikh ini luar hari operasi rasmi. Sila pilih hari bertanda hijau (Isnin, Rabu, atau Jumaat) di atas.'}
         </div>
 
         <div class="step-footer">
@@ -511,6 +529,13 @@ function browser(kind) {
                         ${vd ? '' : `<div class="caption-muted">${fmt(b.date)}</div>`}
                         <div class="entry-time">${esc(b.startTime)} - ${esc(b.endTime)}</div>
                         <div class="caption-muted" style="font-size:11px">Dibuat: ${esc(b.createdAt)}</div>
+                        ${adm ? `
+                          <div>
+                            <button class="btn-delete-booking" data-a="deleteBooking" data-id="${b.id}" data-ref="${esc(b.refNo)}" data-name="${esc(b.userName)}">
+                              ${ic('trash-2')} Padam Tempahan
+                            </button>
+                          </div>
+                        ` : ''}
                       </div>
                     </div>
                   `).join('') : '<div class="empty-entry caption-muted">Tiada tempahan berdaftar.</div>'}
@@ -586,9 +611,16 @@ function renderStudentPassCards() {
 
           <div class="pass-card-footer">
             <span class="caption-muted" style="font-size:11.5px">Didaftar pada: ${esc(b.createdAt)}</span>
-            <button class="btn-subtle" onclick="window.print()">
-              ${ic('printer')} <span>Cetak Slip</span>
-            </button>
+            <div style="display:flex;gap:8px;align-items:center">
+              ${S.data && S.data.isAdmin ? `
+                <button class="btn-delete-booking" style="margin:0" data-a="deleteBooking" data-id="${b.id}" data-ref="${esc(b.refNo)}" data-name="${esc(b.userName)}">
+                  ${ic('trash-2')} Padam
+                </button>
+              ` : ''}
+              <button class="btn-subtle" onclick="window.print()">
+                ${ic('printer')} <span>Cetak Slip</span>
+              </button>
+            </div>
           </div>
         </div>
       `).join('')}
@@ -761,28 +793,46 @@ function calendar() {
 
 /* ---------- View: Admin ---------- */
 function admin() {
-  const D = S.data, cl = D.closedDates.includes(S.date);
+  const D = S.data, cl = D.closedDates.includes(S.date), sc = sched(S.date);
   return `
   <div class="flow-layout">
     <div class="card clean-card-pad">
       <div class="admin-top-header">
         <div>
           <h3 class="section-title">Panel Pentadbir JSP</h3>
-          <p class="caption-muted">Kawalan operasi dewan dan eksport data rekod.</p>
+          <p class="caption-muted">Kawalan operasi dewan, penutupan tarikh, pengurusan rekod tempahan, dan eksport.</p>
         </div>
         <div class="hero-button-row">
-          <button class="btn-secondary" data-a="modal" data-m="sheets">Google Sheets</button>
-          <button class="btn-primary" data-a="csv">Eksport CSV</button>
+          <button class="btn-secondary" data-a="modal" data-m="sheets">${ic('file-spreadsheet')} Google Sheets</button>
+          <button class="btn-primary" data-a="csv">${ic('download')} Eksport CSV</button>
         </div>
       </div>
 
+      <!-- Kawalan Operasi & Buka/Tutup Tarikh -->
       <div class="admin-controls-grid" style="margin-top:24px">
         <div class="admin-box">
-          <label class="field-label">Kawalan Buka / Tutup Tarikh</label>
-          <div class="hero-button-row" style="margin-top:8px">
-            <input type="date" value="${S.date}" data-d="sel" class="minimal-date-input">
-            <button class="${cl ? 'btn-primary' : 'btn-secondary'}" data-a="toggle">
-              ${cl ? 'Buka Tarikh Ini' : 'Tutup Tarikh Ini'}
+          <label class="field-label">Kawalan Buka / Tutup Tarikh Dewan</label>
+          <p class="caption-muted" style="font-size:12.5px;margin-bottom:8px">Pilih tarikh di bawah dan gunakan suis (switch) untuk membuka atau menutup operasi.</p>
+          <div style="max-width:280px">
+            <input type="date" value="${S.date}" data-d="sel" class="minimal-date-input" style="width:100%">
+          </div>
+
+          <!-- Switch Buka / Tutup Tarikh Moden -->
+          <div class="switch-control-card">
+            <div class="switch-label-group">
+              <span class="switch-status-text">
+                ${cl ? '🔴 Operasi Ditutup' : '🟢 Operasi Dibuka'} (${fmt(S.date)})
+              </span>
+              <span class="switch-subtext">
+                ${cl 
+                  ? 'Pelajar TIDAK boleh menempah slot pada tarikh ini.' 
+                  : sc 
+                    ? `Sesi rasmi (${sc.dayName}: ${sc.timeDisplay}). Terbuka untuk tempahan.` 
+                    : 'Tarikh ini luar jadual rasmi tetapi status operasi terbuka.'}
+              </span>
+            </div>
+            <button type="button" class="switch-btn ${cl ? 'is-closed' : ''}" data-a="toggle" title="Klik untuk tukar status operasi">
+              <span class="switch-thumb"></span>
             </button>
           </div>
         </div>
@@ -792,13 +842,26 @@ function admin() {
           <div class="flow-layout" style="--s:10px;margin-top:8px">
             <input type="text" value="${esc(S.bgIn)}" data-s="bgIn" placeholder="URL Latar Belakang..." class="minimal-input">
             <input type="text" value="${esc(S.logoIn)}" data-s="logoIn" placeholder="URL Logo JSP..." class="minimal-input">
-            <button class="btn-secondary" data-a="saveVisual">Simpan Visual</button>
+            <button class="btn-secondary" data-a="saveVisual">${ic('check')} Simpan Visual</button>
           </div>
         </div>
       </div>
 
+      <!-- Bahagian Semua Rekod Tempahan dengan Kalendar untuk Memudahkan Admin -->
       <div style="margin-top:36px">
-        <h4 class="facility-section-title">Semua Rekod Tempahan (${D.bookings.length})</h4>
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+          <div>
+            <h4 class="facility-section-title">Semua Rekod Tempahan (${D.bookings.length})</h4>
+            <p class="caption-muted">Pilih tarikh dari kalendar bulanan untuk semak dan padam (remove) sebarang tempahan pengguna.</p>
+          </div>
+        </div>
+
+        <!-- Kalendar Bulanan untuk Kemudahan Akses Admin -->
+        <div style="margin-bottom:20px">
+          ${renderBigMonthlyCalendar()}
+        </div>
+
+        <!-- Senarai Tempahan mengikut fasiliti dan unit -->
         <div style="margin-top:14px">${browser('admin')}</div>
       </div>
     </div>
@@ -858,9 +921,8 @@ function render() {
       ${(views[S.tab] || home)()}
     </main>` + bnav() + modals() + `
     <footer class="clean-footer">
-      <div class="nav-container footer-flex">
-        <span>© 2026 Dewan Temenggong • JSP Kolej Kediaman</span>
-        <span class="caption-muted">Turso Database & Vercel Cloud</span>
+      <div class="footer-centered-wrap">
+        © 2026 Dewan Temenggong • Jawatankuasa Sukan Pelajar UiTM Alor Gajah, Melaka
       </div>
     </footer>`;
 
@@ -903,6 +965,20 @@ const A = {
     S.calMonth = now.getMonth();
     S.date = today();
     render();
+  },
+  async deleteBooking(d) {
+    const ref = d.ref;
+    const name = d.name || 'pengguna';
+    if (!confirm(`Adakah anda pasti mahu memadamkan tempahan [${ref}] untuk ${name}? Slot ini akan dikosongkan semula.`)) {
+      return;
+    }
+    try {
+      await api('admin', { action: 'delete_booking', id: d.id, refNo: ref });
+      toast(`Tempahan [${ref}] berjaya dipadamkan.`);
+      await load();
+    } catch (e) {
+      toast(e.message, 'error');
+    }
   },
   async submit() {
     const f = S.form;

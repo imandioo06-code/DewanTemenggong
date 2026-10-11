@@ -30,5 +30,14 @@ export default wrap(async (req, res) => {
     }
     return res.json({ ok: true });
   }
+  if (action === 'delete_booking') {
+    if (!p.id && !p.refNo) fail(400, 'ID atau No. Rujukan tempahan diperlukan.');
+    if (p.id) {
+      await db.execute({ sql: 'DELETE FROM bookings WHERE id = ?', args: [p.id] });
+    } else {
+      await db.execute({ sql: 'DELETE FROM bookings WHERE ref_no = ?', args: [p.refNo] });
+    }
+    return res.json({ ok: true, deleted: true });
+  }
   fail(400, 'Tindakan tidak sah.');
 });
