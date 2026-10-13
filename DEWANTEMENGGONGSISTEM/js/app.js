@@ -19,8 +19,8 @@ const I18N = {
     stats: { title: 'Kapasiti & Statistik Sesi', sub: 'Status penggunaan fasiliti sukan mengikut tarikh pilihan.', total: 'Jumlah Tempahan', totalSub: 'Sepanjang sesi', active: 'Tempahan Aktif', activeSub: 'Telah diluluskan', vacancy: 'Kekosongan Hari Ini', status: 'Status Dewan', closedBadge: 'Ditutup', availBadge: 'Tersedia', fullBadge: 'Penuh', outsideOp: 'Luar operasi' },
     hero: { tag: 'DEWAN TEMENGGONG', title: 'Pusat Sukan & Fasiliti Kolej Kediaman.', desc: 'Sistem tempahan berpusat gelanggang badminton dan meja ping pong. Kelulusan automatik masa-nyata untuk kemudahan pelajar kolej.', bookNow: 'Tempah slot sekarang', viewCal: 'Lihat kalendar kekosongan', checkStatus: 'Semak status tempahan' },
     guidelines: { 
-      g1Title: '1 Pelajar 1 Peranti', 
-      g1Desc: 'Pendaftaran individu menggunakan No. Matrik sah. Had 1 tempahan setiap hari bagi memastikan giliran yang adil untuk semua warga kolej.', 
+      g1Title: '1 Pelajar 1 Tempahan Seminggu', 
+      g1Desc: 'Pendaftaran individu menggunakan No. Matrik sah. Had 1 tempahan setiap minggu bagi memastikan giliran yang adil untuk semua warga kolej.', 
       g2Title: 'Kelulusan Serta-merta', 
       g2Desc: 'Sistem mengesahkan tempahan secara langsung selagi kuota slot belum penuh. Anda akan menerima slip rujukan untuk ditunjukkan.', 
       g3Title: 'Etika Sahsiah (SRD)',
@@ -43,14 +43,21 @@ const I18N = {
       selDateLabel: 'TARIKH DIPILIH UNTUK TEMPAHAN:', opTime: 'Waktu Operasi', outSession: 'Luar sesi operasi rasmi',
       fullName: 'Nama Penuh Pelajar *', phoneNo: 'No. Telefon / WhatsApp *', studentId: 'No. Matrik Pelajar *', progCode: 'Kod Program *', notes: 'Catatan Tambahan (Pilihan)',
       fullNamePh: 'Contoh: MUHAMMAD HAZIM', phoneNoPh: 'Contoh: 012-3456789', studentIdPh: 'Contoh: 2024694636', progCodePh: 'Contoh: CS110', notesPh: 'Contoh: Latihan kejohanan',
+      studentIdHint: '10 digit nombor matrik UiTM (cth: 2024694636) - angka sahaja.',
+      onePerWeekNotice: '📌 <b>Syarat Kuota:</b> Setiap pelajar dihadkan kepada <b>1 tempahan setiap minggu</b> (Isnin–Ahad) bagi memberi peluang yang adil kepada rakan kolej lain.',
+      agreementTitle: 'Aku Janji Ketulenan Maklumat & Pengesahan Kad Matrik *',
+      agreementDesc: 'Saya memperakui bahawa semua maklumat yang diisi adalah benar, tepat dan milik saya sendiri. Sekiranya maklumat ini didapati tidak benar atau palsu, tempahan saya akan dibatalkan serta-merta dan saya bersedia dikenakan tindakan tatatertib oleh Pengurusan Kolej & JSP. Saya maklum bahawa <b>Kad Pelajar (Matrik) fizikal wajib ditunjukkan</b> kepada petugas JSP di dewan semasa sesi bermula.',
+      physicalNotice: 'Peringatan Petugas JSP: Kad Pelajar (Matrik) Fizikal wajib ditunjukkan semasa melapor diri di dewan. Petugas berhak membatalkan slot jika maklumat tidak sah.',
+      weekNotOpen: 'Minggu Belum Dibuka',
+      weekNotOpenNotice: 'Tempahan bagi minggu ini belum dibuka oleh pentadbiran JSP. Admin akan mengaktifkan tempahan menjelang minggu berkenaan.',
       printSlip: 'Cetak / Simpan Slip', checkRecord: 'Semak Rekod Tempahan',
       refNo: 'NO. RUJUKAN', applicantName: 'Nama Pelajar', studentMatric: 'No. Matrik', facilityUnit: 'Fasiliti & Unit', dateTime: 'Tarikh & Masa', statusApproved: 'Diluluskan'
     },
     calendar: { 
       title: 'Kalendar Live', sub: 'Penunjuk Aras Sesi Operasi & Kekosongan', 
       lastMonth: 'Bulan Lepas', thisMonth: 'Bulan Ini', nextMonth: 'Bulan Depan', 
-      legendOpen: 'Dibuka (Isnin, Rabu, Jumaat)', legendClosed: 'Ditutup / Penuh', legendRest: 'Hari Rehat (Luar Sesi)', 
-      todayBadge: 'Hari Ini', passedBadge: 'Lepas', restBadge: 'Rehat',
+      legendOpen: 'Dibuka (Isnin, Rabu, Jumaat)', legendClosed: 'Ditutup / Penuh', legendRest: 'Hari Rehat (Luar Sesi)', legendLocked: 'Belum Dibuka (Minggu Seterusnya)',
+      todayBadge: 'Hari Ini', passedBadge: 'Lepas', restBadge: 'Rehat', badgeLocked: 'Belum Buka',
       selDate: 'TARIKH DIPILIH', hallClosed: 'Dewan Ditutup', openForBooking: 'Dibuka Untuk Permohonan', noSessionToday: 'Tiada Sesi Hari Ini',
       maxPerUnit: 'Maks', personsPerUnit: 'orang / unit'
     },
@@ -74,6 +81,15 @@ const I18N = {
       closedNotice: 'Pelajar TIDAK boleh menempah slot pada tarikh ini.',
       openNotice: 'Terbuka untuk tempahan.',
       offScheduleNotice: 'Tarikh ini luar jadual rasmi tetapi status operasi terbuka.',
+      academicTitle: 'Kawalan Tempahan Minggu Kuliah (Kalendar Akademik UiTM)',
+      academicSub: 'Tentukan minggu kuliah yang dibuka untuk tempahan. Minggu seterusnya automatik ditutup (OFF) sehinggalah admin membuka (ON) minggu tersebut.',
+      semStartLabel: 'Tarikh Mula Semester (Minggu 1):',
+      saveSemStart: 'Simpan Tarikh Mula',
+      curWeekBadge: 'Minggu Kuliah Semasa:',
+      openWeeksLabel: 'Status Pembukaan Setiap Minggu (Klik butang minggu untuk Buka / Tutup):',
+      btnOpenThisWeekOnly: 'Buka Minggu Ini Sahaja (Off Minggu Lain)',
+      btnAdvanceNextWeek: 'Buka Minggu Seterusnya (+1)',
+      btnToggleAll: 'Buka Semua Minggu',
       visualTitle: 'Pautan Visual (Latar Belakang & Logo)', bgPh: 'URL Latar Belakang...', logoPh: 'URL Logo JSP...', saveVisual: 'Simpan Visual',
       allRecords: 'Semua Rekod Tempahan', recordsSub: 'Pilih tarikh dari kalendar bulanan untuk semak dan padam (remove) sebarang tempahan pengguna.'
     },
@@ -89,8 +105,8 @@ const I18N = {
     stats: { title: 'Session Capacity & Statistics', sub: 'Facility utilization status for selected date.', total: 'Total Bookings', totalSub: 'All-time sessions', active: 'Active Bookings', activeSub: 'Approved bookings', vacancy: 'Today\'s Vacancies', status: 'Hall Status', closedBadge: 'Closed', availBadge: 'Available', fullBadge: 'Full', outsideOp: 'Off-session' },
     hero: { tag: 'DEWAN TEMENGGONG', title: 'College Sports & Facility Center.', desc: 'Centralized booking system for badminton courts and table tennis. Instant automated approval for residential college students.', bookNow: 'Book a slot now', viewCal: 'View availability calendar', checkStatus: 'Check booking status' },
     guidelines: { 
-      g1Title: '1 Student 1 Device', 
-      g1Desc: 'Individual registration with valid Student ID. Limit of 1 booking per day to ensure fair turns for all college residents.', 
+      g1Title: '1 Student 1 Booking per Week', 
+      g1Desc: 'Individual registration with valid Student ID. Limit of 1 booking per week to ensure fair turns for all college residents.', 
       g2Title: 'Instant Approval', 
       g2Desc: 'The system validates bookings directly as long as slot quotas are available. You will receive a reference slip to present.', 
       g3Title: 'Dress & Conduct (SRD)',
@@ -113,14 +129,21 @@ const I18N = {
       selDateLabel: 'SELECTED DATE FOR BOOKING:', opTime: 'Operating Time', outSession: 'Outside official session',
       fullName: 'Student Full Name *', phoneNo: 'Phone / WhatsApp No. *', studentId: 'Student ID No. *', progCode: 'Program Code *', notes: 'Additional Notes (Optional)',
       fullNamePh: 'Example: MUHAMMAD HAZIM', phoneNoPh: 'Example: 012-3456789', studentIdPh: 'Example: 2024694636', progCodePh: 'Example: CS110', notesPh: 'Example: Tournament practice',
+      studentIdHint: '10-digit UiTM Student ID (e.g. 2024694636) - numbers only.',
+      onePerWeekNotice: '📌 <b>Quota Policy:</b> Each student is limited to <b>1 booking per week</b> (Mon–Sun) to ensure fair turns for all fellow students.',
+      agreementTitle: 'Declaration of Information Accuracy & Student ID Verification *',
+      agreementDesc: 'I certify that all details entered are accurate, true, and belong to me. If found false, my booking will be cancelled immediately and I will face disciplinary action by College Management & JSP. I understand that my <b>physical Student ID (Matric) Card must be presented</b> to JSP officials at the hall upon session entry.',
+      physicalNotice: 'JSP Staff Notice: Physical Student ID card must be presented upon reporting at the sports hall. Officials reserve the right to revoke slots if details do not match.',
+      weekNotOpen: 'Week Not Open Yet',
+      weekNotOpenNotice: 'Booking for this lecture week is not open yet. JSP admin will activate booking ahead of that week.',
       printSlip: 'Print / Save Slip', checkRecord: 'Check Bookings',
       refNo: 'REF. NUMBER', applicantName: 'Student Name', studentMatric: 'Student ID', facilityUnit: 'Facility & Unit', dateTime: 'Date & Time', statusApproved: 'Approved'
     },
     calendar: { 
       title: 'Live Calendar', sub: 'Hall Operating Sessions & Quota Indicator', 
       lastMonth: 'Prev Month', thisMonth: 'Current Month', nextMonth: 'Next Month', 
-      legendOpen: 'Open (Mon, Wed, Fri)', legendClosed: 'Closed / Full', legendRest: 'Rest Day (Off-session)', 
-      todayBadge: 'Today', passedBadge: 'Passed', restBadge: 'Rest',
+      legendOpen: 'Open (Mon, Wed, Fri)', legendClosed: 'Closed / Full', legendRest: 'Rest Day (Off-session)', legendLocked: 'Not Open Yet (Future Weeks)',
+      todayBadge: 'Today', passedBadge: 'Passed', restBadge: 'Rest', badgeLocked: 'Not Open',
       selDate: 'SELECTED DATE', hallClosed: 'Hall Closed', openForBooking: 'Open For Booking', noSessionToday: 'No Session Today',
       maxPerUnit: 'Max', personsPerUnit: 'persons / unit'
     },
@@ -144,6 +167,15 @@ const I18N = {
       closedNotice: 'Students CANNOT book slots on this date.',
       openNotice: 'Open for student bookings.',
       offScheduleNotice: 'This date is outside official schedule but marked as open.',
+      academicTitle: 'UiTM Academic Weeks Booking Control',
+      academicSub: 'Control which lecture weeks are open for bookings. Future weeks will remain closed until activated by admin.',
+      semStartLabel: 'Semester Start Date (Week 1):',
+      saveSemStart: 'Save Semester Date',
+      curWeekBadge: 'Current Lecture Week:',
+      openWeeksLabel: 'Weekly Booking Status (Click week button to toggle Open / Close):',
+      btnOpenThisWeekOnly: 'Open Current Week Only (Off Other Weeks)',
+      btnAdvanceNextWeek: 'Open Next Week (+1)',
+      btnToggleAll: 'Open All Weeks',
       visualTitle: 'Visual Links (Background & Logo)', bgPh: 'Background Image URL...', logoPh: 'JSP Logo URL...', saveVisual: 'Save Visual',
       allRecords: 'All Booking Records', recordsSub: 'Pick a date from the monthly calendar to inspect and remove any user booking.'
     },
@@ -200,6 +232,71 @@ const translateFacilityName = (fName, fId) => {
 
 const FALLBACK = '/content img/logojspimg.png';
 const SRD_REMARK = 'Sila patuhi garis panduan Sahsiah Rupa Diri (SRD). Berpakaian sukan yang lengkap dan sopan ketika menggunakan kemudahan dewan.';
+
+const getAcademicWeek = (dateStr) => {
+  if (!dateStr) return null;
+  const semStart = (S.data?.settings?.semesterStartDate) || '2026-10-05';
+  const [sy, sm, sd] = semStart.split('-').map(Number);
+  const [dy, dm, dd] = dateStr.split('-').map(Number);
+  const start = new Date(sy, sm - 1, sd);
+  start.setHours(0, 0, 0, 0);
+  const current = new Date(dy, dm - 1, dd);
+  current.setHours(0, 0, 0, 0);
+  const diffDays = Math.floor((current.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+  if (diffDays < 0) return { week: 0, isPre: true, label: S.lang === 'eng' ? 'Pre-Semester' : 'Pra-Semester', fullLabel: S.lang === 'eng' ? 'Pre-Semester Period' : 'Tempoh Pra-Semester', shortLabel: 'Pre' };
+  const weekNum = Math.floor(diffDays / 7) + 1;
+  return {
+    week: weekNum,
+    isPre: false,
+    label: S.lang === 'eng' ? `Week ${weekNum}` : `Minggu ${weekNum}`,
+    fullLabel: S.lang === 'eng' ? `Lecture Week ${weekNum}` : `Minggu Kuliah ${weekNum}`,
+    shortLabel: `M${weekNum}`
+  };
+};
+
+const isDateWeekOpen = (dateStr) => {
+  if (!dateStr || !S.data) return { open: true };
+  const mode = S.data.settings?.openBookingMode || 'week_control';
+  if (mode === 'all') return { open: true };
+  const openWeeks = (S.data.settings?.openWeeks || '1,2').split(',').map(s => s.trim()).filter(Boolean);
+  const targetWeek = getAcademicWeek(dateStr);
+  const todayStr = today();
+
+  if (mode === 'week_control') {
+    if (targetWeek && targetWeek.week > 0) {
+      const isOpen = openWeeks.includes(String(targetWeek.week));
+      return { 
+        open: isOpen, 
+        weekNum: targetWeek.week, 
+        reason: isOpen ? '' : (S.lang === 'eng' ? `Booking for Week ${targetWeek.week} is not open yet (Admin will activate it ahead of that week)` : `Tempahan bagi Minggu ${targetWeek.week} belum dibuka (JSP akan mengaktifkan menjelang minggu tersebut)`)
+      };
+    }
+    return { open: true };
+  }
+
+  if (mode === 'current_week') {
+    const curWeek = getAcademicWeek(todayStr);
+    const isOpen = targetWeek && curWeek && targetWeek.week === curWeek.week;
+    return { 
+      open: isOpen, 
+      weekNum: targetWeek?.week, 
+      reason: isOpen ? '' : (S.lang === 'eng' ? `Only current lecture week (Week ${curWeek?.week}) is open` : `Hanya minggu kuliah semasa (Minggu ${curWeek?.week}) dibuka`)
+    };
+  }
+
+  if (mode === 'rolling_2days') {
+    const [ty, tm, td] = todayStr.split('-').map(Number);
+    const [by, bm, bd] = dateStr.split('-').map(Number);
+    const diff = Math.floor((new Date(by, bm - 1, bd) - new Date(ty, tm - 1, td)) / (86400000));
+    const isOpen = diff <= 2;
+    return {
+      open: isOpen,
+      reason: isOpen ? '' : (S.lang === 'eng' ? 'Booking opens 2 days before session date' : 'Tempahan hanya dibuka 2 hari sebelum tarikh sesi')
+    };
+  }
+
+  return { open: true };
+};
 
 const getTabs = () => [
   ['home', t('tabs.home')],
@@ -528,6 +625,9 @@ function wizard() {
   } else if (S.step === 2) {
     const sc = sched(S.date), cl = D.closedDates.includes(S.date);
     const isPast = S.date < today();
+    const weekCheck = isDateWeekOpen(S.date);
+    const isWeekLocked = sc && !isPast && !cl && !weekCheck.open;
+    const wkInfo = getAcademicWeek(S.date);
     body = `
       <div class="wizard-step-body">
         <h3 class="step-title">${t('wizard.step2Title')}</h3>
@@ -541,31 +641,41 @@ function wizard() {
         <div class="card clean-card-pad" style="margin-top:16px;padding:16px 20px;background:var(--bg-subtle)">
           <div class="calendar-date-summary" style="margin:0">
             <div>
-              <span class="caption-muted sm">${t('wizard.selDateLabel')}</span>
+              <span class="caption-muted sm">${t('wizard.selDateLabel')} ${wkInfo ? `• <b>${wkInfo.fullLabel}</b>` : ''}</span>
               <h4 style="font-size:16px;margin-top:2px">${fmt(S.date)}</h4>
               <div class="caption-muted" style="font-size:12.5px">
                 ${sc ? `${t('wizard.opTime')}: <b>${translateDayName(sc.dayName)} (${sc.timeDisplay})</b>` : t('wizard.outSession')}
               </div>
             </div>
             <div>
-              ${isPast ? chip('chip-bad', S.lang === 'eng' ? 'Past Date (Invalid)' : 'Tarikh Lepas (Tidak Sah)') : cl ? chip('chip-bad', t('stats.closedBadge')) : sc ? chip('chip-ok', S.lang === 'eng' ? 'Session Open' : 'Sesi Dibuka') : chip('chip-subtle', S.lang === 'eng' ? 'No Session' : 'Tiada Sesi')}
+              ${isPast 
+                ? chip('chip-bad', S.lang === 'eng' ? 'Past Date (Invalid)' : 'Tarikh Lepas (Tidak Sah)') 
+                : cl 
+                  ? chip('chip-bad', t('stats.closedBadge')) 
+                  : isWeekLocked
+                    ? chip('chip-warn', S.lang === 'eng' ? 'Week Not Open' : 'Minggu Belum Dibuka')
+                    : sc 
+                      ? chip('chip-ok', S.lang === 'eng' ? 'Session Open' : 'Sesi Dibuka') 
+                      : chip('chip-subtle', S.lang === 'eng' ? 'No Session' : 'Tiada Sesi')}
             </div>
           </div>
         </div>
 
-        <div class="notice-minimal ${isPast || cl ? 'notice-bad' : sc ? 'notice-ok' : 'notice-warn'}" style="margin-top:14px">
+        <div class="notice-minimal ${isPast || cl || isWeekLocked ? 'notice-bad' : sc ? 'notice-ok' : 'notice-warn'}" style="margin-top:14px">
           ${isPast 
             ? t('wizard.datePast') 
             : cl 
               ? t('wizard.dateClosed') 
-              : sc 
-                ? `${translateDayName(sc.dayName)}: ${sc.timeDisplay}. ${t('wizard.dateOpen')}` 
-                : t('wizard.dateNonOp')}
+              : isWeekLocked
+                ? (weekCheck.reason || t('wizard.weekNotOpenNotice'))
+                : sc 
+                  ? `${translateDayName(sc.dayName)}: ${sc.timeDisplay}. ${t('wizard.dateOpen')}` 
+                  : t('wizard.dateNonOp')}
         </div>
 
         <div class="step-footer">
           <button class="btn-secondary" data-a="step" data-n="1">${t('wizard.back')}</button>
-          <button class="btn-primary" data-a="step" data-n="3" ${isPast || cl || !sc ? 'disabled' : ''}>
+          <button class="btn-primary" data-a="step" data-n="3" ${isPast || cl || !sc || isWeekLocked ? 'disabled' : ''}>
             ${t('wizard.nextStudent')}
           </button>
         </div>
@@ -576,7 +686,11 @@ function wizard() {
         <h3 class="step-title">${t('wizard.step3Title')}</h3>
         <p class="caption-muted">${t('wizard.step3Desc')}</p>
 
-        <div class="form-grid" style="margin-top:24px">
+        <div class="notice-minimal notice-info" style="margin-top:16px">
+          ${t('wizard.onePerWeekNotice')}
+        </div>
+
+        <div class="form-grid" style="margin-top:18px">
           <div class="field-group">
             <label class="field-label">${t('wizard.fullName')}</label>
             <input type="text" placeholder="${t('wizard.fullNamePh')}" value="${esc(f.fullName || '')}" data-f="fullName" class="minimal-input">
@@ -589,7 +703,8 @@ function wizard() {
 
           <div class="field-group">
             <label class="field-label">${t('wizard.studentId')}</label>
-            <input type="text" placeholder="${t('wizard.studentIdPh')}" value="${esc(f.studentId || '')}" data-f="studentId" class="minimal-input" style="text-transform:uppercase">
+            <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="10" placeholder="${t('wizard.studentIdPh')}" value="${esc(f.studentId || '')}" data-f="studentId" class="minimal-input">
+            <span class="field-hint">${t('wizard.studentIdHint')}</span>
           </div>
 
           <div class="field-group">
@@ -601,6 +716,19 @@ function wizard() {
             <label class="field-label">${t('wizard.notes')}</label>
             <input type="text" placeholder="${t('wizard.notesPh')}" value="${esc(S.notes)}" data-s="notes" class="minimal-input">
           </div>
+
+          <!-- Aku Janji Ketulenan Maklumat & Pengesahan Kad Matrik Fizikal -->
+          <div class="field-span-2" style="margin-top:8px">
+            <div class="agreement-card">
+              <label class="agreement-label">
+                <input type="checkbox" data-f="agreement" ${f.agreement ? 'checked' : ''} class="agreement-checkbox">
+                <div class="agreement-content">
+                  <span class="agreement-title">${t('wizard.agreementTitle')}</span>
+                  <p class="agreement-text">${t('wizard.agreementDesc')}</p>
+                </div>
+              </label>
+            </div>
+          </div>
         </div>
 
         <div class="step-footer">
@@ -610,6 +738,7 @@ function wizard() {
       </div>`;
   } else if (S.receipt) {
     const r = S.receipt;
+    const wkInfo = getAcademicWeek(r.date);
     body = `
       <div class="wizard-step-body text-center">
         <div class="success-icon-wrap">
@@ -639,11 +768,18 @@ function wizard() {
             </div>
             <div class="pass-row">
               <span class="caption-muted">${t('wizard.dateTime')}</span>
-              <b>${fmt(r.date)} • ${esc(r.startTime)} - ${esc(r.endTime)}</b>
+              <b>${fmt(r.date)} ${wkInfo ? `(${wkInfo.fullLabel})` : ''} • ${esc(r.startTime)} - ${esc(r.endTime)}</b>
             </div>
             <div class="pass-row">
               <span class="caption-muted">${t('stats.status')}</span>
               <span class="chip chip-ok">${t('wizard.statusApproved')}</span>
+            </div>
+          </div>
+
+          <div class="physical-id-alert" style="margin-top:16px;text-align:left">
+            ${ic('shield-alert')}
+            <div>
+              <b>${t('wizard.physicalNotice')}</b>
             </div>
           </div>
         </div>
@@ -883,6 +1019,9 @@ function renderBigMonthlyCalendar() {
     const isClosed = D.closedDates.includes(dateStr);
     const daySched = D.schedule ? D.schedule[dayOfWeek] : null;
     const isOperating = !!daySched;
+    const weekCheck = isDateWeekOpen(dateStr);
+    const isWeekLocked = isOperating && !isPast && !isClosed && !weekCheck.open;
+    const wkInfo = getAcademicWeek(dateStr);
 
     // Check bookings for this date
     let badgeHtml = '';
@@ -890,6 +1029,8 @@ function renderBigMonthlyCalendar() {
       badgeHtml = `<span class="cal-badge-muted">${S.lang === 'eng' ? 'Passed' : 'Lepas'}</span>`;
     } else if (isClosed) {
       badgeHtml = `<span class="cal-badge-pill badge-closed">${t('stats.closedBadge')}</span>`;
+    } else if (isWeekLocked) {
+      badgeHtml = `<span class="cal-badge-pill badge-locked">${t('calendar.badgeLocked')}</span>`;
     } else if (isOperating) {
       const ov = overview(dateStr);
       if (ov.rem === 0) {
@@ -903,12 +1044,15 @@ function renderBigMonthlyCalendar() {
 
     const clickAction = (isPast && S.tab === 'booking-wizard') 
       ? 'data-a="pastDateNotice"' 
-      : `data-a="calDate" data-date="${dateStr}"`;
+      : (isWeekLocked && S.tab === 'booking-wizard')
+        ? `data-a="lockedDateNotice" data-week="${weekCheck.weekNum || ''}"`
+        : `data-a="calDate" data-date="${dateStr}"`;
 
     cells.push(`
-      <div class="cal-cell ${isPast ? 'past-date' : ''} ${isOperating ? 'operating' : 'non-operating'} ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}" ${clickAction} title="${isPast ? (S.lang === 'eng' ? 'Past date cannot be booked' : 'Tarikh telah lepas') : dateStr}">
+      <div class="cal-cell ${isPast ? 'past-date' : ''} ${isWeekLocked ? 'week-locked' : ''} ${isOperating ? 'operating' : 'non-operating'} ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}" ${clickAction} title="${isPast ? (S.lang === 'eng' ? 'Past date cannot be booked' : 'Tarikh telah lepas') : isWeekLocked ? weekCheck.reason : dateStr}">
         <div class="cal-cell-header">
           <span class="cal-day-num">${d}</span>
+          ${wkInfo ? `<span class="cal-week-tag" title="${wkInfo.fullLabel}">${wkInfo.shortLabel}</span>` : ''}
           ${isToday ? `<span class="cal-today-dot" title="${t('calendar.todayBadge')}"></span>` : ''}
         </div>
         <div class="cal-cell-body">
@@ -918,11 +1062,16 @@ function renderBigMonthlyCalendar() {
     `);
   }
 
+  const curWk = getAcademicWeek(todayStr);
+
   return `
     <div class="big-calendar-card">
       <div class="cal-top-controls">
         <div class="cal-month-title-wrap">
-          <h3 class="cal-month-title">${monthName} ${year}</h3>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <h3 class="cal-month-title" style="margin:0">${monthName} ${year}</h3>
+            ${curWk ? `<span class="chip chip-ok" style="font-size:11px;font-weight:600">${curWk.fullLabel}</span>` : ''}
+          </div>
           <span class="caption-muted sm">${t('calendar.sub')}</span>
         </div>
         <div class="cal-nav-buttons">
@@ -941,6 +1090,7 @@ function renderBigMonthlyCalendar() {
       <!-- Legend -->
       <div class="cal-legend-row">
         <div class="legend-item"><span class="legend-dot dot-green"></span> <span>${t('calendar.legendOpen')}</span></div>
+        <div class="legend-item"><span class="legend-dot dot-amber"></span> <span>${t('calendar.legendLocked')}</span></div>
         <div class="legend-item"><span class="legend-dot dot-red"></span> <span>${t('calendar.legendClosed')}</span></div>
         <div class="legend-item"><span class="legend-dot dot-gray"></span> <span>${t('calendar.legendRest')}</span></div>
       </div>
@@ -957,6 +1107,10 @@ function renderBigMonthlyCalendar() {
 
 function calendar() {
   const D = S.data, sc = sched(S.date);
+  const curSelWk = getAcademicWeek(S.date);
+  const selWkCheck = isDateWeekOpen(S.date);
+  const isSelWkLocked = sc && !D.closedDates.includes(S.date) && S.date >= today() && !selWkCheck.open;
+
   return `
   <div class="flow-layout">
     <!-- Big Visual Calendar (Penunjuk Aras) -->
@@ -966,12 +1120,18 @@ function calendar() {
     <div class="card clean-card-pad" style="margin-top:20px">
       <div class="calendar-date-summary">
         <div>
-          <span class="caption-muted sm">${t('calendar.selDate')}</span>
+          <span class="caption-muted sm">${t('calendar.selDate')} ${curSelWk ? `• <b>${curSelWk.fullLabel}</b>` : ''}</span>
           <h3 style="font-size:18px;margin-top:2px">${fmt(S.date)}</h3>
           <div class="caption-muted">${t('wizard.opTime')}: ${sc ? `<b>${translateDayName(sc.dayName)} (${sc.timeDisplay})</b>` : t('wizard.outSession')}</div>
         </div>
         <div>
-          ${D.closedDates.includes(S.date) ? chip('chip-bad', t('calendar.hallClosed')) : sc ? chip('chip-ok', t('calendar.openForBooking')) : chip('chip-subtle', t('calendar.noSessionToday'))}
+          ${D.closedDates.includes(S.date) 
+            ? chip('chip-bad', t('calendar.hallClosed')) 
+            : isSelWkLocked
+              ? chip('chip-warn', S.lang === 'eng' ? 'Week Not Open' : 'Minggu Belum Dibuka')
+              : sc 
+                ? chip('chip-ok', t('calendar.openForBooking')) 
+                : chip('chip-subtle', t('calendar.noSessionToday'))}
         </div>
       </div>
 
@@ -1063,6 +1223,60 @@ function admin() {
         </div>
       </div>
 
+      <!-- Kawalan Tempahan Minggu Kuliah (Kalendar Akademik UiTM) -->
+      <div class="admin-academic-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
+          <div>
+            <h4 class="facility-section-title" style="margin:0">${t('adminView.academicTitle')}</h4>
+            <p class="caption-muted" style="font-size:12.5px;margin-top:4px">${t('adminView.academicSub')}</p>
+          </div>
+          ${sched(today()) ? `<span class="chip chip-ok" style="font-weight:600">${t('adminView.curWeekBadge')} ${getAcademicWeek(today()) ? getAcademicWeek(today()).fullLabel : ''}</span>` : ''}
+        </div>
+
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:16px">
+          <label class="field-label" style="margin:0">${t('adminView.semStartLabel')}</label>
+          <input type="date" value="${esc(S.semStartIn || D.settings.semesterStartDate || '2026-10-05')}" data-s="semStartIn" class="minimal-date-input" style="max-width:180px">
+          <button class="btn-subtle" data-a="saveAcademicSettings">${ic('save')} ${t('adminView.saveSemStart')}</button>
+        </div>
+
+        <div style="margin-top:20px">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:10px">
+            <label class="field-label" style="margin:0">${t('adminView.openWeeksLabel')}</label>
+            <div class="hero-button-row" style="margin:0;gap:8px">
+              <button class="btn-subtle" data-a="openCurrentWeekOnly">${ic('calendar')} ${t('adminView.btnOpenThisWeekOnly')}</button>
+              <button class="btn-subtle" data-a="advanceToNextWeek">${ic('fast-forward')} ${t('adminView.btnAdvanceNextWeek')}</button>
+              <button class="btn-subtle" data-a="openAllWeeksToggle">${ic('check-check')} ${t('adminView.btnToggleAll')}</button>
+            </div>
+          </div>
+
+          <div class="week-admin-grid">
+            ${Array.from({ length: 14 }, (_, i) => i + 1).map((w) => {
+              const semStr = D.settings.semesterStartDate || '2026-10-05';
+              const [sy, sm, sd] = semStr.split('-').map(Number);
+              const startDt = new Date(sy, sm - 1, sd);
+              startDt.setHours(0,0,0,0);
+              const wStart = new Date(startDt);
+              wStart.setDate(startDt.getDate() + (w - 1) * 7);
+              const wEnd = new Date(wStart);
+              wEnd.setDate(wStart.getDate() + 6);
+              const dict = I18N[S.lang] || I18N.bm;
+              const formatShort = (dt) => `${dt.getDate()} ${dict.months[dt.getMonth()].slice(0,3)}`;
+              const dateRangeStr = `${formatShort(wStart)} - ${formatShort(wEnd)}`;
+              const openWeeksList = (D.settings.openWeeks || '1,2').split(',').map(s => s.trim());
+              const isOpen = D.settings.openBookingMode === 'all' || openWeeksList.includes(String(w));
+              const curWk = getAcademicWeek(today());
+              const isCurrent = curWk && curWk.week === w;
+              return `
+              <button type="button" class="week-admin-pill ${isOpen ? 'open' : 'closed'} ${isCurrent ? 'is-current' : ''}" data-a="toggleWeek" data-w="${w}">
+                <span class="week-pill-num">M${w} ${isCurrent ? (S.lang === 'eng' ? '(Current)' : '(Semasa)') : ''}</span>
+                <span class="week-pill-dates">${dateRangeStr}</span>
+                <span class="week-pill-badge">${isOpen ? (S.lang === 'eng' ? '🟢 Open' : '🟢 Dibuka') : (S.lang === 'eng' ? '🔴 Closed' : '🔴 Ditutup')}</span>
+              </button>`;
+            }).join('')}
+          </div>
+        </div>
+      </div>
+
       <!-- Bahagian Semua Rekod Tempahan dengan Kalendar untuk Memudahkan Admin -->
       <div style="margin-top:36px">
         <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;margin-bottom:16px">
@@ -1144,6 +1358,7 @@ function render() {
   const D = S.data;
   if (S.bgIn === undefined) { S.bgIn = D.settings.bg; S.logoIn = D.settings.logo; }
   if (S.sheetsIn === undefined && D.isAdmin) S.sheetsIn = D.settings.sheetsUrl || '';
+  if (S.semStartIn === undefined && D.settings) S.semStartIn = D.settings.semesterStartDate || '2026-10-05';
   if (S.tab === 'admin' && !D.isAdmin) S.tab = 'home';
 
   const views = { home, 'booking-wizard': wizard, 'student-check': status, 'availability-calendar': calendar, admin };
@@ -1177,6 +1392,11 @@ const A = {
   },
   pastDateNotice: () => {
     toast(t('wizard.datePast'), 'error');
+  },
+  lockedDateNotice: (d) => {
+    toast(S.lang === 'eng' 
+      ? (d.week ? `Booking for Week ${d.week} is not open yet. JSP admin will activate it ahead of that week.` : 'Booking for this week is not open yet.')
+      : (d.week ? `Tempahan bagi Minggu ${d.week} belum dibuka. Admin JSP akan membuka tempahan menjelang minggu tersebut.` : 'Tempahan bagi minggu ini belum dibuka.'), 'warn');
   },
   tab: (d) => {
     if (d.t === 'booking-wizard') S.step = 1;
@@ -1241,9 +1461,30 @@ const A = {
   },
   async submit() {
     const f = S.form;
+    if (!f.fullName || !f.fullName.trim()) return toast(S.lang === 'eng' ? 'Please enter your full name.' : 'Sila masukkan nama penuh anda.', 'error');
+    if (!f.phoneNo || !f.phoneNo.trim()) return toast(S.lang === 'eng' ? 'Please enter your phone number.' : 'Sila masukkan no. telefon anda.', 'error');
+    const cleanSid = String(f.studentId || '').replace(/\s+/g, '');
+    if (!cleanSid || !/^\d{8,12}$/.test(cleanSid)) {
+      return toast(S.lang === 'eng' ? 'Please enter a valid 10-digit UiTM Student ID (numbers only).' : 'Sila masukkan 10 digit No. Matrik UiTM yang sah (nombor sahaja).', 'error');
+    }
+    if (!f.programCode || !f.programCode.trim()) return toast(S.lang === 'eng' ? 'Please enter your program code.' : 'Sila masukkan kod program anda.', 'error');
+    if (!f.agreement) {
+      return toast(S.lang === 'eng' ? 'Please check the Student Declaration agreement box before submitting.' : 'Sila tandakan kotak Aku Janji Pengesahan Maklumat sebelum menghantar tempahan.', 'error');
+    }
+
     try {
-      const r = await api('book', { fullName: f.fullName, phoneNo: f.phoneNo, studentId: f.studentId, programCode: f.programCode, notes: S.notes, facilityId: S.fac, unitId: S.unit, date: S.date });
-      localStorage.setItem('dt_form', JSON.stringify(f));
+      const r = await api('book', { 
+        fullName: f.fullName.trim(), 
+        phoneNo: f.phoneNo.trim(), 
+        studentId: cleanSid, 
+        programCode: f.programCode.trim().toUpperCase(), 
+        notes: S.notes, 
+        facilityId: S.fac, 
+        unitId: S.unit, 
+        date: S.date,
+        agreement: true 
+      });
+      localStorage.setItem('dt_form', JSON.stringify({ fullName: f.fullName, phoneNo: f.phoneNo, studentId: cleanSid, programCode: f.programCode }));
       S.receipt = r.booking;
       S.step = 4;
       S.notes = '';
@@ -1256,6 +1497,49 @@ const A = {
       const r = await api('admin', { action: 'toggle_date', date: S.date });
       const statusWord = S.lang === 'eng' ? (r.closed ? 'closed' : 'open') : (r.closed ? 'ditutup' : 'dibuka');
       toast(S.lang === 'eng' ? `Operation on ${fmt(S.date)} is now ${statusWord}.` : `Operasi tarikh ${fmt(S.date)} kini ${statusWord}.`);
+      await load();
+    } catch (e) { toast(e.message, 'error'); }
+  },
+  async toggleWeek(d) {
+    try {
+      await api('admin', { action: 'toggle_week', week: d.w });
+      toast(S.lang === 'eng' ? `Week ${d.w} booking status updated.` : `Status tempahan Minggu ${d.w} dikemaskini.`);
+      await load();
+    } catch (e) { toast(e.message, 'error'); }
+  },
+  async openCurrentWeekOnly() {
+    const cur = getAcademicWeek(today());
+    if (!cur || !cur.week) return toast(S.lang === 'eng' ? 'Current week could not be determined.' : 'Minggu semasa tidak dapat ditentukan.', 'error');
+    try {
+      await api('admin', { action: 'set_only_week', week: cur.week });
+      toast(S.lang === 'eng' ? `Only Week ${cur.week} is now open for booking.` : `Hanya Minggu ${cur.week} dibuka untuk tempahan.`);
+      await load();
+    } catch (e) { toast(e.message, 'error'); }
+  },
+  async advanceToNextWeek() {
+    const cur = getAcademicWeek(today());
+    const openWeeksList = (S.data?.settings?.openWeeks || '1,2').split(',').map(Number).filter(Boolean);
+    const maxOpen = openWeeksList.length ? Math.max(...openWeeksList) : (cur?.week || 1);
+    const nextWk = Math.min(14, maxOpen + 1);
+    try {
+      await api('admin', { action: 'set_only_week', week: nextWk });
+      toast(S.lang === 'eng' ? `Advanced: Week ${nextWk} is now open for booking.` : `Minggu ${nextWk} kini dibuka untuk tempahan.`);
+      await load();
+    } catch (e) { toast(e.message, 'error'); }
+  },
+  async openAllWeeksToggle() {
+    try {
+      const allWeeks = Array.from({ length: 14 }, (_, i) => i + 1).join(',');
+      await api('admin', { action: 'save_settings', openBookingMode: 'all', openWeeks: allWeeks });
+      toast(S.lang === 'eng' ? 'All 14 academic weeks are now open for booking.' : 'Semua 14 minggu kuliah kini dibuka untuk tempahan.');
+      await load();
+    } catch (e) { toast(e.message, 'error'); }
+  },
+  async saveAcademicSettings() {
+    try {
+      const ssd = S.semStartIn || S.data?.settings?.semesterStartDate;
+      await api('admin', { action: 'save_settings', semesterStartDate: ssd });
+      toast(S.lang === 'eng' ? 'Semester start date saved.' : 'Tarikh mula semester berjaya disimpan.');
       await load();
     } catch (e) { toast(e.message, 'error'); }
   },
@@ -1302,22 +1586,39 @@ document.addEventListener('click', (e) => {
 });
 
 document.addEventListener('change', (e) => {
+  const { f, s } = e.target.dataset;
+  if (f === 'agreement') {
+    S.form.agreement = e.target.checked;
+    return;
+  }
   const d = e.target.dataset.d;
-  if (!d) return;
   if (d === 'sel') {
     S.date = e.target.value;
     const [y, m] = S.date.split('-').map(Number);
     S.calYear = y;
     S.calMonth = m - 1;
+    return render();
   }
-  else S.view[e.target.dataset.k] = e.target.value;
-  render();
+  if (d === 'view') {
+    S.view[e.target.dataset.k] = e.target.value;
+    return render();
+  }
+  if (s) {
+    S[s] = e.target.value;
+  }
 });
 
 let st;
 document.addEventListener('input', (e) => {
   const { f, s } = e.target.dataset;
-  if (f) S.form[f] = e.target.value;
+  if (f === 'studentId') {
+    e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
+    S.form[f] = e.target.value;
+  }
+  else if (f === 'agreement') {
+    S.form[f] = e.target.checked;
+  }
+  else if (f) S.form[f] = e.target.value;
   else if (s === 'search') {
     S.search = e.target.value;
     clearTimeout(st);

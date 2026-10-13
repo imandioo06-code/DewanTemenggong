@@ -1,4 +1,4 @@
-import { db, wrap, fail, FACILITIES, sched, toBooking } from './_lib.js';
+import { db, wrap, fail, FACILITIES, sched, toBooking, getWeekRange, getAcademicWeek } from './_lib.js';
 
 export default wrap(async (req, res) => {
   if (req.method !== 'POST') fail(405, 'Kaedah tidak dibenarkan.');
@@ -8,6 +8,17 @@ export default wrap(async (req, res) => {
   if (!t('phoneNo', 30)) fail(400, 'Sila masukkan No. Telefon / WhatsApp anda!');
   if (!t('studentId', 30)) fail(400, 'Sila masukkan No. Matrik anda!');
   if (!t('programCode', 30)) fail(400, 'Sila masukkan Kod Program anda!');
+
+  // Pengesahan No. Matrik - ketetapan nombor (cth: 10 digit UiTM 2024694636)
+  const rawSid = t('studentId', 30).replace(/\s+/g, '');
+  if (!/^\d{8,12}$/.test(rawSid)) {
+    fail(400, 'No. Matrik tidak sah. Sila masukkan nombor matrik UiTM yang tepat (cth: 2024694636) tanpa sebarang huruf.');
+  }
+
+  // Pengesahan Aku Janji & Integriti
+  if (!b.agreement) {
+    fail(400, 'Sila tandakan kotak Aku Janji Pengesahan Maklumat sebelum menghantar tempahan.');
+  }
 
   const fac = FACILITIES.find(f => f.id === b.facilityId);
   const unit = fac?.units.find(u => u.id === b.unitId);
@@ -23,14 +34,43 @@ export default wrap(async (req, res) => {
   const closed = await db.execute({ sql: 'SELECT 1 FROM closed_dates WHERE date = ?', args: [date] });
   if (closed.rows.length) fail(400, 'Dewan ditutup pada tarikh ini. Sila pilih tarikh lain.');
 
-  const sid = t('studentId', 30).toUpperCase(), phone = t('phoneNo', 30), slot = sc.slots[0];
+  // Semak kawalan minggu kuliah (Admin open/off week control)
+  const setRows = await db.execute("SELECT key, value FROM settings WHERE key IN ('semesterStartDate', 'openBookingMode', 'openWeeks')");
+  const sMap = Object.fromEntries(setRows.rows.map(r => [r.key, r.value]));
+  const semStart = sMap.semesterStartDate || '2026-10-05';
+  const mode = sMap.openBookingMode || 'week_control';
+  const openWeeks = (sMap.openWeeks || '1,2').split(',').map(s => s.trim()).filter(Boolean);
 
-  // Had 1 tempahan sehari bagi setiap No. Matrik / No. Telefon
+  const targetWeek = getAcademicWeek(date, semStart);
+  if (mode === 'week_control' && targetWeek && targetWeek.week > 0) {
+    if (!openWeeks.includes(String(targetWeek.week))) {
+      fail(400, `Tempahan bagi Minggu ${targetWeek.week} belum dibuka oleh pihak pentadbiran JSP. Tempahan akan diaktifkan oleh admin menjelang minggu berkenaan.`);
+    }
+  } else if (mode === 'current_week') {
+    const curWeek = getAcademicWeek(todayStr, semStart);
+    if (targetWeek && curWeek && targetWeek.week !== curWeek.week) {
+      fail(400, `Hanya tempahan untuk minggu kuliah semasa (Minggu ${curWeek.week}) dibuka.`);
+    }
+  } else if (mode === 'rolling_2days') {
+    const [ty, tm, td] = todayStr.split('-').map(Number);
+    const [by, bm, bd] = date.split('-').map(Number);
+    const diffDays = Math.floor((new Date(by, bm - 1, bd) - new Date(ty, tm - 1, td)) / (86400000));
+    if (diffDays > 2) {
+      fail(400, 'Tempahan hanya dibuka 2 hari sebelum tarikh sesi dewan.');
+    }
+  }
+
+  const sid = rawSid.toUpperCase(), phone = t('phoneNo', 30), slot = sc.slots[0];
+
+  // Had 1 tempahan SEMINGGU bagi setiap No. Matrik / No. Telefon
+  const { start: weekStart, end: weekEnd } = getWeekRange(date);
   const dup = await db.execute({
-    sql: "SELECT ref_no FROM bookings WHERE date = ? AND status = 'Diluluskan' AND (student_id = ? OR phone_no = ?) LIMIT 1",
-    args: [date, sid, phone]
+    sql: "SELECT ref_no, date, facility_name, unit_name FROM bookings WHERE date >= ? AND date <= ? AND status = 'Diluluskan' AND (student_id = ? OR phone_no = ?) LIMIT 1",
+    args: [weekStart, weekEnd, sid, phone]
   });
-  if (dup.rows.length) fail(409, `Harap maaf! No. Matrik (${sid}) atau No. Telefon ini telah mempunyai tempahan pada tarikh tersebut (Rujukan: ${dup.rows[0].ref_no}). Sistem hanya membenarkan 1 tempahan sehari per pelajar. Anda boleh memilih tarikh lain.`);
+  if (dup.rows.length) {
+    fail(409, `Harap maaf! No. Matrik (${sid}) atau No. Telefon ini telah mempunyai tempahan bagi minggu tersebut pada tarikh ${dup.rows[0].date} (Rujukan: ${dup.rows[0].ref_no}). Sistem mengehadkan 1 tempahan setiap minggu bagi setiap pelajar untuk memberi peluang kepada pelajar lain.`);
+  }
 
   // Had kapasiti setiap unit
   const cnt = await db.execute({

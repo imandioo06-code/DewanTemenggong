@@ -22,6 +22,17 @@ export default wrap(async (req, res) => {
     return res.json({ closed: true });
   }
   if (action === 'save_settings') {
+    if (p.semesterStartDate !== undefined) {
+      const ssd = String(p.semesterStartDate).trim();
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(ssd)) fail(400, 'Tarikh mula semester tidak sah.');
+      await upsert('semesterStartDate', ssd);
+    }
+    if (p.openBookingMode !== undefined) {
+      await upsert('openBookingMode', String(p.openBookingMode).trim());
+    }
+    if (p.openWeeks !== undefined) {
+      await upsert('openWeeks', String(p.openWeeks).trim());
+    }
     for (const k of ['bg', 'logo', 'sheetsUrl']) {
       if (p[k] === undefined) continue;
       const v = String(p[k]).trim();
@@ -29,6 +40,30 @@ export default wrap(async (req, res) => {
       await upsert(k, v);
     }
     return res.json({ ok: true });
+  }
+  if (action === 'toggle_week') {
+    const weekNum = parseInt(p.week, 10);
+    if (!weekNum || weekNum < 1 || weekNum > 20) fail(400, 'Nombor minggu kuliah tidak sah.');
+    const curr = await db.execute("SELECT value FROM settings WHERE key = 'openWeeks'");
+    let weeks = (curr.rows[0]?.value || '1,2').split(',').map(s => s.trim()).filter(Boolean);
+    const wStr = String(weekNum);
+    if (weeks.includes(wStr)) {
+      weeks = weeks.filter(w => w !== wStr);
+    } else {
+      weeks.push(wStr);
+      weeks.sort((a, b) => Number(a) - Number(b));
+    }
+    const newStr = weeks.join(',');
+    await upsert('openWeeks', newStr);
+    await upsert('openBookingMode', 'week_control');
+    return res.json({ ok: true, openWeeks: newStr });
+  }
+  if (action === 'set_only_week') {
+    const weekNum = parseInt(p.week, 10);
+    if (!weekNum || weekNum < 1 || weekNum > 20) fail(400, 'Nombor minggu kuliah tidak sah.');
+    await upsert('openWeeks', String(weekNum));
+    await upsert('openBookingMode', 'week_control');
+    return res.json({ ok: true, openWeeks: String(weekNum) });
   }
   if (action === 'delete_booking') {
     if (!p.id && !p.refNo) fail(400, 'ID atau No. Rujukan tempahan diperlukan.');

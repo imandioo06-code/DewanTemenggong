@@ -1678,6 +1678,46 @@ body.dark-mode .stepper-tab.done .stepper-num {
   color: #6b7280;
 }
 
+.badge-locked {
+  background: var(--status-amber-bg);
+  color: #b45309;
+  border: 1px solid rgba(217, 119, 6, 0.25);
+}
+
+body.dark-mode .badge-locked {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.cal-cell.week-locked {
+  opacity: 0.78;
+  background: rgba(0, 0, 0, 0.015);
+}
+
+body.dark-mode .cal-cell.week-locked {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.cal-week-tag {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--ink-tertiary);
+  background: var(--bg-subtle);
+  padding: 1px 4px;
+  border-radius: 3px;
+  letter-spacing: 0.02em;
+}
+
+body.dark-mode .cal-week-tag {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--ink-secondary);
+}
+
+.dot-amber {
+  background: #f59e0b;
+}
+
 .cal-badge-muted {
   font-size: 10.5px;
   color: var(--ink-quaternary);
@@ -2167,3 +2207,163 @@ body.dark-mode .stepper-tab.done .stepper-num {
     width: 100%;
   }
 }
+
+/* Agreement Card & Integrity Declaration */
+.agreement-card {
+  background: var(--bg-subtle);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  transition: all 0.18s ease;
+}
+
+.agreement-card:hover {
+  border-color: rgba(0, 0, 0, 0.25);
+}
+
+body.dark-mode .agreement-card {
+  background: #181d28;
+  border-color: #2b3245;
+}
+
+.agreement-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.agreement-checkbox {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  cursor: pointer;
+  accent-color: #090d16;
+  flex-shrink: 0;
+}
+
+body.dark-mode .agreement-checkbox {
+  accent-color: var(--volt);
+}
+
+.agreement-content {
+  flex: 1;
+}
+
+.agreement-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--ink-primary);
+  display: block;
+}
+
+.agreement-text {
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--ink-secondary);
+  margin: 4px 0 0;
+}
+
+/* Physical ID Verification Alert */
+.physical-id-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin-top: 14px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #92400e;
+}
+
+body.dark-mode .physical-id-alert {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.35);
+  color: #fcd34d;
+}
+
+.physical-id-alert .ic {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: #d97706;
+}
+
+/* Admin Academic Week Controls */
+.admin-academic-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin-top: 24px;
+}
+
+.week-admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.week-admin-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-subtle);
+  border: 1.5px solid var(--border-subtle);
+  cursor: pointer;
+  transition: all 0.16s ease;
+  text-align: center;
+}
+
+.week-admin-pill:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.week-admin-pill.open {
+  border-color: #22c55e;
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.week-admin-pill.closed {
+  border-color: rgba(239, 68, 68, 0.3);
+  opacity: 0.68;
+}
+
+.week-admin-pill.is-current {
+  outline: 2px solid var(--volt);
+}
+
+.week-pill-num {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-primary);
+}
+
+.week-pill-dates {
+  font-size: 11px;
+  color: var(--ink-tertiary);
+}
+
+.week-pill-badge {
+  font-size: 10.5px;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.field-hint {
+  font-size: 11.5px;
+  color: var(--ink-tertiary);
+  margin-top: 3px;
+  display: block;
+}
+

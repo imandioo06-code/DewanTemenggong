@@ -12,7 +12,14 @@ export default wrap(async (req, res) => {
   res.json({
     isAdmin: adm, facilities: FACILITIES, schedule: SCHEDULE,
     closedDates: c.rows.map(r => r.date),
-    settings: { bg: set.bg || DEFAULTS.bg, logo: set.logo || DEFAULTS.logo, ...(adm ? { sheetsUrl: set.sheetsUrl || '' } : {}) },
+    settings: {
+      bg: set.bg || DEFAULTS.bg,
+      logo: set.logo || DEFAULTS.logo,
+      semesterStartDate: set.semesterStartDate || DEFAULTS.semesterStartDate,
+      openBookingMode: set.openBookingMode || DEFAULTS.openBookingMode,
+      openWeeks: set.openWeeks || DEFAULTS.openWeeks,
+      ...(adm ? { sheetsUrl: set.sheetsUrl || '' } : {})
+    },
     bookings: b.rows.map(r => toBooking(r, adm))
   });
 });

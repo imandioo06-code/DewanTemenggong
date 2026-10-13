@@ -41,10 +41,45 @@ export const SCHEDULE = {
 };
 export const DEFAULTS = {
   bg: '/content img/backgrounddt.jpeg',
-  logo: '/content img/logojspimg.png'
+  logo: '/content img/logojspimg.png',
+  semesterStartDate: '2026-10-05',
+  openBookingMode: 'week_control',
+  openWeeks: '1,2'
 };
 
 export const sched = (d) => { const [y, m, x] = d.split('-').map(Number); return SCHEDULE[new Date(y, m - 1, x).getDay()] || null; };
+
+export const getWeekRange = (dateStr) => {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const dt = new Date(y, m - 1, d);
+  const day = dt.getDay();
+  const diffToMon = day === 0 ? -6 : 1 - day;
+  const mon = new Date(dt);
+  mon.setDate(dt.getDate() + diffToMon);
+  const sun = new Date(mon);
+  sun.setDate(mon.getDate() + 6);
+  const toIso = (x) => `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, '0')}-${String(x.getDate()).padStart(2, '0')}`;
+  return { start: toIso(mon), end: toIso(sun) };
+};
+
+export const getAcademicWeek = (dateStr, semStartDate = '2026-10-05') => {
+  if (!dateStr || !semStartDate) return null;
+  const [sy, sm, sd] = semStartDate.split('-').map(Number);
+  const [dy, dm, dd] = dateStr.split('-').map(Number);
+  const start = new Date(sy, sm - 1, sd);
+  start.setHours(0, 0, 0, 0);
+  const current = new Date(dy, dm - 1, dd);
+  current.setHours(0, 0, 0, 0);
+  const diffDays = Math.floor((current.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+  if (diffDays < 0) return { week: 0, isPre: true, label: 'Pra-Semester', labelEng: 'Pre-Semester' };
+  const weekNum = Math.floor(diffDays / 7) + 1;
+  return {
+    week: weekNum,
+    isPre: false,
+    label: `Minggu ${weekNum}`,
+    labelEng: `Week ${weekNum}`
+  };
+};
 
 let ready;
 export const init = () => (ready ??= db.batch([
