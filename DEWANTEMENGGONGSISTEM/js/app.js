@@ -12,7 +12,7 @@ const I18N = {
   bm: {
     months: ['Januari', 'Februari', 'Mac', 'April', 'Mei', 'Jun', 'Julai', 'Ogos', 'September', 'Oktober', 'November', 'Disember'],
     days: ['Ahad', 'Isnin', 'Selasa', 'Rabu', 'Khamis', 'Jumaat', 'Sabtu'],
-    daysShort: ['Isnin', 'Selasa', 'Rabu', 'Khamis', 'Jumaat', 'Sabtu', 'Ahad'],
+    daysShort: ['Isn', 'Sel', 'Rab', 'Kha', 'Jum', 'Sab', 'Ahd'],
     tabs: { home: 'Utama', wizard: 'Tempah', status: 'Semak Status', calendar: 'Kalendar Live' },
     header: { brandSub: 'Jawatankuasa Sukan Pelajar (JSP)', admin: 'Akses Admin JSP', logout: 'Log Keluar' },
     clock: { title: 'WAKTU SEMASA • MYT (GMT+8)', closed: 'Operasi Ditutup Hari Ini', open: 'Sesi Dibuka', rest: 'Tiada Sesi Operasi Hari Ini (Hari Rehat)', scheduleNote: 'Jadual operasi rasmi: Isnin & Jumaat (5-7 PM), Rabu (8-10 PM).', bookBtn: 'Tempah slot hari ini' },
@@ -999,8 +999,24 @@ function renderBigMonthlyCalendar() {
   const totalDays = new Date(year, month + 1, 0).getDate();
 
   const dayHeaders = S.lang === 'eng' 
-    ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] 
-    : ['Isnin', 'Selasa', 'Rabu', 'Khamis', 'Jumaat', 'Sabtu', 'Ahad'];
+    ? [
+        { full: 'Mon', short: 'Mon' },
+        { full: 'Tue', short: 'Tue' },
+        { full: 'Wed', short: 'Wed' },
+        { full: 'Thu', short: 'Thu' },
+        { full: 'Fri', short: 'Fri' },
+        { full: 'Sat', short: 'Sat' },
+        { full: 'Sun', short: 'Sun' }
+      ]
+    : [
+        { full: 'Isnin', short: 'Isn' },
+        { full: 'Selasa', short: 'Sel' },
+        { full: 'Rabu', short: 'Rab' },
+        { full: 'Khamis', short: 'Kha' },
+        { full: 'Jumaat', short: 'Jum' },
+        { full: 'Sabtu', short: 'Sab' },
+        { full: 'Ahad', short: 'Ahd' }
+      ];
 
   const todayStr = today();
   let cells = [];
@@ -1028,15 +1044,16 @@ function renderBigMonthlyCalendar() {
     if (isPast) {
       badgeHtml = `<span class="cal-badge-muted">${S.lang === 'eng' ? 'Passed' : 'Lepas'}</span>`;
     } else if (isClosed) {
-      badgeHtml = `<span class="cal-badge-pill badge-closed">${t('stats.closedBadge')}</span>`;
+      badgeHtml = `<span class="cal-badge-pill badge-closed"><span class="desk-label">${t('stats.closedBadge')}</span><span class="mob-label">${S.lang === 'eng' ? 'Closed' : 'Tutup'}</span></span>`;
     } else if (isWeekLocked) {
-      badgeHtml = `<span class="cal-badge-pill badge-locked">${t('calendar.badgeLocked')}</span>`;
+      badgeHtml = `<span class="cal-badge-pill badge-locked"><span class="desk-label">${t('calendar.badgeLocked')}</span><span class="mob-label">${S.lang === 'eng' ? 'Soon' : 'Belum'}</span></span>`;
     } else if (isOperating) {
       const ov = overview(dateStr);
       if (ov.rem === 0) {
-        badgeHtml = `<span class="cal-badge-pill badge-full">${t('stats.fullBadge')}</span>`;
+        badgeHtml = `<span class="cal-badge-pill badge-full"><span class="desk-label">${t('stats.fullBadge')}</span><span class="mob-label">${S.lang === 'eng' ? 'Full' : 'Penuh'}</span></span>`;
       } else {
-        badgeHtml = `<span class="cal-badge-pill badge-open">${translateDayName(daySched.dayName).slice(0,3)} • ${daySched.timeDisplay.split(' - ')[0]}</span>`;
+        const timeShort = daySched.timeDisplay.split(' - ')[0].replace(':00', '');
+        badgeHtml = `<span class="cal-badge-pill badge-open"><span class="desk-label">${translateDayName(daySched.dayName).slice(0,3)} • ${daySched.timeDisplay.split(' - ')[0]}</span><span class="mob-label">${timeShort}</span></span>`;
       }
     } else {
       badgeHtml = `<span class="cal-badge-muted">${S.lang === 'eng' ? 'Rest' : 'Rehat'}</span>`;
@@ -1053,7 +1070,6 @@ function renderBigMonthlyCalendar() {
         <div class="cal-cell-header">
           <span class="cal-day-num">${d}</span>
           ${wkInfo ? `<span class="cal-week-tag" title="${wkInfo.fullLabel}">${wkInfo.shortLabel}</span>` : ''}
-          ${isToday ? `<span class="cal-today-dot" title="${t('calendar.todayBadge')}"></span>` : ''}
         </div>
         <div class="cal-cell-body">
           ${badgeHtml}
@@ -1097,7 +1113,7 @@ function renderBigMonthlyCalendar() {
 
       <!-- Calendar Grid -->
       <div class="cal-weekdays-row">
-        ${dayHeaders.map(dh => `<div class="cal-weekday-col">${dh}</div>`).join('')}
+        ${dayHeaders.map(dh => `<div class="cal-weekday-col"><span class="day-full">${dh.full}</span><span class="day-short">${dh.short}</span></div>`).join('')}
       </div>
       <div class="cal-grid">
         ${cells.join('')}

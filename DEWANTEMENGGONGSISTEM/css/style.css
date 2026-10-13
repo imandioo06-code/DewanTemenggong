@@ -114,6 +114,11 @@ body.dark-mode .minimal-date-input:focus {
   box-shadow: 0 0 0 3px rgba(204, 255, 0, 0.15);
 }
 
+body.dark-mode .big-calendar-card {
+  background: #151821;
+  border-color: #232838;
+}
+
 body.dark-mode .cal-cell {
   background: #151821;
   border-color: #232838;
@@ -126,6 +131,16 @@ body.dark-mode .cal-cell.operating {
 body.dark-mode .cal-cell.selected {
   border-color: var(--volt);
   background: #202636;
+}
+
+body.dark-mode .cal-cell.today {
+  border-color: #38bdf8;
+  background: rgba(56, 189, 248, 0.08);
+}
+
+body.dark-mode .cal-cell.today .cal-day-num {
+  background: #0284c7;
+  color: #ffffff !important;
 }
 
 body.dark-mode .badge-closed {
@@ -345,40 +360,15 @@ button {
   padding: 4px 0;
   color: inherit;
   text-decoration: none;
-  perspective: 500px;
 }
 
 .nav-logo-thumb {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   object-fit: cover;
   border: 1.5px solid var(--border-subtle);
   flex-shrink: 0;
-  display: inline-block;
-  transform-style: preserve-3d;
-  animation: logoSpinX 4s linear infinite;
-  transform-origin: center center;
-  will-change: transform;
-}
-
-.brand-link:hover .nav-logo-thumb {
-  animation-play-state: paused;
-}
-
-@keyframes logoSpinX {
-  0% {
-    transform: perspective(400px) rotateX(0deg);
-  }
-  100% {
-    transform: perspective(400px) rotateX(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .nav-logo-thumb {
-    animation: none;
-  }
 }
 
 .brand-text-col {
@@ -1535,6 +1525,14 @@ body.dark-mode .stepper-tab.done .stepper-num {
   color: #ffffff;
 }
 
+.nav-logo-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex: none;
+}
+
 /* ---------- Big Monthly Visual Calendar (Penunjuk Aras) ---------- */
 .big-calendar-card {
   background: #ffffff;
@@ -1589,19 +1587,25 @@ body.dark-mode .stepper-tab.done .stepper-num {
 
 .cal-weekdays-row {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
   padding: 12px 0 8px;
   text-align: center;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--ink-tertiary);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 
+.day-full { display: inline; }
+.day-short { display: none; }
+.desk-label { display: inline; }
+.mob-label { display: none; }
+
 .cal-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 6px;
 }
 
@@ -1641,6 +1645,30 @@ body.dark-mode .stepper-tab.done .stepper-num {
   background: #fafafc;
 }
 
+.cal-cell.today {
+  border-color: #0284c7;
+  background: rgba(2, 132, 199, 0.03);
+}
+
+.cal-cell.today .cal-day-num {
+  background: #0284c7;
+  color: #ffffff !important;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.cal-cell.today.selected {
+  border-color: #090d16;
+  box-shadow: 0 0 0 2px var(--volt);
+}
+
 .cal-cell-header {
   display: flex;
   justify-content: space-between;
@@ -1659,10 +1687,7 @@ body.dark-mode .stepper-tab.done .stepper-num {
 }
 
 .cal-today-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--apple-blue);
+  display: none;
 }
 
 .cal-cell-body {
@@ -1677,6 +1702,9 @@ body.dark-mode .stepper-tab.done .stepper-num {
   border-radius: 4px;
   text-align: center;
   line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .badge-open {
@@ -1740,6 +1768,9 @@ body.dark-mode .cal-week-tag {
   color: var(--ink-quaternary);
   display: block;
   text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ---------- Minimalist Student Pass Cards (Semak Status) ---------- */
@@ -2060,49 +2091,144 @@ body.dark-mode .cal-week-tag {
     padding: 12px 14px;
   }
   .clean-card-pad { 
-    padding: 18px 16px; 
+    padding: 16px 10px; 
   }
   .section-title {
     font-size: 18px;
   }
   
-  /* Mobile Calendar Grid */
+  /* Mobile Calendar Grid (Responsive & Clean) */
   .big-calendar-card {
-    padding: 16px 12px;
+    padding: 12px 6px;
+    border-radius: 12px;
   }
   .cal-top-controls {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .cal-month-title-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .cal-month-title {
+    font-size: 16px;
+  }
+  .cal-nav-buttons {
+    display: flex;
+    gap: 4px;
+  }
+  .cal-nav-buttons .btn-subtle {
+    padding: 4px 6px;
+    font-size: 11px;
+  }
+  .cal-legend-row { 
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 5px 8px;
+    padding: 8px 0 10px;
+    font-size: 10.5px;
+  }
+  .legend-item {
+    font-size: 10.5px;
+    gap: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .legend-dot {
+    width: 6px;
+    height: 6px;
+    flex-shrink: 0;
+  }
+  .cal-weekdays-row {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 3px;
+    padding: 6px 0 4px;
+    font-size: 10.5px;
+  }
+  .day-full { display: none !important; }
+  .day-short { display: inline !important; }
+  .desk-label { display: none !important; }
+  .mob-label { display: inline !important; }
+
+  .cal-weekday-col {
+    text-align: center;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--ink-secondary);
+    padding: 2px 0;
+    overflow: hidden;
+    text-overflow: clip;
+    white-space: nowrap;
+  }
+  .cal-grid { 
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 3px !important;
+  }
+  .cal-cell { 
+    min-height: 48px !important; 
+    padding: 4px 2px !important; 
+    border-radius: 6px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+  }
+  .cal-cell-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+  }
+  .cal-day-num { 
+    font-size: 11.5px !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+  }
+  .cal-cell.today .cal-day-num {
+    width: 18px !important;
+    height: 18px !important;
+    font-size: 10px !important;
+  }
+  .cal-week-tag {
+    font-size: 8px !important;
+    font-weight: 700 !important;
+    padding: 0 2px !important;
+    border-radius: 2px !important;
+    line-height: 1.1 !important;
+  }
+  .cal-cell-body {
+    margin-top: 2px !important;
+    width: 100% !important;
+  }
+  .cal-badge-pill { 
+    font-size: 8.5px !important; 
+    padding: 2px 1px !important; 
+    border-radius: 3px !important;
+    font-weight: 700 !important;
+    line-height: 1.1 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    letter-spacing: -0.01em !important;
+  }
+  .cal-badge-muted {
+    font-size: 8px !important;
+    line-height: 1.1 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  .calendar-date-summary {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
-  }
-  .cal-month-title {
-    font-size: 17px;
-  }
-  .cal-weekdays-row {
-    font-size: 11px;
-    gap: 2px;
-  }
-  .cal-days-grid {
-    gap: 3px;
-  }
-  .cal-cell { 
-    min-height: 52px; 
-    padding: 4px 2px; 
-    border-radius: 6px;
-  }
-  .cal-day-num { 
-    font-size: 12px; 
-  }
-  .cal-badge-pill { 
-    font-size: 8px; 
-    padding: 2px 2px; 
-    border-radius: 3px;
-  }
-  .cal-legend-row { 
-    flex-direction: column; 
-    align-items: flex-start;
-    gap: 6px; 
-    padding: 10px 0 12px;
   }
 
   /* Mobile Stepper Progress Bar & Wizard */
