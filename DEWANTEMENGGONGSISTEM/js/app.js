@@ -81,11 +81,11 @@ const I18N = {
       closedNotice: 'Pelajar TIDAK boleh menempah slot pada tarikh ini.',
       openNotice: 'Terbuka untuk tempahan.',
       offScheduleNotice: 'Tarikh ini luar jadual rasmi tetapi status operasi terbuka.',
-      academicTitle: 'Kawalan Tempahan Minggu Kuliah (Kalendar Akademik UiTM)',
-      academicSub: 'Tentukan minggu kuliah yang dibuka untuk tempahan. Minggu seterusnya automatik ditutup (OFF) sehinggalah admin membuka (ON) minggu tersebut.',
+      academicTitle: 'Kawalan Tempahan Minggu (Kalendar Akademik UiTM)',
+      academicSub: 'Tentukan minggu yang dibuka untuk tempahan. Minggu seterusnya automatik ditutup (OFF) sehinggalah admin membuka (ON) minggu tersebut.',
       semStartLabel: 'Tarikh Mula Semester (Minggu 1):',
       saveSemStart: 'Simpan Tarikh Mula',
-      curWeekBadge: 'Minggu Kuliah Semasa:',
+      curWeekBadge: 'Minggu Semasa:',
       openWeeksLabel: 'Status Pembukaan Setiap Minggu (Klik butang minggu untuk Buka / Tutup):',
       btnOpenThisWeekOnly: 'Buka Minggu Ini Sahaja (Off Minggu Lain)',
       btnAdvanceNextWeek: 'Buka Minggu Seterusnya (+1)',
@@ -135,7 +135,7 @@ const I18N = {
       agreementDesc: 'I certify that all details entered are accurate, true, and belong to me. If found false, my booking will be cancelled immediately and I will face disciplinary action by College Management & JSP. I understand that my <b>physical Student ID (Matric) Card must be presented</b> to JSP officials at the hall upon session entry.',
       physicalNotice: 'JSP Staff Notice: Physical Student ID card must be presented upon reporting at the sports hall. Officials reserve the right to revoke slots if details do not match.',
       weekNotOpen: 'Week Not Open Yet',
-      weekNotOpenNotice: 'Booking for this lecture week is not open yet. JSP admin will activate booking ahead of that week.',
+      weekNotOpenNotice: 'Booking for this week is not open yet. JSP admin will activate booking ahead of that week.',
       printSlip: 'Print / Save Slip', checkRecord: 'Check Bookings',
       refNo: 'REF. NUMBER', applicantName: 'Student Name', studentMatric: 'Student ID', facilityUnit: 'Facility & Unit', dateTime: 'Date & Time', statusApproved: 'Approved'
     },
@@ -168,10 +168,10 @@ const I18N = {
       openNotice: 'Open for student bookings.',
       offScheduleNotice: 'This date is outside official schedule but marked as open.',
       academicTitle: 'UiTM Academic Weeks Booking Control',
-      academicSub: 'Control which lecture weeks are open for bookings. Future weeks will remain closed until activated by admin.',
+      academicSub: 'Control which weeks are open for bookings. Future weeks will remain closed until activated by admin.',
       semStartLabel: 'Semester Start Date (Week 1):',
       saveSemStart: 'Save Semester Date',
-      curWeekBadge: 'Current Lecture Week:',
+      curWeekBadge: 'Current Week:',
       openWeeksLabel: 'Weekly Booking Status (Click week button to toggle Open / Close):',
       btnOpenThisWeekOnly: 'Open Current Week Only (Off Other Weeks)',
       btnAdvanceNextWeek: 'Open Next Week (+1)',
@@ -249,7 +249,7 @@ const getAcademicWeek = (dateStr) => {
     week: weekNum,
     isPre: false,
     label: S.lang === 'eng' ? `Week ${weekNum}` : `Minggu ${weekNum}`,
-    fullLabel: S.lang === 'eng' ? `Lecture Week ${weekNum}` : `Minggu Kuliah ${weekNum}`,
+    fullLabel: S.lang === 'eng' ? `Week ${weekNum}` : `Minggu ${weekNum}`,
     shortLabel: `M${weekNum}`
   };
 };
@@ -280,7 +280,7 @@ const isDateWeekOpen = (dateStr) => {
     return { 
       open: isOpen, 
       weekNum: targetWeek?.week, 
-      reason: isOpen ? '' : (S.lang === 'eng' ? `Only current lecture week (Week ${curWeek?.week}) is open` : `Hanya minggu kuliah semasa (Minggu ${curWeek?.week}) dibuka`)
+      reason: isOpen ? '' : (S.lang === 'eng' ? `Only current week (Week ${curWeek?.week}) is open` : `Hanya minggu semasa (Minggu ${curWeek?.week}) dibuka`)
     };
   }
 
@@ -1223,7 +1223,7 @@ function admin() {
         </div>
       </div>
 
-      <!-- Kawalan Tempahan Minggu Kuliah (Kalendar Akademik UiTM) -->
+      <!-- Kawalan Tempahan Minggu (Kalendar Akademik UiTM) -->
       <div class="admin-academic-card">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
           <div>
@@ -1531,7 +1531,7 @@ const A = {
     try {
       const allWeeks = Array.from({ length: 14 }, (_, i) => i + 1).join(',');
       await api('admin', { action: 'save_settings', openBookingMode: 'all', openWeeks: allWeeks });
-      toast(S.lang === 'eng' ? 'All 14 academic weeks are now open for booking.' : 'Semua 14 minggu kuliah kini dibuka untuk tempahan.');
+      toast(S.lang === 'eng' ? 'All 14 academic weeks are now open for booking.' : 'Semua 14 minggu kini dibuka untuk tempahan.');
       await load();
     } catch (e) { toast(e.message, 'error'); }
   },

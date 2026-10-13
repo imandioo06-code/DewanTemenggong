@@ -34,7 +34,7 @@ export default wrap(async (req, res) => {
   const closed = await db.execute({ sql: 'SELECT 1 FROM closed_dates WHERE date = ?', args: [date] });
   if (closed.rows.length) fail(400, 'Dewan ditutup pada tarikh ini. Sila pilih tarikh lain.');
 
-  // Semak kawalan minggu kuliah (Admin open/off week control)
+  // Semak kawalan minggu (Admin open/off week control)
   const setRows = await db.execute("SELECT key, value FROM settings WHERE key IN ('semesterStartDate', 'openBookingMode', 'openWeeks')");
   const sMap = Object.fromEntries(setRows.rows.map(r => [r.key, r.value]));
   const semStart = sMap.semesterStartDate || '2026-10-05';
@@ -49,7 +49,7 @@ export default wrap(async (req, res) => {
   } else if (mode === 'current_week') {
     const curWeek = getAcademicWeek(todayStr, semStart);
     if (targetWeek && curWeek && targetWeek.week !== curWeek.week) {
-      fail(400, `Hanya tempahan untuk minggu kuliah semasa (Minggu ${curWeek.week}) dibuka.`);
+      fail(400, `Hanya tempahan untuk minggu semasa (Minggu ${curWeek.week}) dibuka.`);
     }
   } else if (mode === 'rolling_2days') {
     const [ty, tm, td] = todayStr.split('-').map(Number);

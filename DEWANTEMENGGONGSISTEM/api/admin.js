@@ -43,7 +43,7 @@ export default wrap(async (req, res) => {
   }
   if (action === 'toggle_week') {
     const weekNum = parseInt(p.week, 10);
-    if (!weekNum || weekNum < 1 || weekNum > 20) fail(400, 'Nombor minggu kuliah tidak sah.');
+    if (!weekNum || weekNum < 1 || weekNum > 20) fail(400, 'Nombor minggu tidak sah.');
     const curr = await db.execute("SELECT value FROM settings WHERE key = 'openWeeks'");
     let weeks = (curr.rows[0]?.value || '1,2').split(',').map(s => s.trim()).filter(Boolean);
     const wStr = String(weekNum);
@@ -60,7 +60,7 @@ export default wrap(async (req, res) => {
   }
   if (action === 'set_only_week') {
     const weekNum = parseInt(p.week, 10);
-    if (!weekNum || weekNum < 1 || weekNum > 20) fail(400, 'Nombor minggu kuliah tidak sah.');
+    if (!weekNum || weekNum < 1 || weekNum > 20) fail(400, 'Nombor minggu tidak sah.');
     await upsert('openWeeks', String(weekNum));
     await upsert('openBookingMode', 'week_control');
     return res.json({ ok: true, openWeeks: String(weekNum) });
