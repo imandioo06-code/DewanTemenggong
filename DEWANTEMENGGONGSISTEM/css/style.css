@@ -345,15 +345,40 @@ button {
   padding: 4px 0;
   color: inherit;
   text-decoration: none;
+  perspective: 500px;
 }
 
 .nav-logo-thumb {
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   object-fit: cover;
   border: 1.5px solid var(--border-subtle);
   flex-shrink: 0;
+  display: inline-block;
+  transform-style: preserve-3d;
+  animation: logoSpinX 4s linear infinite;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.brand-link:hover .nav-logo-thumb {
+  animation-play-state: paused;
+}
+
+@keyframes logoSpinX {
+  0% {
+    transform: perspective(400px) rotateX(0deg);
+  }
+  100% {
+    transform: perspective(400px) rotateX(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-logo-thumb {
+    animation: none;
+  }
 }
 
 .brand-text-col {
@@ -1508,14 +1533,6 @@ body.dark-mode .stepper-tab.done .stepper-num {
 .btn-glass:hover {
   background: rgba(255, 255, 255, 0.24);
   color: #ffffff;
-}
-
-.nav-logo-thumb {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  object-fit: cover;
-  flex: none;
 }
 
 /* ---------- Big Monthly Visual Calendar (Penunjuk Aras) ---------- */
