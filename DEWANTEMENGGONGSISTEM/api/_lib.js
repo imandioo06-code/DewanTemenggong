@@ -24,7 +24,7 @@ export const db = {
 
 export const FACILITIES = [
   { id: 'fac-badminton', name: 'Gelanggang Badminton', type: 'badminton', maxCapacity: 10,
-    description: 'Gelanggang badminton berkualiti tinggi. Had 10 orang setiap gelanggang.',
+    description: 'Gelanggang badminton berkualiti tinggi.',
     image: '/content img/court.jpeg',
     units: [{ id: 'b-lining', name: 'Gelanggang Li-Ning (Court 1)' }, { id: 'b-yonex', name: 'Gelanggang Yonex (Court 2)' }] },
   { id: 'fac-pingpong', name: 'Meja Ping Pong', type: 'pingpong', maxCapacity: 6,

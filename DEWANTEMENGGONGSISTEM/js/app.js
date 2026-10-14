@@ -37,7 +37,7 @@ const I18N = {
       step2Title: 'Pilih tarikh operasi', step2Desc: 'Dewan beroperasi pada Isnin & Jumaat (5-7 PM) dan Rabu (8-10 PM). Pilih tarikh terus dari kalendar live di bawah.',
       step3Title: 'Maklumat pemohon', step3Desc: 'Pastikan maklumat sepadan dengan rekod universiti anda.',
       step4Title: 'Tempahan Disahkan', step4Desc: 'Permohonan anda telah diluluskan secara automatik.',
-      cap: 'Kapasiti: sehingga', perUnit: 'orang per unit', unitLabel: 'Pilih unit spesifik:', 
+      cap: 'Kapasiti maksimum:', perUnit: 'orang per unit.', unitLabel: 'Pilih unit spesifik:', 
       nextDate: 'Seterusnya: Tarikh & Masa', nextStudent: 'Seterusnya: Maklumat Pelajar', submit: 'Hantar dan Luluskan', back: 'Kembali',
       datePast: 'Tarikh ini telah lepas. Sila pilih tarikh hari ini atau tarikh akan datang.', dateClosed: 'Dewan ditutup oleh pentadbiran JSP pada tarikh ini. Sila pilih tarikh lain pada kalendar.', dateOpen: 'Slot dibuka untuk permohonan.', dateNonOp: 'Tarikh ini luar hari operasi rasmi. Sila pilih hari bertanda hijau (Isnin, Rabu, atau Jumaat) di atas.',
       selDateLabel: 'TARIKH DIPILIH UNTUK TEMPAHAN:', opTime: 'Waktu Operasi', outSession: 'Luar sesi operasi rasmi',
@@ -124,7 +124,7 @@ const I18N = {
       step2Title: 'Select operating date', step2Desc: 'The sports hall operates on Monday & Friday (5-7 PM) and Wednesday (8-10 PM). Pick your date from the live calendar below.',
       step3Title: 'Applicant details', step3Desc: 'Ensure information matches your official student records.',
       step4Title: 'Booking Confirmed', step4Desc: 'Your booking has been approved automatically.',
-      cap: 'Capacity: up to', perUnit: 'persons per unit', unitLabel: 'Select specific unit:', 
+      cap: 'Maximum capacity:', perUnit: 'persons per unit.', unitLabel: 'Select specific unit:', 
       nextDate: 'Next: Date & Time', nextStudent: 'Next: Student Details', submit: 'Submit and Approve', back: 'Back',
       datePast: 'This date has already passed. Please select today or an upcoming date.', dateClosed: 'The hall is closed by JSP admin on this date. Please pick another date.', dateOpen: 'Slots are open for application.', dateNonOp: 'This date is outside official operating days. Please select green dates (Monday, Wednesday, or Friday) above.',
       selDateLabel: 'SELECTED DATE FOR BOOKING:', opTime: 'Operating Time', outSession: 'Outside official session',
@@ -615,7 +615,7 @@ function wizard() {
                   <span class="choice-title">${S.lang === 'eng' ? (x.type === 'badminton' ? 'Badminton Court' : 'Table Tennis') : x.name}</span>
                   <span class="choice-check">${S.fac === x.id ? ic('check') : ''}</span>
                 </div>
-                <p class="caption-muted">${S.lang === 'eng' ? (x.type === 'badminton' ? 'High quality tournament courts. Limit of 10 persons per court.' : 'Standard tournament ping pong tables.') : x.description}</p>
+                <p class="caption-muted">${S.lang === 'eng' ? (x.type === 'badminton' ? 'High quality tournament courts.' : 'Standard tournament ping pong tables.') : (x.type === 'badminton' ? 'Gelanggang badminton berkualiti tinggi.' : x.description)}</p>
                 <div class="caption-muted" style="margin-top:10px;font-size:12px">
                   ${t('wizard.cap')} <b>${x.maxCapacity} ${t('wizard.perUnit')}</b>
                 </div>
