@@ -1316,6 +1316,50 @@ function admin() {
 
 /* ---------- Modals ---------- */
 function modals() {
+  if (S.modal === 'booking-loading') return `
+    <div class="clean-modal-backdrop booking-process-backdrop">
+      <div class="clean-modal-dialog booking-process-dialog text-center">
+        <div class="jsp-loading-avatar-wrap">
+          <div class="jsp-loading-ring"></div>
+          <img src="/content img/logojspimg.png" alt="Logo JSP" class="jsp-loading-logo">
+        </div>
+        <h3 class="section-title" style="margin-top:18px;font-size:18px">
+          ${S.lang === 'eng' ? 'Processing Your Booking…' : 'Sedang Memproses Tempahan…'}
+        </h3>
+        <p class="caption-muted" style="margin-top:6px;font-size:13px">
+          ${S.lang === 'eng' ? 'Please wait while the system verifies your quota and registers your slot.' : 'Sila tunggu sebentar sementara sistem mengesahkan kuota dan mendaftar slot anda.'}
+        </p>
+      </div>
+    </div>`;
+
+  if (S.modal === 'booking-success') return `
+    <div class="clean-modal-backdrop booking-process-backdrop">
+      <div class="clean-modal-dialog booking-process-dialog text-center">
+        <button class="modal-close-btn" data-a="close" aria-label="Tutup">${ic('x')}</button>
+        <div class="booking-success-badge-wrap">
+          <div class="booking-success-check-circle">
+            ${ic('check')}
+          </div>
+        </div>
+        <h3 class="section-title" style="margin-top:16px;font-size:19px">
+          ${t('wizard.step4Title')}
+        </h3>
+        <div class="booking-success-msg-box" style="margin-top:12px">
+          <p class="booking-success-primary-msg">
+            ${S.lang === 'eng' ? 'Your booking has been approved!' : 'Tempahan anda telah disahkan dan diluluskan.'}
+          </p>
+          <p class="caption-muted" style="margin-top:6px;font-size:12.5px">
+            ${t('wizard.step4Desc')}
+          </p>
+        </div>
+        <div style="margin-top:20px">
+          <button class="btn-primary" data-a="close" style="width:100%;justify-content:center">
+            ${S.lang === 'eng' ? 'View Booking Pass / Slip' : 'Lihat Slip Pas Tempahan'}
+          </button>
+        </div>
+      </div>
+    </div>`;
+
   if (S.modal === 'login') return `
     <div class="clean-modal-backdrop">
       <div class="clean-modal-dialog">
@@ -1488,25 +1532,40 @@ const A = {
       return toast(S.lang === 'eng' ? 'Please check the Student Declaration agreement box before submitting.' : 'Sila tandakan kotak Aku Janji Pengesahan Maklumat sebelum menghantar tempahan.', 'error');
     }
 
+    // 1. Tunjuk popup loading dengan animasi logojspimg
+    S.modal = 'booking-loading';
+    render();
+
     try {
-      const r = await api('book', { 
-        fullName: f.fullName.trim(), 
-        phoneNo: f.phoneNo.trim(), 
-        studentId: cleanSid, 
-        programCode: f.programCode.trim().toUpperCase(), 
-        notes: S.notes, 
-        facilityId: S.fac, 
-        unitId: S.unit, 
-        date: S.date,
-        agreement: true 
-      });
+      const [r] = await Promise.all([
+        api('book', { 
+          fullName: f.fullName.trim(), 
+          phoneNo: f.phoneNo.trim(), 
+          studentId: cleanSid, 
+          programCode: f.programCode.trim().toUpperCase(), 
+          notes: S.notes, 
+          facilityId: S.fac, 
+          unitId: S.unit, 
+          date: S.date,
+          agreement: true 
+        }),
+        new Promise(resolve => setTimeout(resolve, 800))
+      ]);
       localStorage.setItem('dt_form', JSON.stringify({ fullName: f.fullName, phoneNo: f.phoneNo, studentId: cleanSid, programCode: f.programCode }));
       S.receipt = r.booking;
       S.step = 4;
       S.notes = '';
+      
+      // 2. Tunjuk popup message (message sama macam yang sedia ada)
+      S.modal = 'booking-success';
       toast(S.lang === 'eng' ? 'Your booking has been approved!' : 'Tempahan anda telah disahkan dan diluluskan.');
+      render();
       await load();
-    } catch (e) { toast(e.message, 'error'); }
+    } catch (e) { 
+      S.modal = null;
+      render();
+      toast(e.message, 'error'); 
+    }
   },
   async toggle() {
     try {
@@ -1596,7 +1655,11 @@ const A = {
 /* ---------- Events ---------- */
 document.addEventListener('click', (e) => {
   const m = e.target.closest('.clean-modal-backdrop');
-  if (m && e.target === m) { S.modal = null; return render(); }
+  if (m && e.target === m) { 
+    if (S.modal === 'booking-loading') return;
+    S.modal = null; 
+    return render(); 
+  }
   const el = e.target.closest('[data-a]');
   if (el && A[el.dataset.a]) A[el.dataset.a](el.dataset);
 });

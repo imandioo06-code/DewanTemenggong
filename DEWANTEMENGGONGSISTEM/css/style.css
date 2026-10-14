@@ -1368,6 +1368,150 @@ body.dark-mode .stepper-tab.done .stepper-num {
   to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
+/* ---------- Booking Process & Success Modal Custom Styles ---------- */
+.booking-process-backdrop {
+  z-index: 1000;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  background: rgba(9, 13, 22, 0.72);
+}
+
+.booking-process-dialog {
+  max-width: 380px;
+  width: 90%;
+  padding: 36px 26px;
+  border-radius: var(--radius-lg, 16px);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+/* JSP Logo Loading Animation */
+.jsp-loading-avatar-wrap {
+  position: relative;
+  width: 86px;
+  height: 86px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.jsp-loading-ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: var(--volt, #ccff00);
+  border-right-color: #0284c7;
+  animation: jspRingSpin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+
+.jsp-loading-ring::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px dashed rgba(2, 132, 199, 0.35);
+  animation: jspRingSpinReverse 2.4s linear infinite;
+}
+
+.jsp-loading-logo {
+  width: 66px;
+  height: 66px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+  animation: jspLogoSpinPulse 2.4s ease-in-out infinite;
+  transform-style: preserve-3d;
+}
+
+@keyframes jspRingSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes jspRingSpinReverse {
+  0% { transform: rotate(360deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes jspLogoSpinPulse {
+  0% {
+    transform: perspective(400px) rotateY(0deg) scale(0.96);
+  }
+  50% {
+    transform: perspective(400px) rotateY(180deg) scale(1.04);
+  }
+  100% {
+    transform: perspective(400px) rotateY(360deg) scale(0.96);
+  }
+}
+
+/* Booking Success Modal */
+.booking-success-badge-wrap {
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.booking-success-check-circle {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: rgba(34, 197, 94, 0.12);
+  color: #16a34a;
+  border: 2.5px solid #22c55e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 24px rgba(34, 197, 94, 0.32);
+  animation: successCirclePulse 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.booking-success-check-circle .ic {
+  width: 38px;
+  height: 38px;
+}
+
+@keyframes successCirclePulse {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  75% {
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.booking-success-msg-box {
+  padding: 14px 16px;
+  background: var(--bg-subtle, #f9fafb);
+  border: 1px solid var(--border-subtle, #e5e7eb);
+  border-radius: var(--radius-sm, 8px);
+}
+
+.booking-success-primary-msg {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #15803d;
+  margin: 0;
+}
+
+body.dark-mode .booking-success-msg-box {
+  background: rgba(34, 197, 94, 0.08);
+  border-color: rgba(34, 197, 94, 0.25);
+}
+
+body.dark-mode .booking-success-primary-msg {
+  color: #4ade80;
+}
+
 .modal-icon-badge {
   width: 44px;
   height: 44px;
