@@ -2051,9 +2051,41 @@ body.dark-mode .cal-week-tag {
     font-size: 10.5px;
   }
   
-  .clean-grid-3, .facility-choice-grid, .admin-controls-grid { 
+  .facility-choice-grid, .admin-controls-grid { 
     grid-template-columns: 1fr; 
     gap: 12px;
+  }
+  
+  /* 4. Guidelines Cards in 1 Row on Mobile Browser View (Sebaris) */
+  .clean-grid-3 {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    align-items: stretch !important;
+  }
+  .clean-grid-3 .clean-card-pad {
+    padding: 12px 8px !important;
+    border-radius: 10px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    height: 100% !important;
+  }
+  .clean-grid-3 .card-item-title {
+    font-size: 11.5px !important;
+    font-weight: 700 !important;
+    line-height: 1.25 !important;
+    margin-bottom: 6px !important;
+    letter-spacing: -0.01em !important;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+  .clean-grid-3 .caption-muted {
+    font-size: 10px !important;
+    line-height: 1.35 !important;
+    color: var(--ink-secondary) !important;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
   
   /* Live Clock Widget on Mobile */

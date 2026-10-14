@@ -20,9 +20,9 @@ const I18N = {
     hero: { tag: 'DEWAN TEMENGGONG', title: 'Pusat Sukan & Fasiliti Kolej Kediaman.', desc: 'Sistem tempahan berpusat gelanggang badminton dan meja ping pong. Kelulusan automatik masa-nyata untuk kemudahan pelajar kolej.', bookNow: 'Tempah slot sekarang', viewCal: 'Lihat kalendar kekosongan', checkStatus: 'Semak status tempahan' },
     guidelines: { 
       g1Title: '1 Pelajar 1 Tempahan Seminggu', 
-      g1Desc: 'Pendaftaran individu menggunakan No. Matrik sah. Had 1 tempahan setiap minggu bagi memastikan giliran yang adil untuk semua warga kolej.', 
+      g1Desc: 'Pendaftaran individu memerlukan No. Matrik yang sah. Had 1 tempahan seminggu bagi memastikan peluang yang adil untuk semua warga kolej.', 
       g2Title: 'Kelulusan Serta-merta', 
-      g2Desc: 'Sistem mengesahkan tempahan secara langsung selagi kuota slot belum penuh. Anda akan menerima slip rujukan untuk ditunjukkan.', 
+      g2Desc: 'Sistem mengesahkan tempahan secara automatik selagi kuota slot belum penuh. Anda akan menerima slip rujukan untuk disimpan dan ditunjukkan jika perlu.', 
       g3Title: 'Etika Sahsiah (SRD)',
       srd: 'Sila patuhi garis panduan Sahsiah Rupa Diri (SRD). Berpakaian sukan yang lengkap dan sopan ketika menggunakan kemudahan dewan.'
     },
@@ -106,9 +106,9 @@ const I18N = {
     hero: { tag: 'DEWAN TEMENGGONG', title: 'College Sports & Facility Center.', desc: 'Centralized booking system for badminton courts and table tennis. Instant automated approval for residential college students.', bookNow: 'Book a slot now', viewCal: 'View availability calendar', checkStatus: 'Check booking status' },
     guidelines: { 
       g1Title: '1 Student 1 Booking per Week', 
-      g1Desc: 'Individual registration with valid Student ID. Limit of 1 booking per week to ensure fair turns for all college residents.', 
+      g1Desc: 'Individual registration requires a valid Student ID. Limit of 1 booking per week to ensure fair opportunities for all college residents.', 
       g2Title: 'Instant Approval', 
-      g2Desc: 'The system validates bookings directly as long as slot quotas are available. You will receive a reference slip to present.', 
+      g2Desc: 'The system validates bookings automatically as long as slot quotas are available. You will receive a reference slip to save and present if needed.', 
       g3Title: 'Dress & Conduct (SRD)',
       srd: 'Please comply with student dress code and conduct (SRD) guidelines. Wear proper and polite athletic attire when using sports facilities.'
     },
