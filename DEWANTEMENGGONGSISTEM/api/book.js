@@ -9,10 +9,19 @@ export default wrap(async (req, res) => {
   if (!t('studentId', 30)) fail(400, 'Sila masukkan No. Matrik anda!');
   if (!t('programCode', 30)) fail(400, 'Sila masukkan Kod Program anda!');
 
-  // Pengesahan No. Matrik - ketetapan nombor (cth: 10 digit UiTM 2024694636)
-  const rawSid = t('studentId', 30).replace(/\s+/g, '');
-  if (!/^\d{8,12}$/.test(rawSid)) {
-    fail(400, 'No. Matrik tidak sah. Sila masukkan nombor matrik UiTM yang tepat (cth: 2024694636) tanpa sebarang huruf.');
+  // Pengesahan No. Telefon - format nombor telefon Malaysia
+  const rawPhone = t('phoneNo', 30).replace(/\D/g, '');
+  let normPhone = rawPhone;
+  if (normPhone.startsWith('60')) normPhone = '0' + normPhone.slice(2);
+  if (!/^(011\d{8}|014\d{7,8}|01[0236789]\d{7})$/.test(normPhone)) {
+    fail(400, 'Format nombor telefon tidak sah. Sila masukkan nombor telefon Malaysia yang sah (cth: 012-3456789 atau 011-12345678).');
+  }
+  const formattedPhone = `${normPhone.slice(0, 3)}-${normPhone.slice(3)}`;
+
+  // Pengesahan No. Matrik - ketetapan nombor 10 digit dan wajib bermula 202 (cth: 2024694636)
+  const rawSid = t('studentId', 30).replace(/\D/g, '');
+  if (!/^202\d{7}$/.test(rawSid)) {
+    fail(400, 'No. Matrik tidak sah. Sila pastikan No. Matrik UiTM mengandungi 10 digit dan bermula dengan "202" (cth: 2024694636).');
   }
 
   // Pengesahan Aku Janji & Integriti
@@ -60,13 +69,13 @@ export default wrap(async (req, res) => {
     }
   }
 
-  const sid = rawSid.toUpperCase(), phone = t('phoneNo', 30), slot = sc.slots[0];
+  const sid = rawSid, phone = formattedPhone, slot = sc.slots[0];
 
   // Had 1 tempahan SEMINGGU bagi setiap No. Matrik / No. Telefon
   const { start: weekStart, end: weekEnd } = getWeekRange(date);
   const dup = await db.execute({
-    sql: "SELECT ref_no, date, facility_name, unit_name FROM bookings WHERE date >= ? AND date <= ? AND status = 'Diluluskan' AND (student_id = ? OR phone_no = ?) LIMIT 1",
-    args: [weekStart, weekEnd, sid, phone]
+    sql: "SELECT ref_no, date, facility_name, unit_name FROM bookings WHERE date >= ? AND date <= ? AND status = 'Diluluskan' AND (student_id = ? OR phone_no = ? OR phone_no = ?) LIMIT 1",
+    args: [weekStart, weekEnd, sid, formattedPhone, normPhone]
   });
   if (dup.rows.length) {
     fail(409, `Harap maaf! No. Matrik (${sid}) atau No. Telefon ini telah mempunyai tempahan bagi minggu tersebut pada tarikh ${dup.rows[0].date} (Rujukan: ${dup.rows[0].ref_no}). Sistem mengehadkan 1 tempahan setiap minggu bagi setiap pelajar untuk memberi peluang kepada pelajar lain.`);

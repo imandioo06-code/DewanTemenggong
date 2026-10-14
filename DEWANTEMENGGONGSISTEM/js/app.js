@@ -42,8 +42,9 @@ const I18N = {
       datePast: 'Tarikh ini telah lepas. Sila pilih tarikh hari ini atau tarikh akan datang.', dateClosed: 'Dewan ditutup oleh pentadbiran JSP pada tarikh ini. Sila pilih tarikh lain pada kalendar.', dateOpen: 'Slot dibuka untuk permohonan.', dateNonOp: 'Tarikh ini luar hari operasi rasmi. Sila pilih hari bertanda hijau (Isnin, Rabu, atau Jumaat) di atas.',
       selDateLabel: 'TARIKH DIPILIH UNTUK TEMPAHAN:', opTime: 'Waktu Operasi', outSession: 'Luar sesi operasi rasmi',
       fullName: 'Nama Penuh Pelajar *', phoneNo: 'No. Telefon / WhatsApp *', studentId: 'No. Matrik Pelajar *', progCode: 'Kod Program *', notes: 'Catatan Tambahan (Pilihan)',
-      fullNamePh: 'Contoh: MUHAMMAD HAZIM', phoneNoPh: 'Contoh: 012-3456789', studentIdPh: 'Contoh: 2024694636', progCodePh: 'Contoh: CS110', notesPh: 'Contoh: Latihan kejohanan',
-      studentIdHint: '10 digit nombor matrik UiTM (cth: 2024694636) - angka sahaja.',
+      fullNamePh: 'Contoh: MUHAMMAD HAZIM', phoneNoPh: 'Contoh: 012-3456789', studentIdPh: 'Contoh: 2024694636', progCodePh: 'Contoh: AC220', notesPh: 'Contoh: Latihan kejohanan',
+      studentIdHint: '10 digit No. Matrik UiTM bermula dengan 202 (cth: 2024694636).',
+      phoneNoHint: 'Format nombor telefon Malaysia (cth: 012-3456789 atau 011-12345678).',
       onePerWeekNotice: '📌 <b>Syarat Kuota:</b> Setiap pelajar dihadkan kepada <b>1 tempahan setiap minggu</b> (Isnin–Ahad) bagi memberi peluang yang adil kepada rakan kolej lain.',
       agreementTitle: 'Aku Janji Ketulenan Maklumat & Pengesahan Kad Matrik *',
       agreementDesc: 'Saya memperakui bahawa semua maklumat yang diisi adalah benar, tepat dan milik saya sendiri. Sekiranya maklumat ini didapati tidak benar atau palsu, tempahan saya akan dibatalkan serta-merta dan saya bersedia dikenakan tindakan tatatertib oleh Pengurusan Kolej & JSP. Saya maklum bahawa <b>Kad Pelajar (Matrik) fizikal wajib ditunjukkan</b> kepada petugas JSP di dewan semasa sesi bermula.',
@@ -128,8 +129,9 @@ const I18N = {
       datePast: 'This date has already passed. Please select today or an upcoming date.', dateClosed: 'The hall is closed by JSP admin on this date. Please pick another date.', dateOpen: 'Slots are open for application.', dateNonOp: 'This date is outside official operating days. Please select green dates (Monday, Wednesday, or Friday) above.',
       selDateLabel: 'SELECTED DATE FOR BOOKING:', opTime: 'Operating Time', outSession: 'Outside official session',
       fullName: 'Student Full Name *', phoneNo: 'Phone / WhatsApp No. *', studentId: 'Student ID No. *', progCode: 'Program Code *', notes: 'Additional Notes (Optional)',
-      fullNamePh: 'Example: MUHAMMAD HAZIM', phoneNoPh: 'Example: 012-3456789', studentIdPh: 'Example: 2024694636', progCodePh: 'Example: CS110', notesPh: 'Example: Tournament practice',
-      studentIdHint: '10-digit UiTM Student ID (e.g. 2024694636) - numbers only.',
+      fullNamePh: 'Example: MUHAMMAD HAZIM', phoneNoPh: 'Example: 012-3456789', studentIdPh: 'Example: 2024694636', progCodePh: 'Example: AC220', notesPh: 'Example: Tournament practice',
+      studentIdHint: '10-digit UiTM Student ID starting with 202 (e.g. 2024694636).',
+      phoneNoHint: 'Malaysian phone number format (e.g. 012-3456789 or 011-12345678).',
       onePerWeekNotice: '📌 <b>Quota Policy:</b> Each student is limited to <b>1 booking per week</b> (Mon–Sun) to ensure fair turns for all fellow students.',
       agreementTitle: 'Declaration of Information Accuracy & Student ID Verification *',
       agreementDesc: 'I certify that all details entered are accurate, true, and belong to me. If found false, my booking will be cancelled immediately and I will face disciplinary action by College Management & JSP. I understand that my <b>physical Student ID (Matric) Card must be presented</b> to JSP officials at the hall upon session entry.',
@@ -183,10 +185,28 @@ const I18N = {
   }
 };
 
+/* ---------- Helper Format Phone Malaysia ---------- */
+const formatMyPhone = (val) => {
+  if (!val) return '';
+  let digits = String(val).replace(/\D/g, '');
+  if (digits.startsWith('60')) {
+    digits = '0' + digits.slice(2);
+  }
+  const maxLen = (digits.startsWith('011') || digits.startsWith('014')) ? 11 : 10;
+  digits = digits.slice(0, maxLen);
+  if (digits.length <= 3) return digits;
+  return `${digits.slice(0, 3)}-${digits.slice(3)}`;
+};
+
+const savedForm = JSON.parse(localStorage.getItem('dt_form') || '{}');
+if (savedForm.programCode === 'CS110') savedForm.programCode = '';
+if (savedForm.phoneNo) savedForm.phoneNo = formatMyPhone(savedForm.phoneNo);
+if (savedForm.studentId && !/^202\d{0,7}$/.test(savedForm.studentId)) savedForm.studentId = '';
+
 const S = {
   tab: 'home', step: 1, fac: 'fac-badminton', unit: 'b-lining', date: today(), notes: '',
   calYear: new Date().getFullYear(), calMonth: new Date().getMonth(),
-  form: JSON.parse(localStorage.getItem('dt_form') || '{}'), search: '', results: null,
+  form: savedForm, search: '', results: null,
   view: { status: today(), admin: today() }, data: null, token: localStorage.getItem('dt_token') || '', modal: null, receipt: null,
   lang: localStorage.getItem('dt_lang') || 'bm',
   theme: localStorage.getItem('dt_theme') || 'light' // default light mode
@@ -698,7 +718,8 @@ function wizard() {
 
           <div class="field-group">
             <label class="field-label">${t('wizard.phoneNo')}</label>
-            <input type="text" placeholder="${t('wizard.phoneNoPh')}" value="${esc(f.phoneNo || '')}" data-f="phoneNo" class="minimal-input">
+            <input type="tel" inputmode="tel" maxlength="13" placeholder="${t('wizard.phoneNoPh')}" value="${esc(formatMyPhone(f.phoneNo || ''))}" data-f="phoneNo" class="minimal-input">
+            <span class="field-hint">${t('wizard.phoneNoHint')}</span>
           </div>
 
           <div class="field-group">
@@ -709,7 +730,7 @@ function wizard() {
 
           <div class="field-group">
             <label class="field-label">${t('wizard.progCode')}</label>
-            <input type="text" placeholder="${t('wizard.progCodePh')}" value="${esc(f.programCode || '')}" data-f="programCode" class="minimal-input" style="text-transform:uppercase">
+            <input type="text" maxlength="10" placeholder="${t('wizard.progCodePh')}" value="${esc(f.programCode || '')}" data-f="programCode" class="minimal-input" style="text-transform:uppercase">
           </div>
 
           <div class="field-group field-span-2">
@@ -1522,10 +1543,24 @@ const A = {
   async submit() {
     const f = S.form;
     if (!f.fullName || !f.fullName.trim()) return toast(S.lang === 'eng' ? 'Please enter your full name.' : 'Sila masukkan nama penuh anda.', 'error');
-    if (!f.phoneNo || !f.phoneNo.trim()) return toast(S.lang === 'eng' ? 'Please enter your phone number.' : 'Sila masukkan no. telefon anda.', 'error');
-    const cleanSid = String(f.studentId || '').replace(/\s+/g, '');
-    if (!cleanSid || !/^\d{8,12}$/.test(cleanSid)) {
-      return toast(S.lang === 'eng' ? 'Please enter a valid 10-digit UiTM Student ID (numbers only).' : 'Sila masukkan 10 digit No. Matrik UiTM yang sah (nombor sahaja).', 'error');
+    
+    // Semak format No. Telefon Malaysia
+    const rawDigitsPhone = String(f.phoneNo || '').replace(/\D/g, '');
+    let normPhone = rawDigitsPhone;
+    if (normPhone.startsWith('60')) normPhone = '0' + normPhone.slice(2);
+    if (!normPhone || !/^(011\d{8}|014\d{7,8}|01[0236789]\d{7})$/.test(normPhone)) {
+      return toast(S.lang === 'eng' 
+        ? 'Please enter a valid Malaysian phone number (e.g. 012-3456789 or 011-12345678).' 
+        : 'Sila masukkan format nombor telefon Malaysia yang sah (cth: 012-3456789 atau 011-12345678).', 'error');
+    }
+    const cleanPhone = `${normPhone.slice(0, 3)}-${normPhone.slice(3)}`;
+
+    // Semak No. Matrik (wajib 10 digit nombor dan wajib bermula 202)
+    const cleanSid = String(f.studentId || '').replace(/\D/g, '');
+    if (!cleanSid || !/^202\d{7}$/.test(cleanSid)) {
+      return toast(S.lang === 'eng' 
+        ? 'Invalid Student ID. Please enter a 10-digit UiTM Student ID starting with "202" (e.g. 2024694636).' 
+        : 'No. Matrik tidak sah. Sila pastikan No. Matrik UiTM mengandungi 10 digit dan bermula dengan "202" (cth: 2024694636).', 'error');
     }
     if (!f.programCode || !f.programCode.trim()) return toast(S.lang === 'eng' ? 'Please enter your program code.' : 'Sila masukkan kod program anda.', 'error');
     if (!f.agreement) {
@@ -1540,7 +1575,7 @@ const A = {
       const [r] = await Promise.all([
         api('book', { 
           fullName: f.fullName.trim(), 
-          phoneNo: f.phoneNo.trim(), 
+          phoneNo: cleanPhone, 
           studentId: cleanSid, 
           programCode: f.programCode.trim().toUpperCase(), 
           notes: S.notes, 
@@ -1551,7 +1586,7 @@ const A = {
         }),
         new Promise(resolve => setTimeout(resolve, 800))
       ]);
-      localStorage.setItem('dt_form', JSON.stringify({ fullName: f.fullName, phoneNo: f.phoneNo, studentId: cleanSid, programCode: f.programCode }));
+      localStorage.setItem('dt_form', JSON.stringify({ fullName: f.fullName.trim(), phoneNo: cleanPhone, studentId: cleanSid, programCode: f.programCode.trim().toUpperCase() }));
       S.receipt = r.booking;
       S.step = 4;
       S.notes = '';
@@ -1692,6 +1727,14 @@ document.addEventListener('input', (e) => {
   const { f, s } = e.target.dataset;
   if (f === 'studentId') {
     e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
+    S.form[f] = e.target.value;
+  }
+  else if (f === 'phoneNo') {
+    e.target.value = formatMyPhone(e.target.value);
+    S.form[f] = e.target.value;
+  }
+  else if (f === 'programCode') {
+    e.target.value = e.target.value.toUpperCase();
     S.form[f] = e.target.value;
   }
   else if (f === 'agreement') {
