@@ -1775,7 +1775,11 @@ const A = {
 document.addEventListener('click', (e) => {
   const m = e.target.closest('.clean-modal-backdrop');
   if (m && e.target === m) { 
-    if (S.modal === 'booking-loading' || S.modal === 'login-loading' || S.modal === 'login-success') return;
+    if (S.modal === 'booking-loading' || S.modal === 'login-loading') return;
+    if (S.modal === 'login-success') {
+      S.modal = null;
+      return render();
+    }
     S.modal = null; 
     return render(); 
   }
@@ -1877,18 +1881,21 @@ document.addEventListener('submit', async (e) => {
     S.token = r.token;
     localStorage.setItem('dt_token', r.token);
 
-    // 2. Tunjuk popup login successful yang minimalist & aesthetic
+    // Muat turun state terkini dengan token baru (supaya S.data.isAdmin = true)
+    S.data = await api('state');
+
+    // 2. Set tab terus ke admin dan tunjuk popup login-success secara aesthetic
+    S.tab = 'admin';
     S.modal = 'login-success';
     render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     toast(S.lang === 'eng' ? 'Login successful! Welcome back.' : 'Log masuk berjaya! Selamat kembali.');
 
-    // 3. Masuk terus ke panel admin secara lancar
-    setTimeout(async () => {
+    // 3. Tutup modal secara lancar dan dedahkan panel admin
+    setTimeout(() => {
       if (S.modal === 'login-success') {
         S.modal = null;
-        S.tab = 'admin';
         render();
-        await load();
       }
     }, 850);
 
