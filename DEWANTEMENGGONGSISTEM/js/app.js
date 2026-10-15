@@ -302,7 +302,7 @@ const getAcademicWeek = (dateStr) => {
     isPre: false,
     label: S.lang === 'eng' ? `Week ${weekNum}` : `Minggu ${weekNum}`,
     fullLabel: S.lang === 'eng' ? `Week ${weekNum}` : `Minggu ${weekNum}`,
-    shortLabel: `M${weekNum}`
+    shortLabel: S.lang === 'eng' ? `W${weekNum}` : `M${weekNum}`
   };
 };
 
@@ -1339,7 +1339,7 @@ function admin() {
               const isCurrent = curWk && curWk.week === w;
               return `
               <button type="button" class="week-admin-pill ${isOpen ? 'open' : 'closed'} ${isCurrent ? 'is-current' : ''}" data-a="toggleWeek" data-w="${w}">
-                <span class="week-pill-num">M${w} ${isCurrent ? (S.lang === 'eng' ? '(Current)' : '(Semasa)') : ''}</span>
+                <span class="week-pill-num">${S.lang === 'eng' ? `W${w}` : `M${w}`} ${isCurrent ? (S.lang === 'eng' ? '(Current)' : '(Semasa)') : ''}</span>
                 <span class="week-pill-dates">${dateRangeStr}</span>
                 <span class="week-pill-badge">${isOpen ? (S.lang === 'eng' ? '🟢 Open' : '🟢 Dibuka') : (S.lang === 'eng' ? '🔴 Closed' : '🔴 Ditutup')}</span>
               </button>`;
