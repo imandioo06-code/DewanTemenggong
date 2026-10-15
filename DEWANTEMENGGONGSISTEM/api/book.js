@@ -51,7 +51,13 @@ export default wrap(async (req, res) => {
   const openWeeks = (sMap.openWeeks || '1,2').split(',').map(s => s.trim()).filter(Boolean);
 
   const targetWeek = getAcademicWeek(date, semStart);
-  if (mode === 'week_control' && targetWeek && targetWeek.week > 0) {
+  if (targetWeek?.isMidsem) {
+    if (!openWeeks.includes('midsem')) {
+      fail(400, 'Dewan ditutup sempena Cuti Pertengahan Semester (21 - 27 Disember).');
+    }
+  } else if (targetWeek?.isPost) {
+    fail(400, 'Tempoh sesi semester telah tamat.');
+  } else if (mode === 'week_control' && targetWeek && targetWeek.week > 0) {
     if (!openWeeks.includes(String(targetWeek.week))) {
       fail(400, `Tempahan bagi Minggu ${targetWeek.week} belum dibuka oleh pihak pentadbiran JSP. Tempahan akan diaktifkan oleh admin menjelang minggu berkenaan.`);
     }

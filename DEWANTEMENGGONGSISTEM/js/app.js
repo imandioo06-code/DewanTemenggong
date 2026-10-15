@@ -296,7 +296,34 @@ const getAcademicWeek = (dateStr) => {
   current.setHours(0, 0, 0, 0);
   const diffDays = Math.floor((current.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
   if (diffDays < 0) return { week: 0, isPre: true, label: S.lang === 'eng' ? 'Pre-Semester' : 'Pra-Semester', fullLabel: S.lang === 'eng' ? 'Pre-Semester Period' : 'Tempoh Pra-Semester', shortLabel: 'Pre' };
-  const weekNum = Math.floor(diffDays / 7) + 1;
+  
+  // Cuti Pertengahan Semester (Midsem Break): 21 - 27 Disember 2026 (7 hari, tidak dikira sebagai week nombor)
+  if (dateStr >= '2026-12-21' && dateStr <= '2026-12-27') {
+    return {
+      week: 0,
+      isMidsem: true,
+      isBreak: true,
+      label: S.lang === 'eng' ? 'Midsem Break' : 'Cuti Midsem',
+      fullLabel: S.lang === 'eng' ? 'Midsem Break (21 - 27 Dec)' : 'Cuti Pertengahan Semester (21 - 27 Dis)',
+      shortLabel: S.lang === 'eng' ? 'Break' : 'Midsem'
+    };
+  }
+
+  // Jika tarikh melepasi cuti midsem (selepas 27 Disember 2026), tolak 7 hari cuti midsem supaya turutan minggu bersambung tanpa mengira midsem
+  const adjustedDays = (dateStr > '2026-12-27') ? (diffDays - 7) : diffDays;
+  const weekNum = Math.floor(adjustedDays / 7) + 1;
+
+  if (weekNum > 18) {
+    return {
+      week: weekNum,
+      isPost: true,
+      isBreak: true,
+      label: S.lang === 'eng' ? 'Semester Break' : 'Cuti Semester',
+      fullLabel: S.lang === 'eng' ? 'Semester Break' : 'Cuti Semester',
+      shortLabel: S.lang === 'eng' ? 'Break' : 'Cuti'
+    };
+  }
+
   return {
     week: weekNum,
     isPre: false,
@@ -313,6 +340,22 @@ const isDateWeekOpen = (dateStr) => {
   const openWeeks = (S.data.settings?.openWeeks || '1,2').split(',').map(s => s.trim()).filter(Boolean);
   const targetWeek = getAcademicWeek(dateStr);
   const todayStr = today();
+
+  if (targetWeek?.isMidsem) {
+    const isMidsemOpen = openWeeks.includes('midsem');
+    return {
+      open: isMidsemOpen,
+      weekNum: 'midsem',
+      reason: isMidsemOpen ? '' : (S.lang === 'eng' ? 'Closed for Midsem Break (21 - 27 Dec)' : 'Ditutup sempena Cuti Pertengahan Semester (21 - 27 Dis)')
+    };
+  }
+
+  if (targetWeek?.isPost) {
+    return {
+      open: false,
+      reason: S.lang === 'eng' ? 'Semester period has ended.' : 'Tempoh sesi semester telah tamat.'
+    };
+  }
 
   if (mode === 'week_control') {
     if (targetWeek && targetWeek.week > 0) {
@@ -1321,29 +1364,55 @@ function admin() {
           </div>
 
           <div class="week-admin-grid">
-            ${Array.from({ length: 14 }, (_, i) => i + 1).map((w) => {
+            ${(() => {
               const semStr = D.settings.semesterStartDate || '2026-10-05';
               const [sy, sm, sd] = semStr.split('-').map(Number);
               const startDt = new Date(sy, sm - 1, sd);
               startDt.setHours(0,0,0,0);
-              const wStart = new Date(startDt);
-              wStart.setDate(startDt.getDate() + (w - 1) * 7);
-              const wEnd = new Date(wStart);
-              wEnd.setDate(wStart.getDate() + 6);
               const dict = I18N[S.lang] || I18N.bm;
               const formatShort = (dt) => `${dt.getDate()} ${dict.months[dt.getMonth()].slice(0,3)}`;
-              const dateRangeStr = `${formatShort(wStart)} - ${formatShort(wEnd)}`;
               const openWeeksList = (D.settings.openWeeks || '1,2').split(',').map(s => s.trim());
-              const isOpen = D.settings.openBookingMode === 'all' || openWeeksList.includes(String(w));
               const curWk = getAcademicWeek(today());
-              const isCurrent = curWk && curWk.week === w;
-              return `
-              <button type="button" class="week-admin-pill ${isOpen ? 'open' : 'closed'} ${isCurrent ? 'is-current' : ''}" data-a="toggleWeek" data-w="${w}">
-                <span class="week-pill-num">${S.lang === 'eng' ? `W${w}` : `M${w}`} ${isCurrent ? (S.lang === 'eng' ? '(Current)' : '(Semasa)') : ''}</span>
-                <span class="week-pill-dates">${dateRangeStr}</span>
-                <span class="week-pill-badge">${isOpen ? (S.lang === 'eng' ? '🟢 Open' : '🟢 Dibuka') : (S.lang === 'eng' ? '🔴 Closed' : '🔴 Ditutup')}</span>
-              </button>`;
-            }).join('')}
+
+              let pillsHtml = '';
+
+              for (let w = 1; w <= 18; w++) {
+                // Selepas Week 11 (selepas 20 Dis), terdapat Cuti Midsem (21 - 27 Disember 2026)
+                if (w === 12) {
+                  // Paparkan pill Cuti Midsem
+                  const isMidsemOpen = D.settings.openBookingMode === 'all' || openWeeksList.includes('midsem');
+                  const isCurMidsem = curWk && curWk.isMidsem;
+                  pillsHtml += `
+                  <button type="button" class="week-admin-pill ${isMidsemOpen ? 'open' : 'closed'} ${isCurMidsem ? 'is-current' : ''}" data-a="toggleWeek" data-w="midsem" style="border-style:dashed;">
+                    <span class="week-pill-num">${S.lang === 'eng' ? 'Midsem Break' : 'Cuti Midsem'} ${isCurMidsem ? (S.lang === 'eng' ? '(Current)' : '(Semasa)') : ''}</span>
+                    <span class="week-pill-dates">21 ${dict.months[11].slice(0,3)} - 27 ${dict.months[11].slice(0,3)}</span>
+                    <span class="week-pill-badge">${isMidsemOpen ? (S.lang === 'eng' ? '🟢 Open' : '🟢 Dibuka') : (S.lang === 'eng' ? '🔴 Closed' : '🔴 Ditutup')}</span>
+                  </button>`;
+                }
+
+                // Hitung tarikh mula dan tamat untuk Week w:
+                // Jika w <= 11: offset = (w - 1) * 7 hari dari startDt
+                // Jika w >= 12: offset = (w - 1) * 7 + 7 hari (kerana ada 1 minggu cuti midsem 21-27 Dis)
+                const dayOffset = (w <= 11) ? (w - 1) * 7 : (w - 1) * 7 + 7;
+                const wStart = new Date(startDt);
+                wStart.setDate(startDt.getDate() + dayOffset);
+                const wEnd = new Date(wStart);
+                wEnd.setDate(wStart.getDate() + 6);
+
+                const dateRangeStr = `${formatShort(wStart)} - ${formatShort(wEnd)}`;
+                const isOpen = D.settings.openBookingMode === 'all' || openWeeksList.includes(String(w));
+                const isCurrent = curWk && curWk.week === w;
+
+                pillsHtml += `
+                <button type="button" class="week-admin-pill ${isOpen ? 'open' : 'closed'} ${isCurrent ? 'is-current' : ''}" data-a="toggleWeek" data-w="${w}">
+                  <span class="week-pill-num">${S.lang === 'eng' ? `W${w}` : `M${w}`} ${isCurrent ? (S.lang === 'eng' ? '(Current)' : '(Semasa)') : ''}</span>
+                  <span class="week-pill-dates">${dateRangeStr}</span>
+                  <span class="week-pill-badge">${isOpen ? (S.lang === 'eng' ? '🟢 Open' : '🟢 Dibuka') : (S.lang === 'eng' ? '🔴 Closed' : '🔴 Ditutup')}</span>
+                </button>`;
+              }
+
+              return pillsHtml;
+            })()}
           </div>
         </div>
       </div>
@@ -1714,7 +1783,7 @@ const A = {
     const cur = getAcademicWeek(today());
     const openWeeksList = (S.data?.settings?.openWeeks || '1,2').split(',').map(Number).filter(Boolean);
     const maxOpen = openWeeksList.length ? Math.max(...openWeeksList) : (cur?.week || 1);
-    const nextWk = Math.min(14, maxOpen + 1);
+    const nextWk = Math.min(18, maxOpen + 1);
     try {
       await api('admin', { action: 'set_only_week', week: nextWk });
       toast(S.lang === 'eng' ? `Advanced: Week ${nextWk} is now open for booking.` : `Minggu ${nextWk} kini dibuka untuk tempahan.`);
@@ -1723,9 +1792,9 @@ const A = {
   },
   async openAllWeeksToggle() {
     try {
-      const allWeeks = Array.from({ length: 14 }, (_, i) => i + 1).join(',');
+      const allWeeks = Array.from({ length: 18 }, (_, i) => i + 1).join(',');
       await api('admin', { action: 'save_settings', openBookingMode: 'all', openWeeks: allWeeks });
-      toast(S.lang === 'eng' ? 'All 14 academic weeks are now open for booking.' : 'Semua 14 minggu kini dibuka untuk tempahan.');
+      toast(S.lang === 'eng' ? 'All 18 academic weeks are now open for booking.' : 'Semua 18 minggu kini dibuka untuk tempahan.');
       await load();
     } catch (e) { toast(e.message, 'error'); }
   },

@@ -42,16 +42,21 @@ export default wrap(async (req, res) => {
     return res.json({ ok: true });
   }
   if (action === 'toggle_week') {
+    const isMidsem = p.week === 'midsem';
     const weekNum = parseInt(p.week, 10);
-    if (!weekNum || weekNum < 1 || weekNum > 20) fail(400, 'Nombor minggu tidak sah.');
+    if (!isMidsem && (!weekNum || weekNum < 1 || weekNum > 20)) fail(400, 'Nombor minggu tidak sah.');
     const curr = await db.execute("SELECT value FROM settings WHERE key = 'openWeeks'");
     let weeks = (curr.rows[0]?.value || '1,2').split(',').map(s => s.trim()).filter(Boolean);
-    const wStr = String(weekNum);
+    const wStr = isMidsem ? 'midsem' : String(weekNum);
     if (weeks.includes(wStr)) {
       weeks = weeks.filter(w => w !== wStr);
     } else {
       weeks.push(wStr);
-      weeks.sort((a, b) => Number(a) - Number(b));
+      weeks.sort((a, b) => {
+        if (a === 'midsem') return 1;
+        if (b === 'midsem') return -1;
+        return Number(a) - Number(b);
+      });
     }
     const newStr = weeks.join(',');
     await upsert('openWeeks', newStr);
