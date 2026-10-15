@@ -42,8 +42,8 @@ const I18N = {
       datePast: 'Tarikh ini telah lepas. Sila pilih tarikh hari ini atau tarikh akan datang.', dateClosed: 'Dewan ditutup oleh pentadbiran JSP pada tarikh ini. Sila pilih tarikh lain pada kalendar.', dateOpen: 'Slot dibuka untuk permohonan.', dateNonOp: 'Tarikh ini luar hari operasi rasmi. Sila pilih hari bertanda hijau (Isnin, Rabu, atau Jumaat) di atas.',
       selDateLabel: 'TARIKH DIPILIH UNTUK TEMPAHAN:', opTime: 'Waktu Operasi', outSession: 'Luar sesi operasi rasmi',
       fullName: 'Nama Penuh Pelajar *', phoneNo: 'No. Telefon / WhatsApp *', studentId: 'No. Matrik Pelajar *', progCode: 'Kod Program *', notes: 'Catatan Tambahan (Pilihan)',
-      fullNamePh: 'Contoh: MUHAMMAD HAZIM', phoneNoPh: 'Contoh: 012-3456789', studentIdPh: 'Contoh: 2024694636', progCodePh: 'Contoh: AC220', notesPh: 'Contoh: Latihan kejohanan',
-      studentIdHint: '10 digit No. Matrik UiTM bermula dengan 202 (cth: 2024694636).',
+      fullNamePh: 'Contoh: MUHAMMAD HAZIM', phoneNoPh: 'Contoh: 012-3456789', studentIdPh: '202••••••• (10 angka)', progCodePh: 'Contoh: AC220', notesPh: 'Contoh: Latihan kejohanan',
+      studentIdHint: 'Wajib 10 angka bermula dengan 202 (cth: 2024694636).',
       phoneNoHint: 'Format nombor telefon Malaysia (cth: 012-3456789 atau 011-12345678).',
       onePerWeekNotice: '📌 <b>Syarat Kuota:</b> Setiap pelajar dihadkan kepada <b>1 tempahan setiap minggu</b> (Isnin–Ahad) bagi memberi peluang yang adil kepada rakan kolej lain.',
       agreementTitle: 'Aku Janji Ketulenan Maklumat & Pengesahan Kad Matrik *',
@@ -129,8 +129,8 @@ const I18N = {
       datePast: 'This date has already passed. Please select today or an upcoming date.', dateClosed: 'The hall is closed by JSP admin on this date. Please pick another date.', dateOpen: 'Slots are open for application.', dateNonOp: 'This date is outside official operating days. Please select green dates (Monday, Wednesday, or Friday) above.',
       selDateLabel: 'SELECTED DATE FOR BOOKING:', opTime: 'Operating Time', outSession: 'Outside official session',
       fullName: 'Student Full Name *', phoneNo: 'Phone / WhatsApp No. *', studentId: 'Student ID No. *', progCode: 'Program Code *', notes: 'Additional Notes (Optional)',
-      fullNamePh: 'Example: MUHAMMAD HAZIM', phoneNoPh: 'Example: 012-3456789', studentIdPh: 'Example: 2024694636', progCodePh: 'Example: AC220', notesPh: 'Example: Tournament practice',
-      studentIdHint: '10-digit UiTM Student ID starting with 202 (e.g. 2024694636).',
+      fullNamePh: 'Example: MUHAMMAD HAZIM', phoneNoPh: 'Example: 012-3456789', studentIdPh: '202••••••• (10 digits)', progCodePh: 'Example: AC220', notesPh: 'Example: Tournament practice',
+      studentIdHint: 'Must be 10 digits starting with 202 (e.g. 2024694636).',
       phoneNoHint: 'Malaysian phone number format (e.g. 012-3456789 or 011-12345678).',
       onePerWeekNotice: '📌 <b>Quota Policy:</b> Each student is limited to <b>1 booking per week</b> (Mon–Sun) to ensure fair turns for all fellow students.',
       agreementTitle: 'Declaration of Information Accuracy & Student ID Verification *',
@@ -198,10 +198,42 @@ const formatMyPhone = (val) => {
   return `${digits.slice(0, 3)}-${digits.slice(3)}`;
 };
 
+/* ---------- Helper Format No. Matrik UiTM (202XXXXXXX - 10 angka) ---------- */
+const formatStudentMatric = (val) => {
+  if (!val) return '';
+  let digits = String(val).replace(/\D/g, '');
+  if (!digits) return '';
+  if (digits.startsWith('202')) return digits.slice(0, 10);
+  if (digits === '2' || digits === '20') return digits;
+  if (digits.startsWith('20')) digits = '202' + digits.slice(2);
+  else if (digits.startsWith('2')) digits = '202' + digits.slice(1);
+  else digits = '202' + digits;
+  return digits.slice(0, 10);
+};
+
+const renderStudentIdHint = (val) => {
+  const sid = String(val || '').replace(/\D/g, '');
+  const isEng = (typeof S !== 'undefined' && S.lang === 'eng');
+  if (!sid) {
+    return isEng 
+      ? 'Format: 10 digits starting with 202 (e.g. 2024694636)' 
+      : 'Format: Wajib 10 angka bermula dengan 202 (cth: 2024694636)';
+  }
+  if (!sid.startsWith('202')) {
+    return `<span style="color:#ef4444;font-weight:600">⚠ ${isEng ? 'Must start with 202' : 'Wajib bermula dengan 202'}</span>`;
+  }
+  if (sid.length < 10) {
+    const dots = '• '.repeat(10 - sid.length).trim();
+    return `<span style="color:#0284c7;font-weight:600">${sid} ${dots}</span> <span style="color:var(--ink-tertiary);font-size:11px">(${sid.length}/10 angka)</span>`;
+  }
+  return `<span style="color:#16a34a;font-weight:600">✓ ${sid} (${isEng ? '10 digits verified' : '10 angka lengkap - Sah'})</span>`;
+};
+
 const savedForm = JSON.parse(localStorage.getItem('dt_form') || '{}');
 if (savedForm.programCode === 'CS110') savedForm.programCode = '';
 if (savedForm.phoneNo) savedForm.phoneNo = formatMyPhone(savedForm.phoneNo);
-if (savedForm.studentId && !/^202\d{0,7}$/.test(savedForm.studentId)) savedForm.studentId = '';
+if (savedForm.studentId) savedForm.studentId = formatStudentMatric(savedForm.studentId);
+if (savedForm.studentId && !/^202\d{7}$/.test(savedForm.studentId)) savedForm.studentId = '';
 
 const S = {
   tab: 'home', step: 1, fac: 'fac-badminton', unit: 'b-lining', date: today(), notes: '',
@@ -724,8 +756,10 @@ function wizard() {
 
           <div class="field-group">
             <label class="field-label">${t('wizard.studentId')}</label>
-            <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="10" placeholder="${t('wizard.studentIdPh')}" value="${esc(f.studentId || '')}" data-f="studentId" class="minimal-input">
-            <span class="field-hint">${t('wizard.studentIdHint')}</span>
+            <div class="student-id-input-wrap">
+              <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="10" placeholder="${t('wizard.studentIdPh')}" value="${esc(f.studentId || '')}" data-f="studentId" class="minimal-input ${f.studentId && f.studentId.length === 10 && f.studentId.startsWith('202') ? 'input-valid' : ''}">
+            </div>
+            <div id="studentIdStatus" class="field-hint">${renderStudentIdHint(f.studentId)}</div>
           </div>
 
           <div class="field-group">
@@ -1381,6 +1415,52 @@ function modals() {
       </div>
     </div>`;
 
+  if (S.modal === 'login-loading') return `
+    <div class="clean-modal-backdrop booking-process-backdrop">
+      <div class="clean-modal-dialog booking-process-dialog text-center">
+        <div class="jsp-loading-avatar-wrap">
+          <div class="jsp-loading-ring"></div>
+          <img src="/content img/logojspimg.png" alt="Logo JSP" class="jsp-loading-logo">
+        </div>
+        <h3 class="section-title" style="margin-top:18px;font-size:18px">
+          ${S.lang === 'eng' ? 'Verifying Admin Access…' : 'Mengesahkan Akses Pentadbir…'}
+        </h3>
+        <p class="caption-muted" style="margin-top:6px;font-size:13px">
+          ${S.lang === 'eng' ? 'Please wait while credentials are being verified.' : 'Sila tunggu sebentar sementara sistem mengesahkan kata laluan admin.'}
+        </p>
+      </div>
+    </div>`;
+
+  if (S.modal === 'login-success') return `
+    <div class="clean-modal-backdrop booking-process-backdrop">
+      <div class="clean-modal-dialog booking-process-dialog text-center login-success-card">
+        <div class="login-success-badge-wrap">
+          <div class="login-success-glow-ring">
+            ${ic('shield-check')}
+          </div>
+        </div>
+        <div class="login-success-badge-tag">
+          ${S.lang === 'eng' ? 'ACCESS GRANTED' : 'PENGESAHAN BERJAYA'}
+        </div>
+        <h3 class="section-title" style="margin-top:10px;font-size:20px;letter-spacing:-0.02em">
+          ${S.lang === 'eng' ? 'Login Successful' : 'Log Masuk Berjaya'}
+        </h3>
+        <div class="login-success-msg-box" style="margin-top:12px">
+          <p class="login-success-sub">
+            ${S.lang === 'eng' ? 'Welcome back, JSP Administrator.' : 'Selamat kembali, Pentadbir Sukan JSP.'}
+          </p>
+          <p class="caption-muted" style="margin-top:4px;font-size:12px">
+            ${S.lang === 'eng' ? 'Opening Hall Control Panel…' : 'Membuka Panel Kawalan Operasi Dewan…'}
+          </p>
+        </div>
+        <div style="margin-top:20px">
+          <button class="btn-primary" data-a="enterAdmin" style="width:100%;justify-content:center">
+            ${S.lang === 'eng' ? 'Enter Admin Panel' : 'Masuk Panel Admin'}
+          </button>
+        </div>
+      </div>
+    </div>`;
+
   if (S.modal === 'login') return `
     <div class="clean-modal-backdrop">
       <div class="clean-modal-dialog">
@@ -1492,6 +1572,12 @@ const A = {
   view: (d) => { S.view[d.k] = d.v; render(); },
   modal: (d) => { S.modal = d.m; render(); },
   close: () => { S.modal = null; render(); },
+  enterAdmin: async () => {
+    S.modal = null;
+    S.tab = 'admin';
+    render();
+    await load();
+  },
   logout: () => { 
     S.token = ''; 
     localStorage.removeItem('dt_token'); 
@@ -1691,7 +1777,7 @@ const A = {
 document.addEventListener('click', (e) => {
   const m = e.target.closest('.clean-modal-backdrop');
   if (m && e.target === m) { 
-    if (S.modal === 'booking-loading') return;
+    if (S.modal === 'booking-loading' || S.modal === 'login-loading' || S.modal === 'login-success') return;
     S.modal = null; 
     return render(); 
   }
@@ -1726,8 +1812,17 @@ let st;
 document.addEventListener('input', (e) => {
   const { f, s } = e.target.dataset;
   if (f === 'studentId') {
-    e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
+    e.target.value = formatStudentMatric(e.target.value);
     S.form[f] = e.target.value;
+    const hintEl = document.getElementById('studentIdStatus');
+    if (hintEl) {
+      hintEl.innerHTML = renderStudentIdHint(e.target.value);
+    }
+    if (e.target.value.length === 10 && e.target.value.startsWith('202')) {
+      e.target.classList.add('input-valid');
+    } else {
+      e.target.classList.remove('input-valid');
+    }
   }
   else if (f === 'phoneNo') {
     e.target.value = formatMyPhone(e.target.value);
@@ -1767,15 +1862,43 @@ async function doSearch() {
 document.addEventListener('submit', async (e) => {
   e.preventDefault();
   if (e.target.id !== 'loginForm') return;
+  const pw = e.target.pw ? e.target.pw.value : '';
+  if (!pw) {
+    return toast(S.lang === 'eng' ? 'Please enter the admin password.' : 'Sila masukkan kata laluan admin.', 'error');
+  }
+
+  // 1. Tunjuk popup loading dengan logo JSP berputar
+  S.modal = 'login-loading';
+  render();
+
   try {
-    const r = await api('admin', { action: 'login', password: e.target.pw.value });
+    const [r] = await Promise.all([
+      api('admin', { action: 'login', password: pw }),
+      new Promise(resolve => setTimeout(resolve, 850))
+    ]);
     S.token = r.token;
     localStorage.setItem('dt_token', r.token);
-    S.modal = null;
-    S.tab = 'admin';
-    toast(S.lang === 'eng' ? 'Admin access granted.' : 'Akses pentadbir berjaya.');
-    await load();
-  } catch (err) { toast(err.message, 'error'); }
+
+    // 2. Tunjuk popup login successful yang minimalist & aesthetic
+    S.modal = 'login-success';
+    render();
+    toast(S.lang === 'eng' ? 'Login successful! Welcome back.' : 'Log masuk berjaya! Selamat kembali.');
+
+    // 3. Auto-redirect selepas 1.2 saat
+    setTimeout(async () => {
+      if (S.modal === 'login-success') {
+        S.modal = null;
+        S.tab = 'admin';
+        render();
+        await load();
+      }
+    }, 1200);
+
+  } catch (err) {
+    S.modal = 'login';
+    render();
+    toast(err.message, 'error');
+  }
 });
 
 // Live Clock Ticker
