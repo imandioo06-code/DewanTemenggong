@@ -77,14 +77,14 @@ export default wrap(async (req, res) => {
 
   const sid = rawSid, phone = formattedPhone, slot = sc.slots[0];
 
-  // Had 1 tempahan SEMINGGU bagi setiap No. Matrik / No. Telefon
+  // Had 1 tempahan SEMINGGU bagi setiap sukan/fasiliti (Badminton berasingan, Ping Pong berasingan)
   const { start: weekStart, end: weekEnd } = getWeekRange(date);
   const dup = await db.execute({
-    sql: "SELECT ref_no, date, facility_name, unit_name FROM bookings WHERE date >= ? AND date <= ? AND status = 'Diluluskan' AND (student_id = ? OR phone_no = ? OR phone_no = ?) LIMIT 1",
-    args: [weekStart, weekEnd, sid, formattedPhone, normPhone]
+    sql: "SELECT ref_no, date, facility_name, unit_name FROM bookings WHERE facility_id = ? AND date >= ? AND date <= ? AND status = 'Diluluskan' AND (student_id = ? OR phone_no = ? OR phone_no = ?) LIMIT 1",
+    args: [fac.id, weekStart, weekEnd, sid, formattedPhone, normPhone]
   });
   if (dup.rows.length) {
-    fail(409, `Harap maaf! No. Matrik (${sid}) atau No. Telefon ini telah mempunyai tempahan bagi minggu tersebut pada tarikh ${dup.rows[0].date} (Rujukan: ${dup.rows[0].ref_no}). Sistem mengehadkan 1 tempahan setiap minggu bagi setiap pelajar untuk memberi peluang kepada pelajar lain.`);
+    fail(409, `Harap maaf! No. Matrik (${sid}) atau No. Telefon ini telah mempunyai tempahan bagi sukan ${fac.name} pada minggu tersebut (Tarikh: ${dup.rows[0].date}, Unit: ${dup.rows[0].unit_name}, Rujukan: ${dup.rows[0].ref_no}). Anda dihadkan kepada 1 tempahan seminggu untuk setiap jenis sukan.`);
   }
 
   // Had kapasiti setiap unit
