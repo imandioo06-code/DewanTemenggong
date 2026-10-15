@@ -1189,8 +1189,19 @@ function renderBigMonthlyCalendar() {
     const wkInfo = getAcademicWeek(dateStr);
 
     // Check bookings for this date
+    const dateBookingsCount = (D.bookings || []).filter(b => b.date === dateStr).length;
     let badgeHtml = '';
-    if (isPast) {
+    if (S.tab === 'admin') {
+      if (dateBookingsCount > 0) {
+        badgeHtml = `<span class="cal-badge-pill badge-open" style="font-weight:700"><span class="desk-label">👥 ${dateBookingsCount} ${S.lang === 'eng' ? 'booked' : 'orang'}</span><span class="mob-label">👥 ${dateBookingsCount}</span></span>`;
+      } else if (isClosed) {
+        badgeHtml = `<span class="cal-badge-pill badge-closed"><span class="desk-label">${t('stats.closedBadge')}</span><span class="mob-label">${S.lang === 'eng' ? 'Closed' : 'Tutup'}</span></span>`;
+      } else if (isOperating) {
+        badgeHtml = `<span class="cal-badge-muted" style="font-size:11px"><span class="desk-label">${S.lang === 'eng' ? '0 bookings' : '0 orang'}</span><span class="mob-label">0</span></span>`;
+      } else {
+        badgeHtml = `<span class="cal-badge-muted">${S.lang === 'eng' ? 'Rest' : 'Rehat'}</span>`;
+      }
+    } else if (isPast) {
       badgeHtml = `<span class="cal-badge-muted">${S.lang === 'eng' ? 'Passed' : 'Lepas'}</span>`;
     } else if (isClosed) {
       badgeHtml = `<span class="cal-badge-pill badge-closed"><span class="desk-label">${t('stats.closedBadge')}</span><span class="mob-label">${S.lang === 'eng' ? 'Closed' : 'Tutup'}</span></span>`;
@@ -1615,6 +1626,101 @@ function modals() {
       </div>
     </div>`;
 
+  if (S.modal === 'admin-attendees') {
+    const selDate = S.selectedCalDate || S.date;
+    const D = S.data;
+    const dateBookings = (D.bookings || []).filter(b => b.date === selDate);
+    const dayOfWeek = new Date(selDate.split('-')[0], selDate.split('-')[1] - 1, selDate.split('-')[2]).getDay();
+    const daySched = D.schedule ? D.schedule[dayOfWeek] : null;
+    const isClosed = D.closedDates.includes(selDate);
+
+    return `
+    <div class="clean-modal-backdrop">
+      <div class="clean-modal-dialog admin-date-attendees-dialog">
+        <button class="modal-close-btn" data-a="close" aria-label="Tutup">${ic('x')}</button>
+        
+        <div class="admin-date-attendees-header">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:18px">📅</span>
+            <h3 class="section-title" style="margin:0;font-size:18px">
+              ${fmt(selDate)}
+            </h3>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:6px">
+            <span class="caption-muted" style="font-size:13px">
+              ${daySched ? `${translateDayName(daySched.dayName)} (${daySched.timeDisplay})` : (S.lang === 'eng' ? 'Rest Day (Outside Operating Days)' : 'Hari Rehat (Luar Hari Operasi)')}
+            </span>
+            ${isClosed ? `<span class="chip chip-bad" style="font-size:11px">${S.lang === 'eng' ? '🔴 Closed by Admin' : '🔴 Ditutup oleh Admin'}</span>` : ''}
+          </div>
+          <div class="admin-attendees-summary-badge">
+            ${ic('users')} <span>${S.lang === 'eng' ? `Total Attendees: ${dateBookings.length} person(s)` : `Jumlah Tempahan: ${dateBookings.length} orang`}</span>
+          </div>
+        </div>
+
+        <div class="admin-date-attendees-body">
+          ${dateBookings.length ? `
+            <div class="flow-layout" style="--s:12px">
+              ${D.facilities.map(f => {
+                const facBookings = dateBookings.filter(b => b.facilityId === f.id);
+                if (!facBookings.length) return '';
+                return `
+                <div class="admin-facility-group">
+                  <div class="admin-facility-group-title">
+                    <span>${f.type === 'badminton' ? '🏸' : '🏓'}</span>
+                    <span>${S.lang === 'eng' ? (f.type === 'badminton' ? 'Badminton Court' : 'Table Tennis') : f.name}</span>
+                    <span class="caption-muted" style="font-size:12px;font-weight:500">(${facBookings.length} ${S.lang === 'eng' ? 'persons' : 'orang'})</span>
+                  </div>
+                  <div>
+                    ${facBookings.map((b, idx) => `
+                      <div class="admin-attendee-card">
+                        <div>
+                          <div style="display:flex;align-items:center;gap:8px">
+                            <span style="font-size:12px;color:var(--ink-tertiary);font-weight:600">${idx + 1}.</span>
+                            <span class="admin-attendee-name">${esc(b.userName)}</span>
+                          </div>
+                          <div class="admin-attendee-meta">
+                            <span><b>${esc(b.studentId)}</b></span>
+                            ${b.programCode ? `<span>• ${esc(b.programCode)}</span>` : ''}
+                            ${b.phoneNo ? `<span>• 📞 ${esc(b.phoneNo)}</span>` : ''}
+                          </div>
+                          <div class="caption-muted" style="font-size:11px;margin-top:3px">
+                            Ref: <code style="font-size:11px">${esc(b.refNo)}</code> • Sesi: ${esc(b.startTime)} - ${esc(b.endTime)}
+                          </div>
+                        </div>
+                        <div style="text-align:right">
+                          <span class="admin-attendee-unit-tag">${esc(b.unitName)}</span>
+                          <div style="margin-top:6px">
+                            <button class="btn-delete-booking" data-a="deleteBooking" data-id="${b.id}" data-ref="${esc(b.refNo)}" data-name="${esc(b.userName)}" style="padding:3px 8px;font-size:11px">
+                              ${ic('trash-2')} ${t('browserView.deleteBooking')}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>`;
+              }).join('')}
+            </div>
+          ` : `
+            <div class="admin-empty-attendees">
+              <div style="font-size:28px;margin-bottom:8px">📋</div>
+              <div><b>${S.lang === 'eng' ? 'No bookings on this date.' : 'Tiada tempahan didaftarkan pada tarikh ini.'}</b></div>
+              <div class="caption-muted sm" style="margin-top:4px">
+                ${S.lang === 'eng' ? 'No students have booked any slot for this session.' : 'Belum ada pelajar yang menempah sebarang unit bagi tarikh ini.'}
+              </div>
+            </div>
+          `}
+        </div>
+
+        <div style="margin-top:14px;display:flex;justify-content:space-between;align-items:center;gap:10px">
+          <button class="btn-secondary" data-a="close" style="width:100%;justify-content:center">
+            ${S.lang === 'eng' ? 'Close' : 'Tutup'}
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }
+
   return '';
 }
 
@@ -1713,6 +1819,11 @@ const A = {
       return toast(t('wizard.datePast'), 'error');
     }
     S.date = d.date;
+    if (S.tab === 'admin') {
+      S.selectedCalDate = d.date;
+      S.view.admin = d.date;
+      S.modal = 'admin-attendees';
+    }
     render();
   },
   calNav: (d) => {
