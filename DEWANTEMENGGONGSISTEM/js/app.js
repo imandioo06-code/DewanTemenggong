@@ -1445,18 +1445,16 @@ function modals() {
         <h3 class="section-title" style="margin-top:10px;font-size:20px;letter-spacing:-0.02em">
           ${S.lang === 'eng' ? 'Login Successful' : 'Log Masuk Berjaya'}
         </h3>
-        <div class="login-success-msg-box" style="margin-top:12px">
+        <div class="login-success-msg-box" style="margin-top:14px">
           <p class="login-success-sub">
             ${S.lang === 'eng' ? 'Welcome back, JSP Administrator.' : 'Selamat kembali, Pentadbir Sukan JSP.'}
           </p>
-          <p class="caption-muted" style="margin-top:4px;font-size:12px">
-            ${S.lang === 'eng' ? 'Opening Hall Control Panel…' : 'Membuka Panel Kawalan Operasi Dewan…'}
-          </p>
-        </div>
-        <div style="margin-top:20px">
-          <button class="btn-primary" data-a="enterAdmin" style="width:100%;justify-content:center">
-            ${S.lang === 'eng' ? 'Enter Admin Panel' : 'Masuk Panel Admin'}
-          </button>
+          <div class="login-redirecting-indicator" style="margin-top:8px">
+            <span class="login-dot-pulse"></span>
+            <span class="caption-muted" style="font-size:12px">
+              ${S.lang === 'eng' ? 'Entering Admin Control Panel…' : 'Sedang masuk terus ke Panel Admin…'}
+            </span>
+          </div>
         </div>
       </div>
     </div>`;
@@ -1884,7 +1882,7 @@ document.addEventListener('submit', async (e) => {
     render();
     toast(S.lang === 'eng' ? 'Login successful! Welcome back.' : 'Log masuk berjaya! Selamat kembali.');
 
-    // 3. Auto-redirect selepas 1.2 saat
+    // 3. Masuk terus ke panel admin secara lancar
     setTimeout(async () => {
       if (S.modal === 'login-success') {
         S.modal = null;
@@ -1892,7 +1890,7 @@ document.addEventListener('submit', async (e) => {
         render();
         await load();
       }
-    }, 1200);
+    }, 850);
 
   } catch (err) {
     S.modal = 'login';
