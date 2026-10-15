@@ -288,6 +288,56 @@ const SRD_REMARK = 'Sila patuhi garis panduan Sahsiah Rupa Diri (SRD). Berpakaia
 const getAcademicWeek = (dateStr) => {
   if (!dateStr) return null;
   const semStart = (S.data?.settings?.semesterStartDate) || '2026-10-05';
+  
+  // Sesi Semester Baharu: 15 Mac 2027 hingga 25 Julai 2027
+  // Antara 15 Feb 2027 hingga 14 Mac 2027 adalah Semester Break (Cuti Semester)
+  if (dateStr >= '2027-03-15') {
+    // Semester Baharu (Mac - Julai 2027)
+    const [sy, sm, sd] = [2027, 3, 15];
+    const [dy, dm, dd] = dateStr.split('-').map(Number);
+    const start = new Date(sy, sm - 1, sd);
+    start.setHours(0, 0, 0, 0);
+    const current = new Date(dy, dm - 1, dd);
+    current.setHours(0, 0, 0, 0);
+    const diffDays = Math.floor((current.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+
+    // Cuti Pertengahan Semester Baru: 30 Mei 2027 hingga 6 Jun 2027 (tidak dikira sebagai week nombor)
+    if (dateStr >= '2027-05-30' && dateStr <= '2027-06-06') {
+      return {
+        week: 0,
+        isMidsem: true,
+        isBreak: true,
+        label: S.lang === 'eng' ? 'Midsem Break' : 'Cuti Midsem',
+        fullLabel: S.lang === 'eng' ? 'Midsem Break (30 May - 6 June)' : 'Cuti Pertengahan Semester (30 Mei - 6 Jun)',
+        shortLabel: S.lang === 'eng' ? 'Break' : 'Midsem'
+      };
+    }
+
+    // Tolak 7 hari cuti midsem bagi tarikh selepas 6 Jun 2027
+    const adjustedDays = (dateStr > '2027-06-06') ? (diffDays - 7) : diffDays;
+    const weekNum = Math.floor(adjustedDays / 7) + 1;
+
+    if (dateStr > '2027-07-25' || weekNum > 18) {
+      return {
+        week: weekNum,
+        isPost: true,
+        isBreak: true,
+        label: S.lang === 'eng' ? 'Semester Break' : 'Cuti Semester',
+        fullLabel: S.lang === 'eng' ? 'Semester Break' : 'Cuti Semester',
+        shortLabel: S.lang === 'eng' ? 'Break' : 'Cuti'
+      };
+    }
+
+    return {
+      week: weekNum,
+      isPre: false,
+      label: S.lang === 'eng' ? `Week ${weekNum}` : `Minggu ${weekNum}`,
+      fullLabel: S.lang === 'eng' ? `Week ${weekNum}` : `Minggu ${weekNum}`,
+      shortLabel: S.lang === 'eng' ? `W${weekNum}` : `M${weekNum}`
+    };
+  }
+
+  // Sesi Semester Semasa (Mula 5 Okt 2026 sehingga 14 Feb 2027)
   const [sy, sm, sd] = semStart.split('-').map(Number);
   const [dy, dm, dd] = dateStr.split('-').map(Number);
   const start = new Date(sy, sm - 1, sd);
@@ -297,7 +347,7 @@ const getAcademicWeek = (dateStr) => {
   const diffDays = Math.floor((current.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
   if (diffDays < 0) return { week: 0, isPre: true, label: S.lang === 'eng' ? 'Pre-Semester' : 'Pra-Semester', fullLabel: S.lang === 'eng' ? 'Pre-Semester Period' : 'Tempoh Pra-Semester', shortLabel: 'Pre' };
   
-  // Cuti Pertengahan Semester (Midsem Break): 21 - 27 Disember 2026 (7 hari, tidak dikira sebagai week nombor)
+  // Cuti Pertengahan Semester 2026: 21 - 27 Disember 2026 (7 hari, tidak dikira sebagai week nombor)
   if (dateStr >= '2026-12-21' && dateStr <= '2026-12-27') {
     return {
       week: 0,
@@ -313,13 +363,14 @@ const getAcademicWeek = (dateStr) => {
   const adjustedDays = (dateStr > '2026-12-27') ? (diffDays - 7) : diffDays;
   const weekNum = Math.floor(adjustedDays / 7) + 1;
 
-  if (weekNum > 18) {
+  // Selepas 14 Februari 2027 sehingga 14 Mac 2027 adalah Semester Break (sebelum semester baru bermula 15 Mac 2027)
+  if (weekNum > 18 || dateStr > '2027-02-14') {
     return {
       week: weekNum,
       isPost: true,
       isBreak: true,
       label: S.lang === 'eng' ? 'Semester Break' : 'Cuti Semester',
-      fullLabel: S.lang === 'eng' ? 'Semester Break' : 'Cuti Semester',
+      fullLabel: S.lang === 'eng' ? 'Semester Break (Before New Sem 15 Mar)' : 'Cuti Semester (Sebelum Sesi Baru 15 Mac)',
       shortLabel: S.lang === 'eng' ? 'Break' : 'Cuti'
     };
   }
@@ -346,14 +397,14 @@ const isDateWeekOpen = (dateStr) => {
     return {
       open: isMidsemOpen,
       weekNum: 'midsem',
-      reason: isMidsemOpen ? '' : (S.lang === 'eng' ? 'Closed for Midsem Break (21 - 27 Dec)' : 'Ditutup sempena Cuti Pertengahan Semester (21 - 27 Dis)')
+      reason: isMidsemOpen ? '' : (S.lang === 'eng' ? `Closed for ${targetWeek.fullLabel}` : `Ditutup sempena ${targetWeek.fullLabel}`)
     };
   }
 
   if (targetWeek?.isPost) {
     return {
       open: false,
-      reason: S.lang === 'eng' ? 'Semester period has ended.' : 'Tempoh sesi semester telah tamat.'
+      reason: S.lang === 'eng' ? (targetWeek.fullLabel || 'Semester Break') : (targetWeek.fullLabel || 'Cuti Semester')
     };
   }
 
@@ -1373,26 +1424,31 @@ function admin() {
               const formatShort = (dt) => `${dt.getDate()} ${dict.months[dt.getMonth()].slice(0,3)}`;
               const openWeeksList = (D.settings.openWeeks || '1,2').split(',').map(s => s.trim());
               const curWk = getAcademicWeek(today());
+              const is2027Sem = semStr >= '2027-01-01';
 
               let pillsHtml = '';
 
               for (let w = 1; w <= 18; w++) {
-                // Selepas Week 11 (selepas 20 Dis), terdapat Cuti Midsem (21 - 27 Disember 2026)
+                // Untuk semester 2026: Midsem Break adalah 21 - 27 Disember (antara W11 dan W12)
+                // Untuk semester 2027: Midsem Break adalah 30 Mei - 6 Jun (antara W11 dan W12)
                 if (w === 12) {
                   // Paparkan pill Cuti Midsem
                   const isMidsemOpen = D.settings.openBookingMode === 'all' || openWeeksList.includes('midsem');
                   const isCurMidsem = curWk && curWk.isMidsem;
+                  const midsemDatesText = is2027Sem 
+                    ? `30 ${dict.months[4].slice(0,3)} - 6 ${dict.months[5].slice(0,3)}` 
+                    : `21 ${dict.months[11].slice(0,3)} - 27 ${dict.months[11].slice(0,3)}`;
                   pillsHtml += `
                   <button type="button" class="week-admin-pill ${isMidsemOpen ? 'open' : 'closed'} ${isCurMidsem ? 'is-current' : ''}" data-a="toggleWeek" data-w="midsem" style="border-style:dashed;">
                     <span class="week-pill-num">${S.lang === 'eng' ? 'Midsem Break' : 'Cuti Midsem'} ${isCurMidsem ? (S.lang === 'eng' ? '(Current)' : '(Semasa)') : ''}</span>
-                    <span class="week-pill-dates">21 ${dict.months[11].slice(0,3)} - 27 ${dict.months[11].slice(0,3)}</span>
+                    <span class="week-pill-dates">${midsemDatesText}</span>
                     <span class="week-pill-badge">${isMidsemOpen ? (S.lang === 'eng' ? '🟢 Open' : '🟢 Dibuka') : (S.lang === 'eng' ? '🔴 Closed' : '🔴 Ditutup')}</span>
                   </button>`;
                 }
 
                 // Hitung tarikh mula dan tamat untuk Week w:
                 // Jika w <= 11: offset = (w - 1) * 7 hari dari startDt
-                // Jika w >= 12: offset = (w - 1) * 7 + 7 hari (kerana ada 1 minggu cuti midsem 21-27 Dis)
+                // Jika w >= 12: offset = (w - 1) * 7 + 7 hari (kerana ada 1 minggu cuti midsem)
                 const dayOffset = (w <= 11) ? (w - 1) * 7 : (w - 1) * 7 + 7;
                 const wStart = new Date(startDt);
                 wStart.setDate(startDt.getDate() + dayOffset);

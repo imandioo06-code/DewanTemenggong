@@ -63,7 +63,53 @@ export const getWeekRange = (dateStr) => {
 };
 
 export const getAcademicWeek = (dateStr, semStartDate = '2026-10-05') => {
-  if (!dateStr || !semStartDate) return null;
+  if (!dateStr) return null;
+
+  // Sesi Semester Baharu: 15 Mac 2027 hingga 25 Julai 2027
+  // Antara 15 Feb 2027 hingga 14 Mac 2027 adalah Semester Break
+  if (dateStr >= '2027-03-15') {
+    const [sy, sm, sd] = [2027, 3, 15];
+    const [dy, dm, dd] = dateStr.split('-').map(Number);
+    const start = new Date(sy, sm - 1, sd);
+    start.setHours(0, 0, 0, 0);
+    const current = new Date(dy, dm - 1, dd);
+    current.setHours(0, 0, 0, 0);
+    const diffDays = Math.floor((current.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+
+    // Cuti Pertengahan Semester Baru: 30 Mei 2027 hingga 6 Jun 2027
+    if (dateStr >= '2027-05-30' && dateStr <= '2027-06-06') {
+      return {
+        week: 0,
+        isMidsem: true,
+        isBreak: true,
+        label: 'Cuti Midsem',
+        labelEng: 'Midsem Break'
+      };
+    }
+
+    // Tolak 7 hari cuti midsem bagi tarikh selepas 6 Jun 2027
+    const adjustedDays = (dateStr > '2027-06-06') ? (diffDays - 7) : diffDays;
+    const weekNum = Math.floor(adjustedDays / 7) + 1;
+
+    if (dateStr > '2027-07-25' || weekNum > 18) {
+      return {
+        week: weekNum,
+        isPost: true,
+        isBreak: true,
+        label: 'Cuti Semester',
+        labelEng: 'Semester Break'
+      };
+    }
+
+    return {
+      week: weekNum,
+      isPre: false,
+      label: `Minggu ${weekNum}`,
+      labelEng: `Week ${weekNum}`
+    };
+  }
+
+  // Sesi Semester Semasa (Mula 5 Okt 2026 sehingga 14 Feb 2027)
   const [sy, sm, sd] = semStartDate.split('-').map(Number);
   const [dy, dm, dd] = dateStr.split('-').map(Number);
   const start = new Date(sy, sm - 1, sd);
@@ -73,7 +119,7 @@ export const getAcademicWeek = (dateStr, semStartDate = '2026-10-05') => {
   const diffDays = Math.floor((current.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
   if (diffDays < 0) return { week: 0, isPre: true, label: 'Pra-Semester', labelEng: 'Pre-Semester' };
   
-  // Cuti Pertengahan Semester (Midsem Break): 21 - 27 Disember 2026 (7 hari, tidak dikira sebagai week nombor)
+  // Cuti Pertengahan Semester 2026: 21 - 27 Disember 2026
   if (dateStr >= '2026-12-21' && dateStr <= '2026-12-27') {
     return {
       week: 0,
@@ -84,11 +130,11 @@ export const getAcademicWeek = (dateStr, semStartDate = '2026-10-05') => {
     };
   }
 
-  // Jika tarikh selepas 27 Disember 2026, tolak 7 hari cuti midsem supaya turutan minggu bersambung tanpa mengira midsem
+  // Jika tarikh selepas 27 Disember 2026, tolak 7 hari cuti midsem
   const adjustedDays = (dateStr > '2026-12-27') ? (diffDays - 7) : diffDays;
   const weekNum = Math.floor(adjustedDays / 7) + 1;
 
-  if (weekNum > 18) {
+  if (weekNum > 18 || dateStr > '2027-02-14') {
     return {
       week: weekNum,
       isPost: true,
