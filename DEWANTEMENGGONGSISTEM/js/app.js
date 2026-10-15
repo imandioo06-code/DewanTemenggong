@@ -1197,7 +1197,7 @@ function renderBigMonthlyCalendar() {
       } else if (isClosed) {
         badgeHtml = `<span class="cal-badge-pill badge-closed"><span class="desk-label">${t('stats.closedBadge')}</span><span class="mob-label">${S.lang === 'eng' ? 'Closed' : 'Tutup'}</span></span>`;
       } else if (isOperating) {
-        badgeHtml = `<span class="cal-badge-muted" style="font-size:11px"><span class="desk-label">${S.lang === 'eng' ? '0 bookings' : '0 orang'}</span><span class="mob-label">0</span></span>`;
+        badgeHtml = `<span class="cal-badge-muted" style="font-size:11px"><span class="desk-label">👥 ${S.lang === 'eng' ? '0 bookings' : '0 orang'}</span><span class="mob-label">👥 0</span></span>`;
       } else {
         badgeHtml = `<span class="cal-badge-muted">${S.lang === 'eng' ? 'Rest' : 'Rehat'}</span>`;
       }
