@@ -1355,10 +1355,23 @@ function renderBigMonthlyCalendar() {
           </span>
         </div>
         <div class="cal-cell-body">
+          ${hol ? `<span class="cal-holiday-pill" title="🎉 ${hol}">🎉 <span class="desk-label">${hol}</span><span class="mob-label">${hol.length > 7 ? hol.slice(0, 6) + '…' : hol}</span></span>` : ''}
           ${badgeHtml}
         </div>
       </div>
     `);
+  }
+
+  const monthHolidays = [];
+  for (let md = 1; md <= totalDays; md++) {
+    const mds = `${year}-${pad(month + 1)}-${pad(md)}`;
+    const mh = getHoliday(mds);
+    if (mh) {
+      const mdt = new Date(year, month, md);
+      const mDayName = dict.days[mdt.getDay()];
+      const mIsOpDay = [1, 3, 5].includes(mdt.getDay());
+      monthHolidays.push({ day: md, dateStr: mds, title: mh, dayName: mDayName, isOpDay: mIsOpDay });
+    }
   }
 
   const curWk = getAcademicWeek(todayStr);
@@ -1405,6 +1418,36 @@ function renderBigMonthlyCalendar() {
       </div>
       <div class="cal-grid">
         ${cells.join('')}
+      </div>
+
+      <!-- Cuti Umum Bulan Ini Terus Di Dalam Kalendar -->
+      <div class="cal-month-holidays-box">
+        <div class="cal-month-holidays-head">
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="font-size:16px">🎉</span>
+            <span style="font-weight:700;font-size:13px;color:var(--ink-primary)">
+              ${S.lang === 'eng' ? `Public Holidays in ${monthName} ${year}` : `Cuti Umum Bulan ${monthName} ${year}`}
+            </span>
+          </div>
+          <button class="btn-subtle" data-a="modal" data-m="public-holidays" style="font-size:11.5px;padding:3px 8px">
+            ${S.lang === 'eng' ? 'All 2026/2027 Holidays →' : 'Semua Cuti 2026/2027 →'}
+          </button>
+        </div>
+        ${monthHolidays.length > 0 ? `
+          <div class="cal-month-holidays-tags">
+            ${monthHolidays.map(mh => `
+              <button class="cal-holiday-tag-btn" data-a="calDate" data-date="${mh.dateStr}" title="${S.lang === 'eng' ? 'Click to select date' : 'Klik untuk pilih tarikh'}">
+                <span class="mh-day">${mh.day} ${monthName.slice(0, 3)} (${mh.dayName})</span>
+                <span class="mh-title">${mh.title}</span>
+                ${mh.isOpDay ? `<span class="mh-op-badge">${S.lang === 'eng' ? 'Hall Session' : 'Sesi Dewan'}</span>` : ''}
+              </button>
+            `).join('')}
+          </div>
+        ` : `
+          <div class="caption-muted" style="font-size:12px;font-style:italic;margin-top:2px">
+            ${S.lang === 'eng' ? 'No public holidays in this month.' : 'Tiada cuti umum rasmi pada bulan ini.'}
+          </div>
+        `}
       </div>
     </div>`;
 }

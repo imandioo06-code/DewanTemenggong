@@ -2976,3 +2976,103 @@ body.dark-mode .unit-pill-full {
   border-color: rgba(239, 68, 68, 0.5) !important;
   background: rgba(239, 68, 68, 0.16) !important;
 }
+
+.cal-holiday-pill {
+  display: block;
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 1.5px 4px;
+  margin-bottom: 2px;
+  border-radius: 4px;
+  text-align: center;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+body.dark-mode .cal-holiday-pill {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fde68a;
+  border-color: rgba(245, 158, 11, 0.35);
+}
+
+.cal-month-holidays-box {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-subtle, #e5e7eb);
+}
+
+.cal-month-holidays-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.cal-month-holidays-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cal-holiday-tag-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill, 9999px);
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.cal-holiday-tag-btn:hover {
+  background: #fde68a;
+  transform: translateY(-1px);
+}
+
+body.dark-mode .cal-holiday-tag-btn {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fde68a;
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+body.dark-mode .cal-holiday-tag-btn:hover {
+  background: rgba(245, 158, 11, 0.28);
+}
+
+.cal-holiday-tag-btn .mh-day {
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: rgba(180, 83, 9, 0.12);
+  color: #92400e;
+  font-size: 11px;
+}
+
+body.dark-mode .cal-holiday-tag-btn .mh-day {
+  background: rgba(253, 230, 138, 0.2);
+  color: #fef08a;
+}
+
+.cal-holiday-tag-btn .mh-title {
+  font-weight: 600;
+}
+
+.cal-holiday-tag-btn .mh-op-badge {
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 8px;
+  background: #ef4444;
+  color: #ffffff;
+}
