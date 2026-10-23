@@ -192,8 +192,8 @@ const PUBLIC_HOLIDAYS = {
   '2026-01-14': { bm: 'Israk dan Mikraj (Melaka)', eng: "Isra and Mi'raj (Melaka)" },
   '2026-02-17': { bm: 'Tahun Baharu Cina', eng: 'Chinese New Year' },
   '2026-02-18': { bm: 'Tahun Baharu Cina (Hari Ke-2)', eng: 'Chinese New Year (Day 2)' },
+  '2026-02-19': { bm: 'Awal Ramadan (Melaka)', eng: 'Awal Ramadan (Melaka)' },
   '2026-02-20': { bm: 'Hari Pengisytiharan Tarikh Kemerdekaan (Melaka)', eng: 'Independence Declaration Day (Melaka)' },
-  '2026-03-20': { bm: 'Awal Ramadan (Melaka)', eng: 'Awal Ramadan (Melaka)' },
   '2026-03-21': { bm: 'Hari Raya Aidilfitri', eng: 'Hari Raya Aidilfitri' },
   '2026-03-22': { bm: 'Hari Raya Aidilfitri (Hari Ke-2)', eng: 'Hari Raya Aidilfitri (Day 2)' },
   '2026-03-23': { bm: 'Cuti Hari Raya Aidilfitri (Melaka)', eng: 'Hari Raya Aidilfitri Holiday (Melaka)' },
@@ -213,18 +213,22 @@ const PUBLIC_HOLIDAYS = {
   '2027-02-04': { bm: 'Israk dan Mikraj (Melaka)', eng: "Isra and Mi'raj (Melaka)" },
   '2027-02-06': { bm: 'Tahun Baharu Cina', eng: 'Chinese New Year' },
   '2027-02-07': { bm: 'Tahun Baharu Cina (Hari Ke-2)', eng: 'Chinese New Year (Day 2)' },
+  '2027-02-08': { bm: 'Cuti Tahun Baharu Cina', eng: 'Chinese New Year Holiday' },
   '2027-02-20': { bm: 'Hari Pengisytiharan Tarikh Kemerdekaan (Melaka)', eng: 'Independence Declaration Day (Melaka)' },
   '2027-03-10': { bm: 'Hari Raya Aidilfitri', eng: 'Hari Raya Aidilfitri' },
   '2027-03-11': { bm: 'Hari Raya Aidilfitri (Hari Ke-2)', eng: 'Hari Raya Aidilfitri (Day 2)' },
+  '2027-03-12': { bm: 'Cuti Hari Raya Aidilfitri (Melaka)', eng: 'Hari Raya Aidilfitri Holiday (Melaka)' },
   '2027-05-01': { bm: 'Hari Pekerja', eng: 'Labour Day' },
-  '2027-05-16': { bm: 'Hari Raya Haji / Aidiladha', eng: 'Hari Raya Haji (Eid al-Adha)' },
+  '2027-05-17': { bm: 'Hari Raya Haji / Aidiladha', eng: 'Hari Raya Haji (Eid al-Adha)' },
   '2027-05-20': { bm: 'Hari Wesak', eng: 'Wesak Day' },
-  '2027-06-07': { bm: 'Hari Keputeraan YDP Agong / Awal Muharram', eng: "King's Birthday / Awal Muharram" },
-  '2027-08-14': { bm: 'Maulidur Rasul', eng: "Prophet Muhammad's Birthday" },
+  '2027-06-06': { bm: 'Awal Muharram (Maal Hijrah)', eng: 'Awal Muharram (Islamic New Year)' },
+  '2027-06-07': { bm: 'Hari Keputeraan YDP Agong', eng: "King's Birthday" },
+  '2027-08-15': { bm: 'Maulidur Rasul', eng: "Prophet Muhammad's Birthday" },
+  '2027-08-16': { bm: 'Cuti Maulidur Rasul', eng: "Prophet Muhammad's Birthday Holiday" },
   '2027-08-24': { bm: 'Hari Jadi Yang di-Pertua Negeri Melaka', eng: "Melaka Governor's Birthday" },
   '2027-08-31': { bm: 'Hari Kebangsaan', eng: 'National Day' },
   '2027-09-16': { bm: 'Hari Malaysia', eng: 'Malaysia Day' },
-  '2027-10-29': { bm: 'Hari Deepavali', eng: 'Deepavali' },
+  '2027-10-28': { bm: 'Hari Deepavali', eng: 'Deepavali' },
   '2027-12-25': { bm: 'Hari Krismas', eng: 'Christmas Day' }
 };
 
@@ -1346,7 +1350,7 @@ function renderBigMonthlyCalendar() {
         : `data-a="calDate" data-date="${dateStr}"`;
 
     cells.push(`
-      <div class="cal-cell ${isPast ? 'past-date' : ''} ${isWeekLocked ? 'week-locked' : ''} ${isOperating ? 'operating' : 'non-operating'} ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}" ${clickAction} title="${isPast ? (S.lang === 'eng' ? 'Past date cannot be booked' : 'Tarikh telah lepas') : isWeekLocked ? weekCheck.reason : dateStr}">
+      <div class="cal-cell ${isPast ? 'past-date' : ''} ${hol ? 'is-holiday' : ''} ${isWeekLocked ? 'week-locked' : ''} ${isOperating ? 'operating' : 'non-operating'} ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}" ${clickAction} title="${hol ? `🎉 ${hol} • ` : ''}${isPast ? (S.lang === 'eng' ? 'Past date cannot be booked' : 'Tarikh telah lepas') : isWeekLocked ? weekCheck.reason : dateStr}">
         <div class="cal-cell-header">
           <span class="cal-day-num">${d}</span>
           <span style="display:inline-flex;align-items:center;gap:3px">
@@ -1356,7 +1360,7 @@ function renderBigMonthlyCalendar() {
         </div>
         <div class="cal-cell-body">
           ${hol ? `<span class="cal-holiday-pill" title="🎉 ${hol}">🎉 <span class="desk-label">${hol}</span><span class="mob-label">${hol.length > 7 ? hol.slice(0, 6) + '…' : hol}</span></span>` : ''}
-          ${badgeHtml}
+          ${(!hol || isOperating) ? badgeHtml : ''}
         </div>
       </div>
     `);
@@ -1369,8 +1373,7 @@ function renderBigMonthlyCalendar() {
     if (mh) {
       const mdt = new Date(year, month, md);
       const mDayName = dict.days[mdt.getDay()];
-      const mIsOpDay = [1, 3, 5].includes(mdt.getDay());
-      monthHolidays.push({ day: md, dateStr: mds, title: mh, dayName: mDayName, isOpDay: mIsOpDay });
+      monthHolidays.push({ day: md, dateStr: mds, title: mh, dayName: mDayName });
     }
   }
 
@@ -1439,7 +1442,6 @@ function renderBigMonthlyCalendar() {
               <button class="cal-holiday-tag-btn" data-a="calDate" data-date="${mh.dateStr}" title="${S.lang === 'eng' ? 'Click to select date' : 'Klik untuk pilih tarikh'}">
                 <span class="mh-day">${mh.day} ${monthName.slice(0, 3)} (${mh.dayName})</span>
                 <span class="mh-title">${mh.title}</span>
-                ${mh.isOpDay ? `<span class="mh-op-badge">${S.lang === 'eng' ? 'Hall Session' : 'Sesi Dewan'}</span>` : ''}
               </button>
             `).join('')}
           </div>
@@ -1834,15 +1836,13 @@ function modals() {
             const dict = I18N[S.lang] || I18N.bm;
             const dayName = dict.days[dt.getDay()];
             const monthName = dict.months[+m - 1];
-            const isOperatingDay = [1, 3, 5].includes(dt.getDay()); // Isnin, Rabu, Jumaat
             const title = isEng ? h.eng : h.bm;
             return `
-              <div class="card" style="padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-left:4px solid ${isOperatingDay ? '#ef4444' : 'var(--border-subtle)'}">
+              <div class="card" style="padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px">
                 <div>
                   <div style="font-weight:600;font-size:13.5px;color:var(--ink)">${title}</div>
                   <div class="caption-muted" style="font-size:12px;margin-top:2px">
                     ${dayName}, ${+d} ${monthName} ${y}
-                    ${isOperatingDay ? `<span style="color:#ef4444;font-weight:600;margin-left:6px">(${isEng ? 'Hall operating day' : 'Hari operasi dewan'})</span>` : ''}
                   </div>
                 </div>
                 <button class="btn-subtle sm" data-a="pickHolidayDate" data-date="${date}" title="${isEng ? 'View in calendar' : 'Lihat pada kalendar'}" style="font-size:12px;padding:4px 10px">

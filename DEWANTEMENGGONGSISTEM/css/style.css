@@ -3076,3 +3076,21 @@ body.dark-mode .cal-holiday-tag-btn .mh-day {
   background: #ef4444;
   color: #ffffff;
 }
+
+.cal-cell.is-holiday {
+  background: #fffdf5 !important;
+  border-color: #fde68a !important;
+}
+
+body.dark-mode .cal-cell.is-holiday {
+  background: rgba(245, 158, 11, 0.08) !important;
+  border-color: rgba(245, 158, 11, 0.28) !important;
+}
+
+.cal-cell.is-holiday .cal-day-num {
+  color: #b45309;
+}
+
+body.dark-mode .cal-cell.is-holiday .cal-day-num {
+  color: #fde68a;
+}
