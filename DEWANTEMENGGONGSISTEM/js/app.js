@@ -17,7 +17,7 @@ const I18N = {
     header: { brandSub: 'Jawatankuasa Sukan Pelajar (JSP)', admin: 'Akses Admin JSP', logout: 'Log Keluar' },
     clock: { title: 'WAKTU SEMASA • MYT (GMT+8)', closed: 'Operasi Ditutup Hari Ini', open: 'Sesi Dibuka', rest: 'Tiada Sesi Operasi Hari Ini (Hari Rehat)', scheduleNote: 'Jadual operasi rasmi: Isnin & Jumaat (5-7 PM), Rabu (8-10 PM).', bookBtn: 'Tempah slot hari ini' },
     stats: { title: 'Kapasiti & Statistik Sesi', sub: 'Status penggunaan fasiliti sukan mengikut tarikh pilihan.', total: 'Jumlah Tempahan', totalSub: 'Sepanjang sesi', active: 'Tempahan Aktif', activeSub: 'Telah diluluskan', vacancy: 'Kekosongan Hari Ini', status: 'Status Dewan', closedBadge: 'Ditutup', availBadge: 'Tersedia', fullBadge: 'Penuh', outsideOp: 'Luar operasi' },
-    hero: { tag: 'DEWAN TEMENGGONG', title: 'e-DewanTemenggong', desc: 'Sistem tempahan berpusat gelanggang badminton dan meja ping pong. Kelulusan automatik masa-nyata untuk kemudahan pelajar kolej.', bookNow: 'Tempah slot sekarang', viewCal: 'Lihat kalendar kekosongan', checkStatus: 'Semak status tempahan' },
+    hero: { tag: 'DEWAN TEMENGGONG', title: 'e-Dewan Temenggong', desc: 'Sistem Tempahan Fasiliti Dewan Temenggong.', bookNow: 'Tempah slot sekarang', viewCal: 'Lihat kalendar kekosongan', checkStatus: 'Semak status tempahan' },
     guidelines: { 
       g1Title: '1 Tempahan Seminggu Bagi Setiap Sukan', 
       g1Desc: 'Pendaftaran individu memerlukan No. Matrik yang sah. Had 1 tempahan seminggu untuk Badminton dan 1 tempahan seminggu untuk Meja Ping Pong secara berasingan bagi memastikan peluang yang adil.', 
@@ -104,7 +104,7 @@ const I18N = {
     header: { brandSub: 'Student Sports Committee (JSP)', admin: 'JSP Admin Access', logout: 'Logout' },
     clock: { title: 'CURRENT TIME • MYT (GMT+8)', closed: 'Operation Closed Today', open: 'Session Open', rest: 'No Operation Today (Rest Day)', scheduleNote: 'Official schedule: Monday & Friday (5-7 PM), Wednesday (8-10 PM).', bookBtn: 'Book today\'s slot' },
     stats: { title: 'Session Capacity & Statistics', sub: 'Facility utilization status for selected date.', total: 'Total Bookings', totalSub: 'All-time sessions', active: 'Active Bookings', activeSub: 'Approved bookings', vacancy: 'Today\'s Vacancies', status: 'Hall Status', closedBadge: 'Closed', availBadge: 'Available', fullBadge: 'Full', outsideOp: 'Off-session' },
-    hero: { tag: 'DEWAN TEMENGGONG', title: 'e-DewanTemenggong', desc: 'Centralized booking system for badminton courts and table tennis. Instant automated approval for residential college students.', bookNow: 'Book a slot now', viewCal: 'View availability calendar', checkStatus: 'Check booking status' },
+    hero: { tag: 'DEWAN TEMENGGONG', title: 'e-Dewan Temenggong', desc: 'Sistem Tempahan Fasiliti Dewan Temenggong.', bookNow: 'Book a slot now', viewCal: 'View availability calendar', checkStatus: 'Check booking status' },
     guidelines: { 
       g1Title: '1 Booking per Week for Each Sport', 
       g1Desc: 'Individual registration requires a valid Student ID. Separate limit of 1 booking per week for Badminton and 1 booking per week for Table Tennis to ensure fair opportunities for everyone.', 

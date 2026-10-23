@@ -407,7 +407,7 @@ button {
   font-size: 15px;
   font-weight: 700;
   letter-spacing: 0.02em;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .brand-sub-full {
