@@ -17,7 +17,7 @@ const I18N = {
     header: { brandSub: 'Jawatankuasa Sukan Pelajar (JSP)', admin: 'Akses Admin JSP', logout: 'Log Keluar' },
     clock: { title: 'WAKTU SEMASA • MYT (GMT+8)', closed: 'Operasi Ditutup Hari Ini', open: 'Sesi Dibuka', rest: 'Tiada Sesi Operasi Hari Ini (Hari Rehat)', scheduleNote: 'Jadual operasi rasmi: Isnin & Jumaat (5-7 PM), Rabu (8-10 PM).', bookBtn: 'Tempah slot hari ini' },
     stats: { title: 'Kapasiti & Statistik Sesi', sub: 'Status penggunaan fasiliti sukan mengikut tarikh pilihan.', total: 'Jumlah Tempahan', totalSub: 'Sepanjang sesi', active: 'Tempahan Aktif', activeSub: 'Telah diluluskan', vacancy: 'Kekosongan Hari Ini', status: 'Status Dewan', closedBadge: 'Ditutup', availBadge: 'Tersedia', fullBadge: 'Penuh', outsideOp: 'Luar operasi' },
-    hero: { tag: 'DEWAN TEMENGGONG', title: 'Pusat Sukan & Fasiliti Kolej Kediaman.', desc: 'Sistem tempahan berpusat gelanggang badminton dan meja ping pong. Kelulusan automatik masa-nyata untuk kemudahan pelajar kolej.', bookNow: 'Tempah slot sekarang', viewCal: 'Lihat kalendar kekosongan', checkStatus: 'Semak status tempahan' },
+    hero: { tag: 'DEWAN TEMENGGONG', title: 'e-DewanTemenggong', desc: 'Sistem tempahan berpusat gelanggang badminton dan meja ping pong. Kelulusan automatik masa-nyata untuk kemudahan pelajar kolej.', bookNow: 'Tempah slot sekarang', viewCal: 'Lihat kalendar kekosongan', checkStatus: 'Semak status tempahan' },
     guidelines: { 
       g1Title: '1 Tempahan Seminggu Bagi Setiap Sukan', 
       g1Desc: 'Pendaftaran individu memerlukan No. Matrik yang sah. Had 1 tempahan seminggu untuk Badminton dan 1 tempahan seminggu untuk Meja Ping Pong secara berasingan bagi memastikan peluang yang adil.', 
@@ -104,7 +104,7 @@ const I18N = {
     header: { brandSub: 'Student Sports Committee (JSP)', admin: 'JSP Admin Access', logout: 'Logout' },
     clock: { title: 'CURRENT TIME • MYT (GMT+8)', closed: 'Operation Closed Today', open: 'Session Open', rest: 'No Operation Today (Rest Day)', scheduleNote: 'Official schedule: Monday & Friday (5-7 PM), Wednesday (8-10 PM).', bookBtn: 'Book today\'s slot' },
     stats: { title: 'Session Capacity & Statistics', sub: 'Facility utilization status for selected date.', total: 'Total Bookings', totalSub: 'All-time sessions', active: 'Active Bookings', activeSub: 'Approved bookings', vacancy: 'Today\'s Vacancies', status: 'Hall Status', closedBadge: 'Closed', availBadge: 'Available', fullBadge: 'Full', outsideOp: 'Off-session' },
-    hero: { tag: 'DEWAN TEMENGGONG', title: 'College Sports & Facility Center.', desc: 'Centralized booking system for badminton courts and table tennis. Instant automated approval for residential college students.', bookNow: 'Book a slot now', viewCal: 'View availability calendar', checkStatus: 'Check booking status' },
+    hero: { tag: 'DEWAN TEMENGGONG', title: 'e-DewanTemenggong', desc: 'Centralized booking system for badminton courts and table tennis. Instant automated approval for residential college students.', bookNow: 'Book a slot now', viewCal: 'View availability calendar', checkStatus: 'Check booking status' },
     guidelines: { 
       g1Title: '1 Booking per Week for Each Sport', 
       g1Desc: 'Individual registration requires a valid Student ID. Separate limit of 1 booking per week for Badminton and 1 booking per week for Table Tennis to ensure fair opportunities for everyone.', 
@@ -183,6 +183,55 @@ const I18N = {
     },
     footer: '© 2026 Dewan Temenggong • Student Sports Committee UiTM Alor Gajah, Melaka'
   }
+};
+
+/* ---------- Kalendar Cuti Umum (Public Holidays) Malaysia & Melaka ---------- */
+const PUBLIC_HOLIDAYS = {
+  // 2026
+  '2026-01-01': { bm: 'Tahun Baharu', eng: "New Year's Day" },
+  '2026-01-14': { bm: 'Israk dan Mikraj (Melaka)', eng: "Isra and Mi'raj (Melaka)" },
+  '2026-02-17': { bm: 'Tahun Baharu Cina', eng: 'Chinese New Year' },
+  '2026-02-18': { bm: 'Tahun Baharu Cina (Hari Ke-2)', eng: 'Chinese New Year (Day 2)' },
+  '2026-02-20': { bm: 'Hari Pengisytiharan Tarikh Kemerdekaan (Melaka)', eng: 'Independence Declaration Day (Melaka)' },
+  '2026-03-20': { bm: 'Awal Ramadan (Melaka)', eng: 'Awal Ramadan (Melaka)' },
+  '2026-03-21': { bm: 'Hari Raya Aidilfitri', eng: 'Hari Raya Aidilfitri' },
+  '2026-03-22': { bm: 'Hari Raya Aidilfitri (Hari Ke-2)', eng: 'Hari Raya Aidilfitri (Day 2)' },
+  '2026-03-23': { bm: 'Cuti Hari Raya Aidilfitri (Melaka)', eng: 'Hari Raya Aidilfitri Holiday (Melaka)' },
+  '2026-05-01': { bm: 'Hari Pekerja', eng: 'Labour Day' },
+  '2026-05-27': { bm: 'Hari Raya Haji / Aidiladha', eng: 'Hari Raya Haji (Eid al-Adha)' },
+  '2026-05-31': { bm: 'Hari Wesak', eng: 'Wesak Day' },
+  '2026-06-01': { bm: 'Hari Keputeraan YDP Agong', eng: "King's Birthday" },
+  '2026-06-17': { bm: 'Awal Muharram (Maal Hijrah)', eng: 'Awal Muharram (Islamic New Year)' },
+  '2026-08-24': { bm: 'Hari Jadi Yang di-Pertua Negeri Melaka', eng: "Melaka Governor's Birthday" },
+  '2026-08-25': { bm: 'Maulidur Rasul', eng: "Prophet Muhammad's Birthday" },
+  '2026-08-31': { bm: 'Hari Kebangsaan', eng: 'National Day' },
+  '2026-09-16': { bm: 'Hari Malaysia', eng: 'Malaysia Day' },
+  '2026-11-08': { bm: 'Hari Deepavali', eng: 'Deepavali' },
+  '2026-12-25': { bm: 'Hari Krismas', eng: 'Christmas Day' },
+  // 2027
+  '2027-01-01': { bm: 'Tahun Baharu', eng: "New Year's Day" },
+  '2027-02-04': { bm: 'Israk dan Mikraj (Melaka)', eng: "Isra and Mi'raj (Melaka)" },
+  '2027-02-06': { bm: 'Tahun Baharu Cina', eng: 'Chinese New Year' },
+  '2027-02-07': { bm: 'Tahun Baharu Cina (Hari Ke-2)', eng: 'Chinese New Year (Day 2)' },
+  '2027-02-20': { bm: 'Hari Pengisytiharan Tarikh Kemerdekaan (Melaka)', eng: 'Independence Declaration Day (Melaka)' },
+  '2027-03-10': { bm: 'Hari Raya Aidilfitri', eng: 'Hari Raya Aidilfitri' },
+  '2027-03-11': { bm: 'Hari Raya Aidilfitri (Hari Ke-2)', eng: 'Hari Raya Aidilfitri (Day 2)' },
+  '2027-05-01': { bm: 'Hari Pekerja', eng: 'Labour Day' },
+  '2027-05-16': { bm: 'Hari Raya Haji / Aidiladha', eng: 'Hari Raya Haji (Eid al-Adha)' },
+  '2027-05-20': { bm: 'Hari Wesak', eng: 'Wesak Day' },
+  '2027-06-07': { bm: 'Hari Keputeraan YDP Agong / Awal Muharram', eng: "King's Birthday / Awal Muharram" },
+  '2027-08-14': { bm: 'Maulidur Rasul', eng: "Prophet Muhammad's Birthday" },
+  '2027-08-24': { bm: 'Hari Jadi Yang di-Pertua Negeri Melaka', eng: "Melaka Governor's Birthday" },
+  '2027-08-31': { bm: 'Hari Kebangsaan', eng: 'National Day' },
+  '2027-09-16': { bm: 'Hari Malaysia', eng: 'Malaysia Day' },
+  '2027-10-29': { bm: 'Hari Deepavali', eng: 'Deepavali' },
+  '2027-12-25': { bm: 'Hari Krismas', eng: 'Christmas Day' }
+};
+
+const getHoliday = (dateStr) => {
+  const h = PUBLIC_HOLIDAYS[dateStr];
+  if (!h) return null;
+  return S.lang === 'eng' ? h.eng : h.bm;
 };
 
 /* ---------- Helper Format Phone Malaysia ---------- */
@@ -521,7 +570,7 @@ function header() {
         <button class="brand-link" data-a="tab" data-t="home">
           <img src="/content img/logojspimg.png" alt="Logo JSP" class="nav-logo-thumb" onerror="this.style.display='none'">
           <div class="brand-text-col">
-            <span class="brand-title">DEWAN TEMENGGONG</span>
+            <span class="brand-title">e-Dewan Temenggong</span>
             <span class="brand-sub-full">${t('header.brandSub')}</span>
           </div>
         </button>
@@ -762,7 +811,7 @@ function wizard() {
         </div>
 
         <div class="step-footer">
-          <div></div>
+          <button class="btn-secondary" data-a="tab" data-t="home">${t('wizard.back')}</button>
           <button class="btn-primary" data-a="step" data-n="2">
             ${t('wizard.nextDate')}
           </button>
@@ -774,6 +823,15 @@ function wizard() {
     const weekCheck = isDateWeekOpen(S.date);
     const isWeekLocked = sc && !isPast && !cl && !weekCheck.open;
     const wkInfo = getAcademicWeek(S.date);
+    const hol = getHoliday(S.date);
+
+    // Semak kapasiti bagi unit yang dipilih pada tarikh ini
+    const curUnit = fac?.units?.find(u => u.id === S.unit) || fac?.units?.[0];
+    const unitBookings = (D.bookings || []).filter(b => b.unitId === (curUnit ? curUnit.id : S.unit) && b.date === S.date && b.status === 'Diluluskan');
+    const unitBookingsCount = unitBookings.length;
+    const unitMax = fac?.maxCapacity || (S.fac === 'fac-badminton' ? 16 : 6);
+    const isUnitFull = sc && !cl && !isPast && !isWeekLocked && (unitBookingsCount >= unitMax);
+
     body = `
       <div class="wizard-step-body">
         <h3 class="step-title">${t('wizard.step2Title')}</h3>
@@ -800,91 +858,152 @@ function wizard() {
                   ? chip('chip-bad', t('stats.closedBadge')) 
                   : isWeekLocked
                     ? chip('chip-warn', S.lang === 'eng' ? 'Week Not Open' : 'Minggu Belum Dibuka')
-                    : sc 
-                      ? chip('chip-ok', S.lang === 'eng' ? 'Session Open' : 'Sesi Dibuka') 
-                      : chip('chip-subtle', S.lang === 'eng' ? 'No Session' : 'Tiada Sesi')}
+                    : isUnitFull
+                      ? chip('chip-bad', S.lang === 'eng' ? 'Slot Full' : 'Slot Penuh')
+                      : sc 
+                        ? chip('chip-ok', S.lang === 'eng' ? 'Session Open' : 'Sesi Dibuka') 
+                        : chip('chip-subtle', S.lang === 'eng' ? 'No Session' : 'Tiada Sesi')}
             </div>
+          </div>
+
+          ${hol ? `
+            <div class="holiday-banner" style="margin-top:12px">
+              <span>🎉</span>
+              <div><b>${S.lang === 'eng' ? 'Public Holiday' : 'Cuti Umum'}:</b> ${hol}</div>
+            </div>
+          ` : ''}
+        </div>
+
+        <!-- Pilihan Unit & Status Kapasiti Terkini -->
+        <div class="unit-group" style="margin-top:16px">
+          <label class="field-label">${t('wizard.unitLabel')}</label>
+          <div class="unit-chips-row">
+            ${fac.units.map((u) => {
+              const uCount = (D.bookings || []).filter(b => b.unitId === u.id && b.date === S.date && b.status === 'Diluluskan').length;
+              const uFull = uCount >= fac.maxCapacity;
+              return `
+                <button type="button" class="unit-pill ${S.unit === u.id ? 'active' : ''} ${uFull ? 'unit-pill-full' : ''}" data-a="unit" data-id="${u.id}">
+                  ${u.name} • <b>${uCount}/${fac.maxCapacity}</b> ${uFull ? `<span style="color:#ef4444;font-weight:700">(${S.lang === 'eng' ? 'Full' : 'Penuh'})</span>` : ''}
+                </button>
+              `;
+            }).join('')}
           </div>
         </div>
 
-        <div class="notice-minimal ${isPast || cl || isWeekLocked ? 'notice-bad' : sc ? 'notice-ok' : 'notice-warn'}" style="margin-top:14px">
-          ${isPast 
-            ? t('wizard.datePast') 
-            : cl 
-              ? t('wizard.dateClosed') 
-              : isWeekLocked
-                ? (weekCheck.reason || t('wizard.weekNotOpenNotice'))
-                : sc 
-                  ? `${translateDayName(sc.dayName)}: ${sc.timeDisplay}. ${t('wizard.dateOpen')}` 
-                  : t('wizard.dateNonOp')}
-        </div>
+        ${isUnitFull ? `
+          <div class="notice-minimal notice-bad" style="margin-top:14px">
+            <b>🚫 ${S.lang === 'eng' ? 'Slot Fully Booked' : 'Slot Telah Penuh'}</b><br>
+            ${S.lang === 'eng'
+              ? `Capacity for unit <b>${curUnit?.name}</b> on this date has reached maximum limit (<b>${unitBookingsCount}/${unitMax} persons</b>). You cannot book this slot. Please select another court/table above or choose another date.`
+              : `Kapasiti untuk unit <b>${curUnit?.name}</b> pada tarikh ini telah mencapai had maksimum (<b>${unitBookingsCount}/${unitMax} orang</b>). Anda tidak boleh membuat tempahan bagi unit ini. Sila pilih gelanggang/meja lain di atas atau pilih tarikh lain.`}
+          </div>
+        ` : `
+          <div class="notice-minimal ${isPast || cl || isWeekLocked ? 'notice-bad' : sc ? 'notice-ok' : 'notice-warn'}" style="margin-top:14px">
+            ${isPast 
+              ? t('wizard.datePast') 
+              : cl 
+                ? t('wizard.dateClosed') 
+                : isWeekLocked
+                  ? (weekCheck.reason || t('wizard.weekNotOpenNotice'))
+                  : sc 
+                    ? `${translateDayName(sc.dayName)}: ${sc.timeDisplay}. ${t('wizard.dateOpen')}` 
+                    : t('wizard.dateNonOp')}
+          </div>
+        `}
 
         <div class="step-footer">
           <button class="btn-secondary" data-a="step" data-n="1">${t('wizard.back')}</button>
-          <button class="btn-primary" data-a="step" data-n="3" ${isPast || cl || !sc || isWeekLocked ? 'disabled' : ''}>
-            ${t('wizard.nextStudent')}
+          <button class="btn-primary" data-a="step" data-n="3" ${isPast || cl || !sc || isWeekLocked || isUnitFull ? 'disabled' : ''}>
+            ${isUnitFull ? (S.lang === 'eng' ? 'Slot Full' : 'Slot Penuh') : t('wizard.nextStudent')}
           </button>
         </div>
       </div>`;
   } else if (S.step === 3) {
-    body = `
-      <div class="wizard-step-body">
-        <h3 class="step-title">${t('wizard.step3Title')}</h3>
-        <p class="caption-muted">${t('wizard.step3Desc')}</p>
+    const curUnit = fac?.units?.find(u => u.id === S.unit) || fac?.units?.[0];
+    const unitBookings = (D.bookings || []).filter(b => b.unitId === (curUnit ? curUnit.id : S.unit) && b.date === S.date && b.status === 'Diluluskan');
+    const unitBookingsCount = unitBookings.length;
+    const unitMax = fac?.maxCapacity || (S.fac === 'fac-badminton' ? 16 : 6);
+    const isUnitFull = unitBookingsCount >= unitMax;
 
-        <div class="notice-minimal notice-info" style="margin-top:16px">
-          ${t('wizard.onePerWeekNotice')}
-        </div>
-
-        <div class="form-grid" style="margin-top:18px">
-          <div class="field-group">
-            <label class="field-label">${t('wizard.fullName')}</label>
-            <input type="text" placeholder="${t('wizard.fullNamePh')}" value="${esc(f.fullName || '')}" data-f="fullName" class="minimal-input">
-          </div>
-
-          <div class="field-group">
-            <label class="field-label">${t('wizard.phoneNo')}</label>
-            <input type="tel" inputmode="tel" maxlength="13" placeholder="${t('wizard.phoneNoPh')}" value="${esc(formatMyPhone(f.phoneNo || ''))}" data-f="phoneNo" class="minimal-input">
-            <span class="field-hint">${t('wizard.phoneNoHint')}</span>
-          </div>
-
-          <div class="field-group">
-            <label class="field-label">${t('wizard.studentId')}</label>
-            <div class="student-id-input-wrap">
-              <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="10" placeholder="${t('wizard.studentIdPh')}" value="${esc(f.studentId || '')}" data-f="studentId" class="minimal-input ${f.studentId && f.studentId.length === 10 && f.studentId.startsWith('202') ? 'input-valid' : ''}">
-            </div>
-            <div id="studentIdStatus" class="field-hint">${renderStudentIdHint(f.studentId)}</div>
-          </div>
-
-          <div class="field-group">
-            <label class="field-label">${t('wizard.progCode')}</label>
-            <input type="text" maxlength="10" placeholder="${t('wizard.progCodePh')}" value="${esc(f.programCode || '')}" data-f="programCode" class="minimal-input" style="text-transform:uppercase">
-          </div>
-
-          <div class="field-group field-span-2">
-            <label class="field-label">${t('wizard.notes')}</label>
-            <input type="text" placeholder="${t('wizard.notesPh')}" value="${esc(S.notes)}" data-s="notes" class="minimal-input">
-          </div>
-
-          <!-- Aku Janji Ketulenan Maklumat & Pengesahan Kad Matrik Fizikal -->
-          <div class="field-span-2" style="margin-top:8px">
-            <div class="agreement-card">
-              <label class="agreement-label">
-                <input type="checkbox" data-f="agreement" ${f.agreement ? 'checked' : ''} class="agreement-checkbox">
-                <div class="agreement-content">
-                  <span class="agreement-title">${t('wizard.agreementTitle')}</span>
-                  <p class="agreement-text">${t('wizard.agreementDesc')}</p>
-                </div>
-              </label>
+    if (isUnitFull) {
+      body = `
+        <div class="wizard-step-body">
+          <div class="notice-minimal notice-bad" style="margin-top:16px;padding:24px;text-align:center">
+            <div style="font-size:32px;margin-bottom:8px">🚫</div>
+            <h3 style="font-size:18px;margin-bottom:8px;color:#b91c1c">${S.lang === 'eng' ? 'Court is Fully Booked' : 'Gelanggang Telah Penuh'}</h3>
+            <p style="font-size:13.5px;color:var(--ink-secondary);line-height:1.6">
+              ${S.lang === 'eng'
+                ? `The capacity for <b>${curUnit?.name}</b> on <b>${fmt(S.date)}</b> is fully booked (<b>${unitBookingsCount}/${unitMax} persons</b>). Student details cannot be filled for this slot.`
+                : `Kapasiti untuk <b>${curUnit?.name}</b> pada tarikh <b>${fmt(S.date)}</b> telah penuh (<b>${unitBookingsCount}/${unitMax} orang</b>). Maklumat pemohon tidak boleh diisi kerana slot telah penuh.`}
+            </p>
+            <div style="margin-top:18px">
+              <button class="btn-primary" data-a="step" data-n="2">${S.lang === 'eng' ? 'Choose Another Date / Unit' : 'Pilih Tarikh / Gelanggang Lain'}</button>
             </div>
           </div>
-        </div>
+          <div class="step-footer" style="margin-top:20px">
+            <button class="btn-secondary" data-a="step" data-n="2">${t('wizard.back')}</button>
+          </div>
+        </div>`;
+    } else {
+      body = `
+        <div class="wizard-step-body">
+          <h3 class="step-title">${t('wizard.step3Title')}</h3>
+          <p class="caption-muted">${t('wizard.step3Desc')}</p>
 
-        <div class="step-footer">
-          <button class="btn-secondary" data-a="step" data-n="2">${t('wizard.back')}</button>
-          <button class="btn-primary" data-a="submit">${t('wizard.submit')}</button>
-        </div>
-      </div>`;
+          <div class="notice-minimal notice-info" style="margin-top:16px">
+            ${t('wizard.onePerWeekNotice')}
+          </div>
+
+          <div class="form-grid" style="margin-top:18px">
+            <div class="field-group">
+              <label class="field-label">${t('wizard.fullName')}</label>
+              <input type="text" placeholder="${t('wizard.fullNamePh')}" value="${esc(f.fullName || '')}" data-f="fullName" class="minimal-input">
+            </div>
+
+            <div class="field-group">
+              <label class="field-label">${t('wizard.phoneNo')}</label>
+              <input type="tel" inputmode="tel" maxlength="13" placeholder="${t('wizard.phoneNoPh')}" value="${esc(formatMyPhone(f.phoneNo || ''))}" data-f="phoneNo" class="minimal-input">
+              <span class="field-hint">${t('wizard.phoneNoHint')}</span>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label">${t('wizard.studentId')}</label>
+              <div class="student-id-input-wrap">
+                <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="10" placeholder="${t('wizard.studentIdPh')}" value="${esc(f.studentId || '')}" data-f="studentId" class="minimal-input ${f.studentId && f.studentId.length === 10 && f.studentId.startsWith('202') ? 'input-valid' : ''}">
+              </div>
+              <div id="studentIdStatus" class="field-hint">${renderStudentIdHint(f.studentId)}</div>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label">${t('wizard.progCode')}</label>
+              <input type="text" maxlength="10" placeholder="${t('wizard.progCodePh')}" value="${esc(f.programCode || '')}" data-f="programCode" class="minimal-input" style="text-transform:uppercase">
+            </div>
+
+            <div class="field-group field-span-2">
+              <label class="field-label">${t('wizard.notes')}</label>
+              <input type="text" placeholder="${t('wizard.notesPh')}" value="${esc(S.notes)}" data-s="notes" class="minimal-input">
+            </div>
+
+            <!-- Aku Janji Ketulenan Maklumat & Pengesahan Kad Matrik Fizikal -->
+            <div class="field-span-2" style="margin-top:8px">
+              <div class="agreement-card">
+                <label class="agreement-label">
+                  <input type="checkbox" data-f="agreement" ${f.agreement ? 'checked' : ''} class="agreement-checkbox">
+                  <div class="agreement-content">
+                    <span class="agreement-title">${t('wizard.agreementTitle')}</span>
+                    <p class="agreement-text">${t('wizard.agreementDesc')}</p>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="step-footer">
+            <button class="btn-secondary" data-a="step" data-n="2">${t('wizard.back')}</button>
+            <button class="btn-primary" data-a="submit">${t('wizard.submit')}</button>
+          </div>
+        </div>`;
+    }
   } else if (S.receipt) {
     const r = S.receipt;
     const wkInfo = getAcademicWeek(r.date);
@@ -1187,6 +1306,7 @@ function renderBigMonthlyCalendar() {
     const weekCheck = isDateWeekOpen(dateStr);
     const isWeekLocked = isOperating && !isPast && !isClosed && !weekCheck.open;
     const wkInfo = getAcademicWeek(dateStr);
+    const hol = getHoliday(dateStr);
 
     // Check bookings for this date
     const dateBookingsCount = (D.bookings || []).filter(b => b.date === dateStr).length;
@@ -1229,7 +1349,10 @@ function renderBigMonthlyCalendar() {
       <div class="cal-cell ${isPast ? 'past-date' : ''} ${isWeekLocked ? 'week-locked' : ''} ${isOperating ? 'operating' : 'non-operating'} ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}" ${clickAction} title="${isPast ? (S.lang === 'eng' ? 'Past date cannot be booked' : 'Tarikh telah lepas') : isWeekLocked ? weekCheck.reason : dateStr}">
         <div class="cal-cell-header">
           <span class="cal-day-num">${d}</span>
-          ${wkInfo ? `<span class="cal-week-tag" title="${wkInfo.fullLabel}">${wkInfo.shortLabel}</span>` : ''}
+          <span style="display:inline-flex;align-items:center;gap:3px">
+            ${hol ? `<span class="cal-holiday-indicator" title="🎉 ${hol}">🎉</span>` : ''}
+            ${wkInfo ? `<span class="cal-week-tag" title="${wkInfo.fullLabel}">${wkInfo.shortLabel}</span>` : ''}
+          </span>
         </div>
         <div class="cal-cell-body">
           ${badgeHtml}
@@ -1251,6 +1374,10 @@ function renderBigMonthlyCalendar() {
           <span class="caption-muted sm">${t('calendar.sub')}</span>
         </div>
         <div class="cal-nav-buttons">
+          <button class="btn-subtle" data-a="modal" data-m="public-holidays" style="display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:6px 10px" title="${S.lang === 'eng' ? 'View Public Holidays Calendar' : 'Lihat Kalendar Cuti Umum'}">
+            <span>🎉</span>
+            <span>${S.lang === 'eng' ? 'Public Holidays' : 'Kalendar Cuti Umum'}</span>
+          </button>
           <button class="btn-subtle" data-a="calNav" data-dir="-1" title="${t('calendar.lastMonth')}">
             ${ic('chevron-left')}
           </button>
@@ -1269,6 +1396,7 @@ function renderBigMonthlyCalendar() {
         <div class="legend-item"><span class="legend-dot dot-amber"></span> <span>${t('calendar.legendLocked')}</span></div>
         <div class="legend-item"><span class="legend-dot dot-red"></span> <span>${t('calendar.legendClosed')}</span></div>
         <div class="legend-item"><span class="legend-dot dot-gray"></span> <span>${t('calendar.legendRest')}</span></div>
+        <div class="legend-item" style="cursor:pointer" data-a="modal" data-m="public-holidays"><span>🎉</span> <span style="text-decoration:underline">${S.lang === 'eng' ? 'Public Holiday (View Calendar)' : 'Cuti Umum (Lihat Kalendar)'}</span></div>
       </div>
 
       <!-- Calendar Grid -->
@@ -1310,6 +1438,13 @@ function calendar() {
                 : chip('chip-subtle', t('calendar.noSessionToday'))}
         </div>
       </div>
+
+      ${getHoliday(S.date) ? `
+        <div class="holiday-banner" style="margin-top:14px">
+          <span style="font-size:16px">🎉</span>
+          <div><b>${S.lang === 'eng' ? 'Public Holiday' : 'Cuti Umum'}:</b> ${getHoliday(S.date)}</div>
+        </div>
+      ` : ''}
 
       <div class="flow-layout" style="margin-top:20px;--s:16px">
         ${D.facilities.map((f) => `
@@ -1626,6 +1761,62 @@ function modals() {
       </div>
     </div>`;
 
+  if (S.modal === 'public-holidays') {
+    const isEng = S.lang === 'eng';
+    const hYear = S.holidayModalYear || S.calYear || 2026;
+    const entries = Object.entries(PUBLIC_HOLIDAYS).filter(([d]) => d.startsWith(String(hYear)));
+    return `
+    <div class="clean-modal-backdrop">
+      <div class="clean-modal-dialog" style="max-width:580px;max-height:85vh;display:flex;flex-direction:column">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+          <div>
+            <div class="modal-icon-badge" style="margin-bottom:8px">🎉</div>
+            <h3 class="section-title" style="margin:0">${isEng ? 'Public Holidays Calendar' : 'Kalendar Cuti Umum'}</h3>
+            <p class="caption-muted" style="margin-top:4px;font-size:13px">
+              ${isEng ? 'Official Malaysia & Melaka State Public Holidays' : 'Senarai Rasmi Hari Kelepasan Am Persekutuan & Negeri Melaka'}
+            </p>
+          </div>
+          <button class="modal-close-btn" data-a="close" aria-label="Tutup">${ic('x')}</button>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:16px">
+          <button class="nav-pill ${hYear === 2026 ? 'active' : ''}" data-a="setHolidayYear" data-y="2026">2026</button>
+          <button class="nav-pill ${hYear === 2027 ? 'active' : ''}" data-a="setHolidayYear" data-y="2027">2027</button>
+        </div>
+
+        <div style="overflow-y:auto;margin-top:14px;padding-right:4px;display:flex;flex-direction:column;gap:8px;flex:1;max-height:50vh">
+          ${entries.map(([date, h]) => {
+            const [y, m, d] = date.split('-');
+            const dt = new Date(+y, +m - 1, +d);
+            const dict = I18N[S.lang] || I18N.bm;
+            const dayName = dict.days[dt.getDay()];
+            const monthName = dict.months[+m - 1];
+            const isOperatingDay = [1, 3, 5].includes(dt.getDay()); // Isnin, Rabu, Jumaat
+            const title = isEng ? h.eng : h.bm;
+            return `
+              <div class="card" style="padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-left:4px solid ${isOperatingDay ? '#ef4444' : 'var(--border-subtle)'}">
+                <div>
+                  <div style="font-weight:600;font-size:13.5px;color:var(--ink)">${title}</div>
+                  <div class="caption-muted" style="font-size:12px;margin-top:2px">
+                    ${dayName}, ${+d} ${monthName} ${y}
+                    ${isOperatingDay ? `<span style="color:#ef4444;font-weight:600;margin-left:6px">(${isEng ? 'Hall operating day' : 'Hari operasi dewan'})</span>` : ''}
+                  </div>
+                </div>
+                <button class="btn-subtle sm" data-a="pickHolidayDate" data-date="${date}" title="${isEng ? 'View in calendar' : 'Lihat pada kalendar'}" style="font-size:12px;padding:4px 10px">
+                  ${isEng ? 'View' : 'Lihat'}
+                </button>
+              </div>
+            `;
+          }).join('')}
+        </div>
+
+        <div style="margin-top:16px;text-align:right">
+          <button class="btn-secondary" data-a="close">${isEng ? 'Close' : 'Tutup'}</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
   return '';
 }
 
@@ -1700,7 +1891,33 @@ const A = {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     load();
   },
-  step: (d) => { S.step = +d.n; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); },
+  setHolidayYear: (d) => {
+    S.holidayModalYear = +d.y;
+    render();
+  },
+  pickHolidayDate: (d) => {
+    S.date = d.date;
+    const [y, m] = d.date.split('-').map(Number);
+    S.calYear = y;
+    S.calMonth = m - 1;
+    S.modal = null;
+    render();
+  },
+  step: (d) => {
+    const nextStep = +d.n;
+    if (nextStep === 3) {
+      const fac = S.data?.facilities?.find((f) => f.id === S.fac);
+      const curUnit = fac?.units?.find(u => u.id === S.unit) || fac?.units?.[0];
+      const unitBookings = (S.data?.bookings || []).filter(b => b.unitId === (curUnit ? curUnit.id : S.unit) && b.date === S.date && b.status === 'Diluluskan');
+      const unitMax = fac?.maxCapacity || (S.fac === 'fac-badminton' ? 16 : 6);
+      if (unitBookings.length >= unitMax) {
+        return toast(S.lang === 'eng' ? `Slot for ${curUnit?.name || 'unit'} is already fully booked!` : `Slot bagi ${curUnit?.name || 'unit'} telah penuh ditempah!`, 'error');
+      }
+    }
+    S.step = nextStep;
+    render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  },
   fac: (d) => { S.fac = d.id; S.unit = S.data.facilities.find((f) => f.id === d.id).units[0].id; render(); },
   unit: (d) => { S.unit = d.id; render(); },
   view: (d) => { S.view[d.k] = d.v; render(); },
@@ -1796,6 +2013,15 @@ const A = {
     if (!f.programCode || !f.programCode.trim()) return toast(S.lang === 'eng' ? 'Please enter your program code.' : 'Sila masukkan kod program anda.', 'error');
     if (!f.agreement) {
       return toast(S.lang === 'eng' ? 'Please check the Student Declaration agreement box before submitting.' : 'Sila tandakan kotak Aku Janji Pengesahan Maklumat sebelum menghantar tempahan.', 'error');
+    }
+
+    // Semak sekali lagi kapasiti slot sebelum hantar
+    const curFac = S.data?.facilities?.find((x) => x.id === S.fac);
+    const curUnit = curFac?.units?.find(u => u.id === S.unit) || curFac?.units?.[0];
+    const unitBookings = (S.data?.bookings || []).filter(b => b.unitId === (curUnit ? curUnit.id : S.unit) && b.date === S.date && b.status === 'Diluluskan');
+    const unitMax = curFac?.maxCapacity || (S.fac === 'fac-badminton' ? 16 : 6);
+    if (unitBookings.length >= unitMax) {
+      return toast(S.lang === 'eng' ? `Slot for ${curUnit?.name || 'court'} is fully booked! Please choose another court or date.` : `Slot bagi ${curUnit?.name || 'gelanggang'} telah penuh ditempah! Sila pilih gelanggang atau tarikh lain.`, 'error');
     }
 
     // 1. Tunjuk popup loading dengan animasi logojspimg

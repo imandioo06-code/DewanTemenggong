@@ -23,7 +23,7 @@ export const db = {
 };
 
 export const FACILITIES = [
-  { id: 'fac-badminton', name: 'Gelanggang Badminton', type: 'badminton', maxCapacity: 10,
+  { id: 'fac-badminton', name: 'Gelanggang Badminton', type: 'badminton', maxCapacity: 16,
     description: 'Gelanggang badminton berkualiti tinggi.',
     image: '/content img/court.jpeg',
     units: [{ id: 'b-lining', name: 'Gelanggang Li-Ning (Court 1)' }, { id: 'b-yonex', name: 'Gelanggang Yonex (Court 2)' }] },
