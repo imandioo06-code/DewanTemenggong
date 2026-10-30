@@ -522,6 +522,7 @@ async function load(silent = false) {
     if (S.token && !S.data.isAdmin) { S.token = ''; localStorage.removeItem('dt_token'); }
   } catch (e) { if (!silent) toast(e.message, 'error'); }
   render();
+  if (typeof updateSyncIndicator === 'function') updateSyncIndicator('idle');
 }
 
 let tt;
@@ -1917,6 +1918,7 @@ const A = {
     S.lang = S.lang === 'bm' ? 'eng' : 'bm';
     localStorage.setItem('dt_lang', S.lang);
     render();
+    if (typeof updateSyncIndicator === 'function') updateSyncIndicator(isSyncing ? 'loading' : 'idle');
     toast(S.lang === 'eng' ? 'Switched to English.' : 'Ditukar ke Bahasa Melayu.');
   },
   pastDateNotice: () => {
@@ -2330,33 +2332,115 @@ setInterval(() => {
   if (dateEl) dateEl.textContent = getClockDate();
 }, 1000);
 
-// Auto-Refresh setiap 15 saat (15,000 ms)
-setInterval(async () => {
-  // Elakkan refresh sekiranya pengguna sedang mengisi borang, menaip, atau modal aktif
+/* ---------- Auto-Refresh (15s) & Loading Kecil Sebelah Kanan Bawah ---------- */
+let syncCountdown = 15;
+let isSyncing = false;
+
+function updateSyncIndicator(state, customText) {
+  const el = document.getElementById('syncLoader');
+  if (!el) return;
+  const isEng = S.lang === 'eng';
+
+  if (state === 'loading') {
+    el.className = 'sync-loader-pill is-loading';
+    el.innerHTML = `
+      <div class="sync-spinner"></div>
+      <span class="sync-text">${customText || (isEng ? 'Refreshing…' : 'Menyegarkan…')}</span>
+    `;
+    el.title = isEng ? 'Refreshing latest data…' : 'Sedang memuat semula data terkini…';
+  } else if (state === 'success') {
+    el.className = 'sync-loader-pill is-success';
+    el.innerHTML = `
+      <span class="sync-check">✓</span>
+      <span class="sync-text">${customText || (isEng ? 'Updated' : 'Dikemas kini')}</span>
+    `;
+    el.title = isEng ? 'Data is up to date' : 'Data telah dikemas kini';
+  } else {
+    // idle state dengan countdown 15s
+    el.className = 'sync-loader-pill is-idle';
+    el.innerHTML = `
+      <span class="sync-pulse-dot"></span>
+      <span class="sync-text">${isEng ? 'Live' : 'Live'} • ${syncCountdown}s</span>
+    `;
+    el.title = isEng ? 'Auto-refresh every 15s • Click to refresh now' : 'Auto-refresh setiap 15 saat • Klik untuk muat semula';
+  }
+}
+
+async function triggerAutoRefresh(isManual = false) {
+  if (isSyncing) return;
+  isSyncing = true;
+  syncCountdown = 15;
+  updateSyncIndicator('loading');
+
+  const startTime = Date.now();
+
   const isInputFocused = document.activeElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName);
   const isEditingForm = S.tab === 'booking-wizard' && S.step === 3;
   const isBusyModal = ['booking-loading', 'login-loading'].includes(S.modal);
 
-  if (isInputFocused || isEditingForm || isBusyModal) {
-    try {
+  try {
+    if (isInputFocused || isEditingForm || isBusyModal) {
+      // Dapatkan data terkini di background tanpa mengganggu fokus/input pengguna
       const fresh = await api('state');
       if (fresh) S.data = fresh;
-    } catch (_) {}
-    return;
+    } else {
+      // Jika tab semak status dan ada kata carian, kemas kini carian juga
+      if (S.tab === 'student-check' && S.search && S.search.trim()) {
+        try {
+          const q = S.search.trim();
+          const res = await api('search?q=' + encodeURIComponent(q));
+          if (res && res.bookings) S.results = res.bookings;
+        } catch (_) {}
+      }
+      await load(true);
+    }
+  } catch (err) {
+    console.error('Auto-refresh error:', err);
+  } finally {
+    // Pastikan animasi loading nampak jelas sekurang-kurangnya 600ms
+    const elapsed = Date.now() - startTime;
+    const delay = Math.max(0, 600 - elapsed);
+    setTimeout(() => {
+      updateSyncIndicator('success');
+      setTimeout(() => {
+        isSyncing = false;
+        syncCountdown = 15;
+        updateSyncIndicator('idle');
+      }, 1000);
+    }, delay);
   }
+}
 
-  // Jika sedang melihat semakan status, kemas kini carian juga jika ada
-  if (S.tab === 'student-check' && S.search && S.search.trim()) {
-    try {
-      const q = S.search.trim();
-      const res = await api('search?q=' + encodeURIComponent(q));
-      if (res && res.bookings) S.results = res.bookings;
-    } catch (_) {}
+// Interval 1 saat untuk Jam Waktu Semasa & Countdown 15s
+setInterval(() => {
+  const timeEl = document.getElementById('liveClockTime');
+  const dateEl = document.getElementById('liveClockDate');
+  if (timeEl) timeEl.textContent = getClockTime();
+  if (dateEl) dateEl.textContent = getClockDate();
+
+  if (!isSyncing) {
+    syncCountdown--;
+    if (syncCountdown <= 0) {
+      triggerAutoRefresh();
+    } else {
+      updateSyncIndicator('idle');
+    }
   }
+}, 1000);
 
-  try {
-    await load(true);
-  } catch (_) {}
-}, 15000);
+// Klik pada loading pill di bawah sebelah kanan untuk refresh segera
+document.addEventListener('click', (e) => {
+  const syncBtn = e.target.closest('#syncLoader');
+  if (syncBtn) {
+    triggerAutoRefresh(true);
+  }
+});
+
+// Apabila pengguna buka semula tab / kembali ke skrin, segarkan data terkini
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') {
+    triggerAutoRefresh();
+  }
+});
 
 load();
