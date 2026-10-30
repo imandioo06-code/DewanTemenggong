@@ -2356,16 +2356,15 @@ function updateSyncIndicator(state, customText) {
     `;
     el.title = isEng ? 'Data is up to date' : 'Data telah dikemas kini';
   } else {
-    // idle state dengan countdown 15s dan logo JSP
+    // idle state tanpa sebarang teks "live" dan saat
     el.className = 'sync-loader-pill is-idle';
     el.innerHTML = `
       <div class="sync-jsp-wrap">
+        <span class="sync-pulse-dot"></span>
         <img src="/content img/logojspimg.png" alt="Logo JSP" class="sync-jsp-logo">
       </div>
-      <span class="sync-pulse-dot"></span>
-      <span class="sync-text">${isEng ? 'Live' : 'Live'} • ${syncCountdown}s</span>
     `;
-    el.title = isEng ? 'Auto-refresh every 15s • Click to refresh now' : 'Auto-refresh setiap 15 saat • Klik untuk muat semula';
+    el.title = isEng ? 'Auto-refresh active (15s) • Click to refresh now' : 'Auto-refresh aktif (15s) • Klik untuk muat semula';
   }
 }
 
@@ -2425,8 +2424,6 @@ setInterval(() => {
     syncCountdown--;
     if (syncCountdown <= 0) {
       triggerAutoRefresh();
-    } else {
-      updateSyncIndicator('idle');
     }
   }
 }, 1000);

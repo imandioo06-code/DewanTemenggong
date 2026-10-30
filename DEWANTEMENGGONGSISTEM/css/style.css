@@ -3104,10 +3104,10 @@ body.dark-mode .cal-cell.is-holiday .cal-day-num {
   z-index: 99;
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 5px 12px;
+  gap: 8px;
+  padding: 6px 12px;
   border-radius: var(--radius-pill, 9999px);
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-hairline, rgba(0, 0, 0, 0.08));
@@ -3117,7 +3117,16 @@ body.dark-mode .cal-cell.is-holiday .cal-day-num {
   font-weight: 600;
   cursor: pointer;
   user-select: none;
-  transition: all 0.25s var(--ease, cubic-bezier(0.16, 1, 0.3, 1));
+  transition: all 0.28s var(--ease, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+.sync-loader-pill.is-idle {
+  padding: 6px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  justify-content: center;
+  gap: 0;
 }
 
 .sync-loader-pill:hover {
@@ -3196,15 +3205,29 @@ body.dark-mode .sync-jsp-logo {
   animation: jspLogoSpinPulse 2.4s ease-in-out infinite;
 }
 
-/* Live pulsing dot when idle */
+/* Live pulsing dot when idle (positioned on corner of JSP logo) */
 .sync-pulse-dot {
-  width: 7px;
-  height: 7px;
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: #22c55e;
+  border: 1.5px solid #ffffff;
   box-shadow: 0 0 0 rgba(34, 197, 94, 0.4);
   animation: syncPulseDot 2s infinite;
+  z-index: 2;
   flex-shrink: 0;
+}
+
+body.dark-mode .sync-pulse-dot {
+  border-color: #151821;
+}
+
+.sync-loader-pill.is-loading .sync-pulse-dot,
+.sync-loader-pill.is-success .sync-pulse-dot {
+  display: none;
 }
 
 @keyframes syncPulseDot {
@@ -3275,5 +3298,10 @@ body.dark-mode .sync-loader-pill.is-success {
     right: 14px;
     padding: 5px 10px;
     font-size: 11px;
+  }
+  .sync-loader-pill.is-idle {
+    padding: 4px;
+    width: 34px;
+    height: 34px;
   }
 }
