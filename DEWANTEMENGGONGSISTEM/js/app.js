@@ -516,11 +516,11 @@ async function api(path, body) {
   return j;
 }
 
-async function load() {
+async function load(silent = false) {
   try {
     S.data = await api('state');
     if (S.token && !S.data.isAdmin) { S.token = ''; localStorage.removeItem('dt_token'); }
-  } catch (e) { toast(e.message, 'error'); }
+  } catch (e) { if (!silent) toast(e.message, 'error'); }
   render();
 }
 
@@ -2329,5 +2329,34 @@ setInterval(() => {
   if (timeEl) timeEl.textContent = getClockTime();
   if (dateEl) dateEl.textContent = getClockDate();
 }, 1000);
+
+// Auto-Refresh setiap 15 saat (15,000 ms)
+setInterval(async () => {
+  // Elakkan refresh sekiranya pengguna sedang mengisi borang, menaip, atau modal aktif
+  const isInputFocused = document.activeElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName);
+  const isEditingForm = S.tab === 'booking-wizard' && S.step === 3;
+  const isBusyModal = ['booking-loading', 'login-loading'].includes(S.modal);
+
+  if (isInputFocused || isEditingForm || isBusyModal) {
+    try {
+      const fresh = await api('state');
+      if (fresh) S.data = fresh;
+    } catch (_) {}
+    return;
+  }
+
+  // Jika sedang melihat semakan status, kemas kini carian juga jika ada
+  if (S.tab === 'student-check' && S.search && S.search.trim()) {
+    try {
+      const q = S.search.trim();
+      const res = await api('search?q=' + encodeURIComponent(q));
+      if (res && res.bookings) S.results = res.bookings;
+    } catch (_) {}
+  }
+
+  try {
+    await load(true);
+  } catch (_) {}
+}, 15000);
 
 load();
