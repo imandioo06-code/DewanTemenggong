@@ -522,7 +522,7 @@ async function load(silent = false) {
     if (S.token && !S.data.isAdmin) { S.token = ''; localStorage.removeItem('dt_token'); }
   } catch (e) { if (!silent) toast(e.message, 'error'); }
   render();
-  if (typeof updateSyncIndicator === 'function') updateSyncIndicator('idle');
+  if (typeof updateSyncIndicator === 'function' && !isSyncing) updateSyncIndicator('idle');
 }
 
 let tt;
@@ -2324,13 +2324,7 @@ document.addEventListener('submit', async (e) => {
   }
 });
 
-// Live Clock Ticker
-setInterval(() => {
-  const timeEl = document.getElementById('liveClockTime');
-  const dateEl = document.getElementById('liveClockDate');
-  if (timeEl) timeEl.textContent = getClockTime();
-  if (dateEl) dateEl.textContent = getClockDate();
-}, 1000);
+
 
 /* ---------- Auto-Refresh (15s) & Loading Kecil Sebelah Kanan Bawah ---------- */
 let syncCountdown = 15;
@@ -2344,21 +2338,30 @@ function updateSyncIndicator(state, customText) {
   if (state === 'loading') {
     el.className = 'sync-loader-pill is-loading';
     el.innerHTML = `
-      <div class="sync-spinner"></div>
+      <div class="sync-jsp-wrap">
+        <div class="sync-jsp-ring"></div>
+        <img src="/content img/logojspimg.png" alt="Logo JSP" class="sync-jsp-logo">
+      </div>
       <span class="sync-text">${customText || (isEng ? 'Refreshing…' : 'Menyegarkan…')}</span>
     `;
     el.title = isEng ? 'Refreshing latest data…' : 'Sedang memuat semula data terkini…';
   } else if (state === 'success') {
     el.className = 'sync-loader-pill is-success';
     el.innerHTML = `
+      <div class="sync-jsp-wrap">
+        <img src="/content img/logojspimg.png" alt="Logo JSP" class="sync-jsp-logo">
+      </div>
       <span class="sync-check">✓</span>
       <span class="sync-text">${customText || (isEng ? 'Updated' : 'Dikemas kini')}</span>
     `;
     el.title = isEng ? 'Data is up to date' : 'Data telah dikemas kini';
   } else {
-    // idle state dengan countdown 15s
+    // idle state dengan countdown 15s dan logo JSP
     el.className = 'sync-loader-pill is-idle';
     el.innerHTML = `
+      <div class="sync-jsp-wrap">
+        <img src="/content img/logojspimg.png" alt="Logo JSP" class="sync-jsp-logo">
+      </div>
       <span class="sync-pulse-dot"></span>
       <span class="sync-text">${isEng ? 'Live' : 'Live'} • ${syncCountdown}s</span>
     `;
@@ -2376,11 +2379,11 @@ async function triggerAutoRefresh(isManual = false) {
 
   const isInputFocused = document.activeElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName);
   const isEditingForm = S.tab === 'booking-wizard' && S.step === 3;
-  const isBusyModal = ['booking-loading', 'login-loading'].includes(S.modal);
+  const isModalOpen = !!S.modal;
 
   try {
-    if (isInputFocused || isEditingForm || isBusyModal) {
-      // Dapatkan data terkini di background tanpa mengganggu fokus/input pengguna
+    if (isInputFocused || isEditingForm || isModalOpen) {
+      // Dapatkan data terkini di background tanpa mengganggu fokus/input/modal pengguna
       const fresh = await api('state');
       if (fresh) S.data = fresh;
     } else {
@@ -2397,16 +2400,16 @@ async function triggerAutoRefresh(isManual = false) {
   } catch (err) {
     console.error('Auto-refresh error:', err);
   } finally {
-    // Pastikan animasi loading nampak jelas sekurang-kurangnya 600ms
+    // Pastikan animasi putaran loading JSP nampak lancar (sekurang-kurangnya 800ms)
     const elapsed = Date.now() - startTime;
-    const delay = Math.max(0, 600 - elapsed);
+    const delay = Math.max(0, 800 - elapsed);
     setTimeout(() => {
       updateSyncIndicator('success');
       setTimeout(() => {
         isSyncing = false;
         syncCountdown = 15;
         updateSyncIndicator('idle');
-      }, 1000);
+      }, 1200);
     }, delay);
   }
 }

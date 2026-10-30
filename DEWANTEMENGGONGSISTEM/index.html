@@ -4,23 +4,26 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>e-Dewan Temenggong - JSP</title>
-  <link rel="icon" type="image/png" href="/favicon.png?v=20261030_v2">
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=20261030_v2">
-  <link rel="apple-touch-icon" href="/favicon.png?v=20261030_v2">
+  <link rel="icon" type="image/png" href="/favicon.png?v=20261030_v3">
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=20261030_v3">
+  <link rel="apple-touch-icon" href="/favicon.png?v=20261030_v3">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=20261030_v2">
+  <link rel="stylesheet" href="css/style.css?v=20261030_v3">
 </head>
 <body>
   <div id="app"></div>
     <div id="toast" role="status"></div>
-  <!-- Loading Kecil di Bawah Sebelah Kanan (Auto-Refresh 15s) -->
-  <div id="syncLoader" class="sync-loader-pill" title="Auto-refresh setiap 15 saat • Klik untuk muat semula">
+  <!-- Loading Kecil di Bawah Sebelah Kanan (Auto-Refresh 15s dengan Animasi JSP) -->
+  <div id="syncLoader" class="sync-loader-pill is-idle" title="Auto-refresh setiap 15 saat • Klik untuk muat semula">
+    <div class="sync-jsp-wrap">
+      <img src="/content img/logojspimg.png" alt="Logo JSP" class="sync-jsp-logo">
+    </div>
     <span class="sync-pulse-dot"></span>
     <span class="sync-text">Live • 15s</span>
   </div>
   <script src="https://unpkg.com/lucide@0.383.0/dist/umd/lucide.min.js"></script>
-  <script src="js/app.js?v=20261030_v2"></script>
+  <script src="js/app.js?v=20261030_v3"></script>
 </body>
 </html>
